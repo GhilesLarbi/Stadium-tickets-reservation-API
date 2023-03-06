@@ -1,6 +1,7 @@
 const sequelize = require('../models')
 const ticketModel = sequelize.models.ticket 
 
+const path = require('path')
 const asyncHandler = require('../../utils/asyncErrorHandler')
 const responseTemplate = require('../../utils/responseTemplate')
 const findFreeSeat = require('../../utils/findFreeSeat')
@@ -82,7 +83,8 @@ const generateQrCode = asyncHandler(async (req, res) => {
 		}
 	)
 	
-	res.sendFile('/root/backend/src/images/tempQrCode/qr.png')
+	// SKETCHY-CODE
+	res.sendFile(path.join(__dirname + '/../../images/tempQrCode/qr.png'))
 })
 
 

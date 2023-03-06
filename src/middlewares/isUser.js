@@ -1,5 +1,5 @@
 const isUser = (req, res, next) => {
-	if (req.isAdmin) throw new Error('Stop sniffing you fucking dummass')
+	if (req.isAdmin) throw new Error('You are not authorized')
 	return next()
 }
 

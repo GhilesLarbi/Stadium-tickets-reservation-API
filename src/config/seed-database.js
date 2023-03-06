@@ -1,8 +1,7 @@
 const dotenv = require('dotenv')
-dotenv.config({path : '/root/backend/.env'})
+dotenv.config({path : __dirname + '/../../.env'})
 
 const sequelize = require('../api/models');
-
 const bleachers = [
 	{
 		type : 'VIP',
