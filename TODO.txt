@@ -1,0 +1,36 @@
+[security]
+- Add ORM Hooks to encrypt passwords (done)
+(!) "beforeUpdate" Hook doesn't work
+
+- Add cors to allow external access
+(!) the "cors" package is installed
+
+[routes]
+- Finish "seat" router
+- Add more routes to "league" and "team" routers
+- Fix "game", "league", "team" routers
+
+[authentication]
+- Confirm emails before submitting users
+(!) using "mailler" i guess .. will see
+
+- Fix the admin login process
+(!) SKETCHY-CODE
+
+[general]
+- Fix sequelize error template
+- Add custom ORM validation messages
+- Fix sequelize associations
+- Improve MVC architecture (done partially)
+
+- Add the ability to Serve images (done)
+(!) serving images outside the API path
+(!) using "static" middleware
+(!) i think it's easier with this approach
+
+- Add the ability to Upload images
+(!) using "express-fileupload" package
+(!) "express-fileupload" package is installed
+
+- Fix status Codes
+- Improve the response template
