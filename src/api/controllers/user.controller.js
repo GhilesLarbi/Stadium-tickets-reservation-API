@@ -13,6 +13,8 @@ const responseTemplate = require('../../utils/responseTemplate')
 const loginUser = asyncHandler(async (req, res) => {
 	const {email, password} = req.body
 	
+	console.log(req.body)
+	
 	// if no email or password then throw an error
 	if (!(email && password)) throw new Error('bad body data')
 	
@@ -148,7 +150,6 @@ const deleteUser = asyncHandler(async (req, res) => {
 //@route DELETE /api/user/:id
 //@access private
 const deleteUserById = asyncHandler(async (req, res) => {
-	
 	// delete the user
 	const result = await userModel.destroy({
 		where : {id : req.params.id}
@@ -156,7 +157,6 @@ const deleteUserById = asyncHandler(async (req, res) => {
 	
 	res.send(responseTemplate(true, 200, 'user deleted successfully', {infected : result}))
 })
-
 
 module.exports =  {
 	loginUser,
