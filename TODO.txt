@@ -5,14 +5,19 @@
 - Add cors to allow external access
 (!) the "cors" package is installed
 
+- encrypt the ticket QR code string
+(!) use "crypto" package
+(!) "crypto" package is installed
+
+
 [routes]
 - Finish "seat" router
 - Add more routes to "league" and "team" routers
-- Fix "game", "league", "team" routers
+- Fix "game", "league", "team" routers (done partially)
 
 [authentication]
 - Confirm emails before submitting users
-(!) using "mailler" i guess .. will see
+(!) using "nodemailer" i guess .. will see
 
 - Fix the admin login process
 (!) SKETCHY-CODE
@@ -28,7 +33,7 @@
 (!) using "static" middleware
 (!) i think it's easier with this approach
 
-- Add the ability to Upload images
+- Add the ability to Upload images (done partially)
 (!) using "express-fileupload" package
 (!) "express-fileupload" package is installed
 

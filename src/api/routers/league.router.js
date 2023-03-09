@@ -18,7 +18,7 @@ router.put('/:id', authenticate, isAdmin, ctrl.updateLeague)
 router.post('/:id/upload/logo', authenticate, isAdmin, fileUpload({
 	createParentPath : true,
 	limits: {
-		fileSize: 10000000, // Around 10MB
+		fileSize: 1000000, // Around 10MB
 	},
 	abortOnLimit: true,
 }), ctrl.uploadLogo)

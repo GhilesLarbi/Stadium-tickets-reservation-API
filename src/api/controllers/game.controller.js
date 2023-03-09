@@ -102,7 +102,7 @@ const createGame = asyncHandler(async (req, res) => {
 })
 
 
-//@desc updatr league
+//@desc update league
 //@route PUT /api/league/:id
 //@access private
 const updateGame = asyncHandler(async (req, res) => {
@@ -113,6 +113,7 @@ const updateGame = asyncHandler(async (req, res) => {
 	
 	res.send(responseTemplate(true, 200, 'game updated', {infected : result[0]} ))
 })
+
 
 module.exports = {
 	getGames, 

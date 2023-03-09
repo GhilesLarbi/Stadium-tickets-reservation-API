@@ -6,6 +6,8 @@ const asyncHandler = require('../../utils/asyncErrorHandler')
 const responseTemplate = require('../../utils/responseTemplate')
 const findFreeSeat = require('../../utils/findFreeSeat')
 const QRCode = require('qrcode');
+const bcrypt = require('bcrypt')
+
 
 //@desc get tickets
 //@route GET /api/ticket
@@ -74,10 +76,13 @@ const generateQrCode = asyncHandler(async (req, res) => {
 	
 	if (!ticket) throw new Error('No ticket with id of '+req.params.id)
 	
+	const qrcodestr = bcrypt.hashSync(ticket.id.toString(), 10)
+	
+	console.log(qrcodestr)
 	
 	const qr = await QRCode.toFile(
 		'src/images/tempQrCode/qr.png',
-		JSON.stringify(ticket) ,
+		qrcodestr,
 		{
 			errorCorrectionLevel: 'H',
 		}

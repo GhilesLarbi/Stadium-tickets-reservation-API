@@ -10,4 +10,5 @@ router.get('/', authenticate, isUser, ctrl.getTickets)
 router.post('/', authenticate, isUser, ctrl.createTicket)
 router.get('/:id/qrcode', authenticate, isUser, ctrl.generateQrCode)
 router.delete('/:id', authenticate, isUser, ctrl.deleteTicket)
+
 module.exports = router

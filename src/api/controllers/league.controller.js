@@ -77,7 +77,12 @@ const updateLeague = asyncHandler(async (req, res) => {
 //@route POST /api/league/:id/upload/logo
 //@access private
 const uploadLogo = asyncHandler(async (req, res) => {
-	const {logo} = req.files
+	let logo
+	try {
+		logo = req.files.logo
+	} catch (err) {
+		throw new Error('bad body data')
+	}
 	
 	// throw an error if no logo found
 	if (!logo) throw new Error('no logo found')
@@ -87,21 +92,25 @@ const uploadLogo = asyncHandler(async (req, res) => {
 	//if (/^logo/.test(logo.mimetype)) throw new Error('Doesn\'t look like an image')
 	// if (logo.mimetype.match(/^image/)) console.log('it\'s an image')
 	// else console.log('it\'s not an image')
-	console.log(logo)
-
  
-	// FIXME
 	// generate a random unique name for the image
-	logo.mv(path.join(__dirname + '/../../images/league/' + logo.name))
+	// get league name
+	const league = await leagueModel.findByPk(req.params.id)
 	
+	if (!league) throw new Error('no team with ' + req.params.id + ' id found')
 	
 	// FIXME
+	// get the image extension instead
+	let leagueImagePath = league.name + league.id + '.png'
+	
+	logo.mv(path.join(__dirname + '/../../images/league/' + leagueImagePath))
+	
 	// save the image path in database
+	league.logo = '/images/league/' + leagueImagePath
 	
+	await league.save()
 	
-	// FIXME
-	// send an appropriate response
-	res.send({status : 'success'})
+	res.send(responseTemplate(true, 200, 'logo updated', league))
 })
 
 module.exports = {
