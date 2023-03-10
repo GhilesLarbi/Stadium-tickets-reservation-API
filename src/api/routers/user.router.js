@@ -1,7 +1,6 @@
 const router = require('express').Router()
 const authenticate = require('../../middlewares/authenticate')
-const isAdmin = require('../../middlewares/isAdmin')
-const isUser = require('../../middlewares/isUser')
+const role = require('../../middlewares/manageRoles')
 const ctrl = require('../controllers/user.controller')
 
 
@@ -13,10 +12,10 @@ router.post('/', ctrl.createUser)
 router.get('/', authenticate, ctrl.getUser)
 
 // user only
-router.put('/', authenticate, isUser, ctrl.updateUser)
-router.delete('/', authenticate, isUser, ctrl.deleteUser)
+router.put('/', authenticate, role('user'), ctrl.updateUser)
+router.delete('/', authenticate, role('user'), ctrl.deleteUser)
 
 // admin only
-router.delete('/:id', authenticate, isAdmin, ctrl.deleteUserById)
+router.delete('/:id', authenticate, role('admin'), ctrl.deleteUserById)
 
 module.exports = router

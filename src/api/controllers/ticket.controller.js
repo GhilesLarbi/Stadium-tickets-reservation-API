@@ -76,7 +76,7 @@ const generateQrCode = asyncHandler(async (req, res) => {
 	
 	if (!ticket) throw new Error('No ticket with id of '+req.params.id)
 	
-	const qrcodestr = bcrypt.hashSync(ticket.id.toString(), 10)
+	const qrcodestr = ticket.userId + ' ' + bcrypt.hashSync(ticket.id.toString(), 1)
 	
 	console.log(qrcodestr)
 	

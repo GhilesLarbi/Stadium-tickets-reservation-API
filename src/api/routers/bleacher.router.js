@@ -1,7 +1,6 @@
 const router = require('express').Router()
 const authenticate = require('../../middlewares/authenticate')
-const isAdmin = require('../../middlewares/isAdmin')
-const isUser = require('../../middlewares/isUser')
+const role = require('../../middlewares/manageRoles')
 const ctrl = require('../controllers/bleacher.controller')
 
 
@@ -10,8 +9,8 @@ router.get('/', ctrl.getBleachers)
 router.get('/:type', ctrl.getBleacher)
 
 // private
-router.post('/', authenticate, isAdmin, ctrl.createBleacher)
-router.put('/:type', authenticate, isAdmin, ctrl.updateBleacher)
-router.delete('/:type', authenticate, isAdmin, ctrl.deleteBleacher)
+router.post('/', authenticate, role('admin'), ctrl.createBleacher)
+router.put('/:type', authenticate, role('admin'), ctrl.updateBleacher)
+router.delete('/:type', authenticate, role('admin'), ctrl.deleteBleacher)
 
 module.exports = router
