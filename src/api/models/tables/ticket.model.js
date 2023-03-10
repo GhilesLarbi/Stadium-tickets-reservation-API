@@ -1,5 +1,5 @@
 const {DataTypes} = require('sequelize')
-
+const crypto = require('crypto')
 // ticket modele
 module.exports = (sequelize) => {
 	sequelize.define('ticket', {
@@ -68,5 +68,6 @@ module.exports = (sequelize) => {
 			allowNull : false,
 			defaultValue : DataTypes.NOW,
 		},
+		
 	})
 }

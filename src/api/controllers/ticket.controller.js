@@ -2,11 +2,12 @@ const sequelize = require('../models')
 const ticketModel = sequelize.models.ticket 
 
 const path = require('path')
+const QRCode = require('qrcode');
+
 const asyncHandler = require('../../utils/asyncErrorHandler')
 const responseTemplate = require('../../utils/responseTemplate')
 const findFreeSeat = require('../../utils/findFreeSeat')
-const QRCode = require('qrcode');
-const bcrypt = require('bcrypt')
+const crypto = require('../../utils/crypto')
 
 
 //@desc get tickets
@@ -62,24 +63,28 @@ const createTicket = asyncHandler(async (req, res) => {
 //@access user 
 const generateQrCode = asyncHandler(async (req, res) => {
 	
+	// get ticket
 	const ticket = await ticketModel.findOne({
 		where : {
 			id : req.params.id,
 			userId : req.id,
 		},
-		attributes : {
-			exclude : ['createdAt'],
-		},
+		
 		raw : true,
 	})
 	
-	
+	// if no ticket found exit
 	if (!ticket) throw new Error('No ticket with id of '+req.params.id)
 	
-	const qrcodestr = ticket.userId + ' ' + bcrypt.hashSync(ticket.id.toString(), 1)
 	
-	console.log(qrcodestr)
+	// encrypt  "userId ticketId" : "1 5"
+	const qrcodestr = crypto.encrypt(ticket.userId.toString() + ' ' + ticket.id.toString())
 	
+	// decrypt
+	// console.log(crypto.decrypt(qrcodestr))
+	
+	
+	// generate Qr Code image
 	const qr = await QRCode.toFile(
 		'src/images/tempQrCode/qr.png',
 		qrcodestr,
