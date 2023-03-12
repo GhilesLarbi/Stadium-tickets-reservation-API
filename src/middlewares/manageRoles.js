@@ -1,12 +1,21 @@
+const AppErr = require('../utils/AppErr')
+
 const manageRoles = (role) => {
+	role = role.toLowerCase()
+	
 	return function (req, res, next) {
-		if (role.toLowerCase() == 'admin' && req.isAdmin)
+		if (role == 'admin' && req.isAdmin)
 			return next()
 			
-		else if (role.toLowerCase() == 'user' && !req.isAdmin)
+		if (role == 'user' && !req.isAdmin)
 			return next()
 		
-		throw new Error('You are not authorized')
+		if (role == 'valid-user' && !req.isAdmin)
+			if (req.isEmailConfirmed) return next()
+			else throw new Error(401, 'Please confirm your email', 'isEmailConfirmed')
+		
+		
+		throw new AppErr(401, 'You are not authorized', 'token')
 	}
 }
 

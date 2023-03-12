@@ -1,12 +1,15 @@
 const sequelize = require('../models')
+const db = sequelize.models
 const ticketModel = sequelize.models.ticket 
 
 const path = require('path')
 const QRCode = require('qrcode');
 
 const asyncHandler = require('../../utils/asyncErrorHandler')
-const responseTemplate = require('../../utils/responseTemplate')
-const findFreeSeat = require('../../utils/findFreeSeat')
+const AppRes = require('../../utils/AppRes')
+const AppErr = require('../../utils/AppErr')
+
+const {findFreeSeat} = require('../../utils/modelUtils')
 const crypto = require('../../utils/crypto')
 
 
@@ -30,7 +33,7 @@ const getTickets = asyncHandler(async (req, res) => {
 	// get data
 	const result = await ticketModel.findAll(options)
 	
-	res.send(responseTemplate(true, 200, 'data fetched', result))
+	res.send(AppRes(200, 'data fetched', result))
 })
 
 
@@ -39,10 +42,18 @@ const getTickets = asyncHandler(async (req, res) => {
 //@access user 
 const createTicket = asyncHandler(async (req, res) => {
 	
+	const game = await db.game.findByPk(req.body.gameId)
+	if (!game) throw new AppErr(404, 'No game with id of ' + req.body.gameId, 'gameId')
+	
+	const bleacher = await db.bleacher.findByPk(req.body.bleacherType)
+	if (!bleacher) throw new AppErr(404, 'No bleacher with type of ' + req.body.bleacherType, 'bleacherType')
+	
+	
+	
 	// find free seat
 	const seat = await findFreeSeat(req.body.gameId, req.body.bleacherType)
 	
-	if (!seat) throw new Error('All seats of type '+req.body.bleacherType+' are taken')
+	if (!seat) throw new AppErr(404, 'All seats of type '+req.body.bleacherType+' are taken', 'bleacherType')
 	
 	
 	// integrate stripe here
@@ -54,7 +65,7 @@ const createTicket = asyncHandler(async (req, res) => {
 		seatId : seat,
 	})
 	
-	res.send(responseTemplate(true, 200, 'ticket created', ticket))
+	res.status(201).send(AppRes(201, 'ticket created', ticket))
 })
 
 
@@ -74,7 +85,7 @@ const generateQrCode = asyncHandler(async (req, res) => {
 	})
 	
 	// if no ticket found exit
-	if (!ticket) throw new Error('No ticket with id of '+req.params.id)
+	if (!ticket) throw new AppErr(404, 'No ticket with id of '+req.params.id, 'ticketId')
 	
 	
 	// encrypt  "userId ticketId" : "1 5"
@@ -87,14 +98,19 @@ const generateQrCode = asyncHandler(async (req, res) => {
 	// generate Qr Code image
 	const qr = await QRCode.toFile(
 		'src/images/tempQrCode/qr.png',
-		qrcodestr,
+		[{data: qrcodestr, mode: 'byte'}],
 		{
+			// control the resistance against dust here
+			// L : low (7%)
+			// M : Medium (15%)
+			// Q : Quartile (25%)
+			// H : High (30%)
 			errorCorrectionLevel: 'H',
 		}
 	)
 	
 	// SKETCHY-CODE
-	res.sendFile(path.join(__dirname + '/../../images/tempQrCode/qr.png'))
+	res.status(201).sendFile(path.join(__dirname + '/../../images/tempQrCode/qr.png'))
 })
 
 
@@ -102,14 +118,18 @@ const generateQrCode = asyncHandler(async (req, res) => {
 //@route DELETE /api/ticket/:id
 //@access user 
 const deleteTicket = asyncHandler(async (req, res) => {
-	const result = await ticketModel.destroy({
+	let result = await ticketModel.findOne({
 		where : {
 			id : req.params.id,
 			userId : req.id,
 		},
 	})
 	
-	res.send(responseTemplate(true, 200, 'ticket deleted', {infected : result}))
+	if (!result) throw new AppErr(404, 'Didn\'t find any ticket with id of ' + req.params.id, 'ticketId')
+	
+	result.destroy()
+	
+	res.send(AppRes(200, 'ticket deleted', result))
 	
 })
 

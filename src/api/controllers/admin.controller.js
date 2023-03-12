@@ -1,8 +1,8 @@
 const asyncHandler = require('../../utils/asyncErrorHandler')
-const generateToken = require('../../utils/generateToken')
+const AppRes = require('../../utils/AppRes')
+const AppErr = require('../../utils/AppErr')
 
-const responseTemplate = require('../../utils/responseTemplate')
-
+const jwt = require('jsonwebtoken')
 //@desc check if user is in datanase and send the token
 //@route POST /api/user/login
 //@access public
@@ -10,16 +10,22 @@ const loginAdmin = asyncHandler(async (req, res) => {
 	const {user, password} = req.body
 	
 	// if no email or password then throw error
-	if (!(user && password)) throw new Error('bad body data')
+	if (!user) throw new AppErr(400, 'user is expected', 'user')
+	if (!password) throw new AppErr(400, 'password is expected', 'password')
 	
-	// check if the email and password are correct
-	if (user != "admin" || password != "admin")
-		throw new Error('invalid credentials')
+	// check if email and password are correct
+	if (user != "admin")
+		throw new AppErr(401, 'user is incorrect', 'user')
+	if ( password != "admin")
+		throw new AppErr(401, 'password is incorrect', 'password')
 	
-	// generate token based on the user id
-	const token = generateToken({id : null, isAdmin : true})
+	// generate token
+	const token = jwt.sign(
+		{id : null, isAdmin : true},
+		process.env.TOKEN_ENCRYPTION_KEY
+	)
 	
-	res.send(responseTemplate(true, 200, 'you loged in', {token}))
+	res.send(AppRes(200, 'you loged in', {token}))
 })
 
 module.exports =  {

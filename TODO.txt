@@ -9,8 +9,10 @@
 
 [routes]
 - Fix "game", "league", "team" routers (done)
+- Add search and pagination queries (done partially)
 - Finish "seat" router
 - Add more routes to "league" and "team" routers
+
 
 [authentication]
 - Confirm emails before submitting users
@@ -18,12 +20,28 @@
 - Fix the admin login process
 (!) SKETCHY-CODE
 
+
 [general]
 - Improve MVC architecture (done)
 - Add the ability to Upload images (done)
 - Add the ability to Serve images (done)
-- Fix sequelize error template
-- Add custom ORM validation messages
-- Fix sequelize associations
-- Fix status Codes
-- Improve the response template
+- Fix sequelize associations (done)
+- Add custom ORM validation messages (done)
+- Fix status Codes (done)
+- Improve the response template (done)
+- Fix sequelize error template (done partially)
+- Fix models validation
+- Validate body, query and params
+- Do some code refactoring
+- Add ORM scopes to reuse the code
+(!) There is no use case for scopes at the moment
+- Generate PDF files instead of QR code images
+- Add documentation
+
+
+[optional]
+- Add Unit Tests
+- Add Refresh Tokens 
+- Confirm emails using random digits
+- Add cron to delete inactive users after a period of time
+- Add cron to delete tickets of finished games

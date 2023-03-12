@@ -1,17 +1,51 @@
 const sequelize = require('../models')
 const teamModel = sequelize.models.team
+const { Op } = require('sequelize');
 
 const asyncHandler = require('../../utils/asyncErrorHandler')
-const responseTemplate = require('../../utils/responseTemplate')
+const AppRes = require('../../utils/AppRes')
+const AppErr = require('../../utils/AppErr')
 const path = require('path')
 
 //@desc get all teams
 //@route GET /api/team
 //@access public
 const getTeams = asyncHandler(async (req, res) => {
-	const result = await teamModel.findAll()
+	let result
+	let option = {
+		where : {},
+		limit : req.limit,
+		offset : req.offset,
+		// raw : true,
+	}
 	
-	res.send(responseTemplate(true, 200, 'data fetched', result))
+	
+	// include game
+	// if (req.include.includes('game') ) 
+	//	option.include = db.game
+	
+	// name
+	if (req.query.name)
+		option.where.name =  {[Op.substring]: req.query.name}
+	
+	// id
+	if (parseInt(req.query.id))
+		option.where.id = req.query.id
+	
+	// captain name
+	if (req.query.captainName)
+		option.where.captainName =  {[Op.substring]: req.query.captainName}
+	
+	// count
+	if (req.count) {
+		option.attributes = [[sequelize.fn('COUNT', sequelize.col('id')), 'count']]
+		result = await teamModel.findOne(option)
+		
+	} else {
+		result = await teamModel.findAll(option)
+	}
+	
+	res.send(AppRes(200, 'data fetched', result))
 })
 
 
@@ -23,7 +57,9 @@ const getTeam = asyncHandler(async (req, res) => {
 		where : {id : req.params.id},
 	})
 	
-	res.send(responseTemplate(true, 200, 'data fetched', result))
+	if (!result) throw new AppErr(404, 'No team with id of '+req.params.id, 'teamId')
+	
+	res.send(AppRes(200, 'data fetched', result))
 })
 
 
@@ -34,7 +70,7 @@ const createTeam = asyncHandler(async (req, res) => {
 	const team = req.body
 	const result = await teamModel.create(team)
 	
-	res.send(responseTemplate(true, 200, 'team created', result))
+	res.status(201).send(AppRes(201, 'team created', result))
 })
 
 //@desc update team
@@ -42,11 +78,17 @@ const createTeam = asyncHandler(async (req, res) => {
 //@access private
 const updateTeam = asyncHandler(async (req, res) => {
 	const team = req.body
-	const result = await teamModel.update(team, {
+	delete team.logo
+	
+	let result = await teamModel.findOne({
 		where : {id : req.params.id},
 	})
 	
-	res.send(responseTemplate(true, 200, 'team updated', {infected : result[0]}))
+	if (!result) throw new AppErr(404, 'No team with id of '+req.params.id, 'teamId')
+	
+	result.update(team)
+	
+	res.send(AppRes(200, 'team updated', result))
 })
 
 
@@ -54,12 +96,15 @@ const updateTeam = asyncHandler(async (req, res) => {
 //@route DELETE /api/team/:id
 //@access private
 const deleteTeam = asyncHandler(async (req, res) => {
-	const team = req.body
-	const result = await teamModel.destroy({
+	const result = await teamModel.findOne({
 		where : {id : req.params.id},
 	})
 	
-	res.send(responseTemplate(true, 200, 'team deleted', {infected : result}))
+	if (!result) throw new AppErr(404, 'No team with id of '+req.params.id, 'teamId')
+	
+	result.destroy()
+	
+	res.send(AppRes(200, 'team deleted', result))
 })
 
 
@@ -71,11 +116,11 @@ const uploadLogo = asyncHandler(async (req, res) => {
 	try {
 		logo = req.files.logo
 	} catch (err) {
-		throw new Error('bad body data')
+		throw new AppErr(400, 'file is expected', 'file')
 	}
 	
 	// throw an error if no logo found
-	if (!logo) throw new Error('no logo found')
+	if (!logo) throw new AppErr(400, 'logo is expected', 'logo')
 	
 	// FIXME
 	// If does not have image mime type prevent from uploading
@@ -88,19 +133,22 @@ const uploadLogo = asyncHandler(async (req, res) => {
 	// get league name
 	const team = await teamModel.findByPk(req.params.id)
 	
-	if (!team) throw new Error('no team with ' + req.params.id + ' id found')
-	// FIXME
-	// get the image extension instead
-	let teamImagePath = team.name + team.id + '.png'
+	if (!team) throw new AppErr(400, 'no team with ' + req.params.id + ' id found', 'teamId')
+	
+	// get the image extension
+	let extension = logo.name.split('.')
+	extension = '.' + extension[extension.length -1].toLowerCase()
+	
+	
+	let teamImagePath = team.name.toLowerCase() + team.id + extension
 	
 	logo.mv(path.join(__dirname + '/../../images/team/' + teamImagePath))
 	
 	// save the image path in database
 	team.logo = '/images/team/' + teamImagePath
-	
 	await team.save()
 	
-	res.send(responseTemplate(true, 200, 'logo updated', team))
+	res.send(AppRes(200, 'logo updated', team))
 })
 
 

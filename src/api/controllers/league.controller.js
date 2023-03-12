@@ -1,23 +1,48 @@
 const sequelize = require('../models')
+const db = sequelize.models
 const leagueModel = sequelize.models.league
+const { Op } = require('sequelize');
 
 const asyncHandler = require('../../utils/asyncErrorHandler')
-const responseTemplate = require('../../utils/responseTemplate')
+const AppRes = require('../../utils/AppRes')
+const AppErr = require('../../utils/AppErr')
 const path = require('path')
 
 //@desc get leagues
 //@route GET /api/league
 //@access public
 const getLeagues = asyncHandler(async (req, res) => {
-	const includeQuery = req.query.include || ''
-	let options = {}
+	let result
+	let option = {
+		where : {},
+		limit : req.limit,
+		offset : req.offset,
+		// raw : true
+	}
 	
-	if (includeQuery.length > 0) 
-		options.include = sequelize.models.game
+	// include game
+	if (req.include.includes('game') ) 
+		option.include = db.game
 	
-	const result = await leagueModel.findAll(options)
+	// name
+	if (req.query.name)
+		option.where.name =  {[Op.substring]: req.query.name}
 	
-	res.send(responseTemplate(true, 200, 'data fetched', result))
+	// id
+	if (parseInt(req.query.id))
+		option.where.id = req.query.id
+	
+	
+	// count
+	if (req.count) {
+		option.attributes = [[sequelize.fn('COUNT', sequelize.col('id')), 'count']]
+		result = await leagueModel.findOne(option)
+		
+	} else {
+		result = await leagueModel.findAll(option)
+	}
+	
+	res.send(AppRes(200, 'data fetched', result))
 })
 
 
@@ -33,18 +58,22 @@ const getLeague = asyncHandler(async (req, res) => {
 	
 	const result = await leagueModel.findOne(options)
 	
-	res.send(responseTemplate(true, 200, 'data fetched', result))
+	res.send(AppRes(200, 'data fetched', result))
 })
 
 //@desc delete league by id
 //@route DELETE /api/league/:id
 //@access private
 const deleteLeague = asyncHandler(async (req, res) => {
-	const result = await leagueModel.destroy({
+	const result = await leagueModel.findOne({
 		where : {id : req.params.id},
 	})
 	
-	res.send(responseTemplate(true, 200, 'league deleted', {infected : result}))
+	if (!result) throw new AppErr(404, 'No league with id of '+req.params.id, 'leagueId')
+	
+	result.destroy()
+	
+	res.send(AppRes(200, 'league deleted', result))
 })
 
 //@desc create league
@@ -55,7 +84,8 @@ const createLeague = asyncHandler(async (req, res) => {
 	
 	const result = await leagueModel.create(league)
 	
-	res.send(responseTemplate(true, 200, 'league created', result))
+	
+	res.status(201).send(AppRes(201, 'league created', result))
 })
 
 
@@ -64,12 +94,17 @@ const createLeague = asyncHandler(async (req, res) => {
 //@access private
 const updateLeague = asyncHandler(async (req, res) => {
 	const league = req.body
+	delete league.logo
 	
-	const result = await leagueModel.update(league, {
+	const result = await leagueModel.findOne({
 		where : {id : req.params.id},
 	})
 	
-	res.send(responseTemplate(true, 200, 'league created', {infected : result[0]}))
+	if (!result) throw new AppErr(404, 'No league with id of '+req.params.id, 'leagueId')
+	
+	result.update(league)
+	
+	res.send(AppRes(200, 'league created', result))
 })
 
 
@@ -81,11 +116,11 @@ const uploadLogo = asyncHandler(async (req, res) => {
 	try {
 		logo = req.files.logo
 	} catch (err) {
-		throw new Error('bad body data')
+		throw new AppErr(400, 'file is expected', 'file')
 	}
 	
 	// throw an error if no logo found
-	if (!logo) throw new Error('no logo found')
+	if (!logo) throw new AppErr(400, 'logo is expected', 'logo')
 	
 	// FIXME
 	// If does not have image mime type prevent from uploading
@@ -97,20 +132,22 @@ const uploadLogo = asyncHandler(async (req, res) => {
 	// get league name
 	const league = await leagueModel.findByPk(req.params.id)
 	
-	if (!league) throw new Error('no team with ' + req.params.id + ' id found')
+	if (!league) throw new AppErr(400, 'no team with ' + req.params.id + ' id found', 'leagueId')
 	
-	// FIXME
-	// get the image extension instead
-	let leagueImagePath = league.name + league.id + '.png'
+	// get the image extension
+	let extension = logo.name.split('.')
+	extension = '.' + extension[extension.length -1].toLowerCase()
+	
+	let leagueImagePath = league.name.toLowerCase() + league.id + extension
 	
 	logo.mv(path.join(__dirname + '/../../images/league/' + leagueImagePath))
 	
-	// save the image path in database
+	// save the image path in the database
 	league.logo = '/images/league/' + leagueImagePath
 	
 	await league.save()
 	
-	res.send(responseTemplate(true, 200, 'logo updated', league))
+	res.send(AppRes(200, 'logo updated', league))
 })
 
 module.exports = {

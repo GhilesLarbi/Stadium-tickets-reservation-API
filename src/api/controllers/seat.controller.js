@@ -1,36 +1,36 @@
 const sequelize = require('../models')
 const seatModel = sequelize.models.seat
+const db = sequelize.models
+const { Op } = require('sequelize');
 
 const asyncHandler = require('../../utils/asyncErrorHandler')
-const responseTemplate = require('../../utils/responseTemplate')
+const {takenSeats, availableSeats} = require('../../utils/modelUtils')
+const AppRes = require('../../utils/AppRes')
+const AppErr = require('../../utils/AppErr')
+
 //@desc get seats count
 //@route GET /api/seat
 //@access public
-const getSeatCount = asyncHandler(async (req, res) => {
-	const result = await seatModel.findOne({
-		attributes : [
-			[sequelize.fn('COUNT', sequelize.col('code')), 'count'],
-		],
-	})
+const getSeats = asyncHandler(async (req, res) => {
+	let option = {attributes : [[sequelize.fn('COUNT', sequelize.col('id')), 'count']], where : {}, raw : true}
 	
-	res.send(responseTemplate(true, 200, 'data fetched', result))
+	// bleacherType
+	if (req.query.bleacherType)
+		option.where.bleacherType = {[Op.substring]: req.query.bleacherType}
+	
+	// code
+	if (req.query.code)
+		option.where.code = {[Op.substring]: req.query.code}
+	
+	// available by game id
+	if (req.query.availableByGameId) 
+		option.where.id = {[Op.notIn]: await takenSeats(req.query.availableByGameId)}
+	
+	const result = await seatModel.findOne(option)
+	
+	res.send(AppRes(200, 'data fetched', result))
 })
 
-
-//@desc get available seats count by game
-//@route GET api/seat/count/available/game/:id
-//@access public
-const getSeatCountAvailableByGame = asyncHandler(async (req, res) => {
-	res.send(responseTemplate(false, 500, 'route not implemented yet'))
-})
-
-
-//@desc get available seats count by game && bleacher
-//@route GET api/seat/count/available/bleacher/:type/game/:id
-//@access public
-const getSeatCountAvailableByBleacherGame = asyncHandler(async (req, res) => {
-	res.send(responseTemplate(false, 500, 'route not implemented yet'))
-})
 
 
 //@desc generate seats by bleacher type
@@ -41,9 +41,21 @@ const generateSeats = asyncHandler(async (req, res) => {
 	
 	// validate the body request
 	if (!(type && letters && min && max) || min > max || typeof letters != 'string')
-		throw new Error('bad body data')
+		throw new AppErr(400, 'bad body data')
 	if (typeof min != 'number' || typeof max != 'number' || typeof type != 'string')
-		throw new Error('bad body data')
+		throw new AppErr(400, 'bad body data')
+	
+	// check if bleacher type exist
+	const bleachersCount = await db.bleacher.findOne({
+		attributes : [[sequelize.fn('COUNT', sequelize.col('type')), 'count']],
+		where : {
+			type : type,
+		},
+		raw : true,
+	})
+	
+	if (bleachersCount.count == 0) throw new AppErr(404, 'No bleacher with type of '+type, 'bleacherType')
+	
 	
 	// generate seats
 	for (let i = 0; i < letters.length; i++){
@@ -55,7 +67,7 @@ const generateSeats = asyncHandler(async (req, res) => {
 		}
 	}
 	
-	res.send(responseTemplate(true, 200, 'seats generated successfully ', {infected : (max - min) * letters.length}))
+	res.status(201).send(AppRes(201, 'seats generated successfully ', {infected : (max - min) * letters.length}))
 })
 
 //@desc delete seats by bleacher type
@@ -68,14 +80,12 @@ const deleteSeats = asyncHandler(async (req, res) => {
 		},
 	})
 	
-	res.send(responseTemplate(true, 200, 'seats deleted successfully ', {infected : result}))
+	res.send(AppRes(200, 'seats deleted successfully ', {infected : result}))
 })
 
 
 module.exports = {
-	getSeatCount,
-	getSeatCountAvailableByGame,
-	getSeatCountAvailableByBleacherGame,
+	getSeats,
 	generateSeats,
 	deleteSeats,
 }

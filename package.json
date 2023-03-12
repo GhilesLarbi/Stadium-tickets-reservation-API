@@ -8,7 +8,7 @@
     "dev": "nodemon ./src/server.js",
     "seed-database": "node ./src/config/seed-database.js"
   },
-  "author": "",
+  "author": "Ghiles Larbi",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.0",

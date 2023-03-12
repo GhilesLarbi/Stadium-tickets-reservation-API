@@ -1,10 +1,10 @@
 const {DataTypes} = require('sequelize')
-const crypto = require('crypto')
+
 // ticket modele
 module.exports = (sequelize) => {
 	sequelize.define('ticket', {
 		
-		// ticket have an id but it's not 
+		// ticket id is not
 		// a primary key
 		id : {
 			type : DataTypes.INTEGER,
@@ -47,6 +47,20 @@ module.exports = (sequelize) => {
 			references: {
 				model: "game",
 				key: "id"
+			},
+			
+			validate : {
+				async isValidGameDate() {
+					const game = await sequelize.models.game.findOne({
+						where : {
+							id : this.gameId,
+						},
+						
+						raw : true,
+					})
+					
+					if (game.date.getTime() < (new Date()).getTime() ) throw new Error('This game is Over')
+				},
 			},
 		},
 		

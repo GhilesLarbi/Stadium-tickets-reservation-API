@@ -5,9 +5,7 @@ const ctrl = require('../controllers/seat.controller')
 
 
 // public
-router.get('/count', ctrl.getSeatCount)
-router.get('/count/available/game/:id', ctrl.getSeatCountAvailableByGame)
-router.get('/count/available/bleacher/:type/game/:id', ctrl.getSeatCountAvailableByBleacherGame)
+router.get('/', ctrl.getSeats)
 
 // private
 router.post('/generate', authenticate, role('admin'), ctrl.generateSeats)

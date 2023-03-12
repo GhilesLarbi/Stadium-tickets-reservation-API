@@ -1,14 +1,32 @@
-const responseTemplate = require('../utils/responseTemplate')
+const sequelize = require ('sequelize')
+const ValidationError = sequelize.ValidationError
 
 function globalErrorHandler(err, req, res, next) {
-	const statusCode = err.statusCode || 500
+	let message
+	let field
+	let code
 	
-	res.status(statusCode).json(responseTemplate(
-		false,
-		statusCode,
-		err.message,
-		{ stack : err.stack }
-	))
+	// FIXME
+	// check if the error is comming from sequelize
+	if (err instanceof ValidationError) {
+		message = err.errors[0].message
+		field = err.errors[0].path
+		code = 406
+	} 
+	else {
+		message = err.message
+		field = err.field
+		code = err.statusCode || 500
+	}
+	
+	res.status(code).json({
+		success : false,
+		code,
+		message,
+		field,
+		// development only
+		// data : { stack : err.stack },
+	})
 }
 
 module.exports = globalErrorHandler

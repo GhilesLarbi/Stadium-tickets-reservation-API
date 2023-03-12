@@ -34,11 +34,35 @@ module.exports = (sequelize) => {
 						code : this.code,
 						bleacherType : this.bleacherType,
 					},
+					raw : true,
 				})
 				
 				if (same) throw new Error('There is allready a seat with code ' +
-				this.code + 'and a bleacher type ' + this.bleacherType)
-			}
+				this.code + 'and of bleacher ' + this.bleacherType)
+			},
+			
+			async limitSeats() {
+				const count = (await sequelize.models.seat.findOne({
+					attributes : [
+						[sequelize.fn('COUNT', sequelize.col('id')), 'count'],
+					],
+					
+					where : {
+						bleacherType : this.bleacherType,
+					},
+					
+					raw : true,
+				})).count
+				
+				const limit = (await sequelize.models.bleacher.findOne({
+					where : {
+						type : this.bleacherType,
+					},
+					raw : true,
+				})).quantity
+				
+				if (count >= limit) throw new Error('Reached seats limit of '+this.bleacherType+' type')
+			},
 		},
 	})
 }

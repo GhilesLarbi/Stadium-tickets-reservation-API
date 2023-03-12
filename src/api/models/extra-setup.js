@@ -1,5 +1,5 @@
 function applyExtraSetup(sequelize) {
-	const { user, ticket, game, seat, bleacher, team, league, tempEmailConfirmation} = sequelize.models;
+	const { user, ticket, game, seat, bleacher, team, league} = sequelize.models;
 	
 	// *****************
 	// user associations

@@ -17,8 +17,14 @@ module.exports = (sequelize) => {
 			type : DataTypes.STRING,
 			allowNull : false,
 			unique : true,
-			validate : {
-				notEmpty : true,
+			validate: {
+				notEmpty : {
+					msg : 'Team name cannot be empty',
+				},
+				
+				notNull : {
+					msg : 'Team name cannot be null',
+				},
 			},
 		},
 		

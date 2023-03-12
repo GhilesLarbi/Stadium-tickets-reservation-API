@@ -2,6 +2,8 @@ const dotenv = require('dotenv')
 dotenv.config({path : __dirname + '/../../.env'})
 
 const sequelize = require('../api/models');
+const db = sequelize.models
+
 const bleachers = [
 	{
 		type : 'VIP',
@@ -48,7 +50,6 @@ const bleachers = [
 
 const users = [
 	{
-		username : 'ghiles1',
 		firstname : 'ghiles',
 		lastname : 'larbi',
 		password : '123',
@@ -59,7 +60,6 @@ const users = [
 	},
 	
 	{
-		username : 'nacer123',
 		firstname : 'nacer',
 		lastname : 'laribi',
 		password : '1234',
@@ -70,7 +70,6 @@ const users = [
 	},
 	
 	{
-		username : 'ania987',
 		firstname : 'ania',
 		lastname : 'larbi',
 		password : '12345',
@@ -81,7 +80,6 @@ const users = [
 	},
 	
 	{
-		username : 'karim25',
 		firstname : 'karim',
 		lastname : 'khelfaoui',
 		password : '123456',
@@ -192,24 +190,24 @@ async function createTables(config) {
 		await sequelize.sync(config)
 		console.log('(+) Tables created');
 		
-		await sequelize.models.user.bulkCreate(users, {validate : true, individualHooks: true})
+		await db.user.bulkCreate(users, {validate : true, individualHooks: true})
 		console.log('(+) Done seeding User table')
 		
-		await sequelize.models.bleacher.bulkCreate(bleachers, {validate : true, individualHooks: true})
+		await db.bleacher.bulkCreate(bleachers, {validate : true, individualHooks: true})
 		console.log('(+) Done seeding Bleacher table')
 		
-		await sequelize.models.team.bulkCreate(teams, {validate : true, individualHooks: true})
+		await db.team.bulkCreate(teams, {validate : true, individualHooks: true})
 		console.log('(+) Done seeding Team table')
 		
-		await sequelize.models.league.bulkCreate(leagues, {validate : true, individualHooks: true})
+		await db.league.bulkCreate(leagues, {validate : true, individualHooks: true})
 		console.log('(+) Done seeding League table')
 		
-		await sequelize.models.game.bulkCreate(games, {validate : true, individualHooks: true})
+		await db.game.bulkCreate(games, {validate : true, individualHooks: true})
 		console.log('(+) Done seeding Game table')
 		
 		
 		// generate seats
-		const blchrs = await sequelize.models.bleacher.findAll({
+		const blchrs = await db.bleacher.findAll({
 			attributes : ['type'],
 		})
 		
@@ -221,7 +219,7 @@ async function createTables(config) {
 					seat.code = letters[j] + k;
 					seat.bleacherType = blchrs[i].type
 					
-					await sequelize.models.seat.create(seat)
+					await db.seat.create(seat)
 				}
 			}
 		}
@@ -230,15 +228,15 @@ async function createTables(config) {
 		
 		
 		/*
-		const test = await sequelize.models.game.findAll({
+		const test = await db.game.findAll({
 			include: [
 				{
-					model: sequelize.models.team,
+					model: db.team,
 					as: 'team1',
 				},
 				
 				{
-					model: sequelize.models.team,
+					model: db.team,
 					as: 'team2',
 				},
 			],
@@ -255,7 +253,7 @@ async function createTables(config) {
 	} catch (err) {
 		console.log('(-) somthing went wrong')
 		console.log(err)
-		process. exit(1)
+		process.exit(1)
 	}
 }
 createTables({force : true})

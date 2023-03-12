@@ -1,8 +1,8 @@
 const crypto = require('crypto')
 
 const algorithm = 'aes-256-ctr'
-const secretKey = process.env.QR_CODE_ENCRYPTION_KEY
-const iv = Buffer.from(process.env.QR_CODE_INIT_VECTOR, 'hex')
+const secretKey = process.env.ENCRYPTION_KEY
+const iv = Buffer.from(process.env.ENCRYPTION_INIT_VECTOR, 'hex')
 
 const encrypt = (text) => {
 	const cipher = crypto.createCipheriv(algorithm, secretKey, iv)

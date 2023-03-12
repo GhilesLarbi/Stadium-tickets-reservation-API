@@ -17,15 +17,6 @@ module.exports = (sequelize) => {
 			allowNull : false,
 			defaultValue : 'user',
 			unique : true,
-			validate : {
-				notEmpty : {
-					msg : 'User name cannot be empty',
-				},
-				
-				notNull : {
-					msg : 'User name cannot be null',
-				},
-			},
 		},
 	
 		firstname : {
@@ -45,13 +36,15 @@ module.exports = (sequelize) => {
 		lastname : {
 			type : DataTypes.STRING,
 			allowNull : false,
-			notEmpty : {
+			validate : {
+				notEmpty : {
 					msg : 'Last name cannot be empty',
 				},
 				
 				notNull : {
 					msg : 'Last name cannot be null',
 				},
+			}
 		},
 	
 		password : {
@@ -130,8 +123,22 @@ module.exports = (sequelize) => {
 		},
 	}, {
 		hooks : {
-			beforeCreate : (user, options) => {
+			beforeCreate : async (user, options) => {
 				user.password = bcrypt.hashSync(user.password, 10)
+				
+				// generate username
+				user.username = user.firstname + '_' + Math.floor(Math.random()*10)
+				while (await sequelize.models.user.findOne({
+					where : {
+						username : user.username
+					},
+					raw : true,
+				})) {
+					
+					// add a random digit if username exist
+					user.username += user.firstname + Math.floor(Math.random()*10)
+				}
+	
 			},
 		},
 	})

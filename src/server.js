@@ -7,7 +7,6 @@ const sequelize = require('./api/models');
 const PORT = process.env.PORT || 3000
 
 
-
 async function assertDatabaseConnectionOk() {
 	console.log('(!) Checking database connection ...');
 	try {

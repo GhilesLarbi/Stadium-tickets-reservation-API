@@ -4,10 +4,10 @@ const role = require('../../middlewares/manageRoles')
 const ctrl = require('../controllers/ticket.controller')
 
 
-// user only
-router.get('/', authenticate, role('user'), ctrl.getTickets)
-router.post('/', authenticate, role('user'), ctrl.createTicket)
-router.get('/:id/qrcode', authenticate, role('user'), ctrl.generateQrCode)
-router.delete('/:id', authenticate, role('user'), ctrl.deleteTicket)
+// valid user only
+router.get('/', authenticate, role('valid-user'), ctrl.getTickets)
+router.post('/', authenticate, role('valid-user'), ctrl.createTicket)
+router.get('/:id/qrcode', authenticate, role('valid-user'), ctrl.generateQrCode)
+router.delete('/:id', authenticate, role('valid-user'), ctrl.deleteTicket)
 
 module.exports = router

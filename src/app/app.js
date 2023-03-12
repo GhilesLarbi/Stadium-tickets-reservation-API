@@ -1,6 +1,8 @@
 const express = require('express')
 const app = express()
 
+const path = require('path')
+
 const API = process.env.API_URL
 
 const notFoundErrorHandler = require('../middlewares/notFoundErrorHandler')
@@ -9,7 +11,8 @@ const globalErrorHandler = require('../middlewares/globalErrorHandler')
 
 // Middlewares
 
-// logging the requests
+// ---- development purposes ----
+// logging requests
 const morgan = require('morgan')
 app.use(morgan('dev'))
 
@@ -17,11 +20,11 @@ app.use(morgan('dev'))
 app.use(express.json())
 
 // serve images
-app.use('/images', express.static('/root/backend/src/images'));
+app.use('/api/images', express.static(path.join(__dirname + '/../images/')));
 
 
 // SKETCHY-CODE
-// USE A FOR LOOP TO IMPORT AND USE THE API ROUTERS
+// USE A FOR LOOP TO IMPORT AND USE API ROUTERS
 
 // import api routers
 const adminRouter = require('../api/routers/admin.router')

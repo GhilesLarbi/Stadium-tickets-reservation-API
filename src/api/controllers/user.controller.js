@@ -1,11 +1,14 @@
 const sequelize = require('../models')
-const userModel = sequelize.models.user
+const { Op } = require('sequelize');
+const db = sequelize.models
 
+const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const asyncHandler = require('../../utils/asyncErrorHandler')
-const generateToken = require('../../utils/generateToken')
 
-const responseTemplate = require('../../utils/responseTemplate')
+const AppRes = require('../../utils/AppRes')
+const AppErr = require('../../utils/AppErr')
+
 
 //@desc check if user is in the database && generate && send the token
 //@route POST /api/user/login
@@ -13,29 +16,32 @@ const responseTemplate = require('../../utils/responseTemplate')
 const loginUser = asyncHandler(async (req, res) => {
 	const {email, password} = req.body
 	
-	console.log(req.body)
-	
 	// if no email or password then throw an error
-	if (!(email && password)) throw new Error('bad body data')
+	if (!email) throw new AppErr(400, 'email is expected')
+	if (!password) throw new AppErr(400, 'password is expected')
 	
 	// check if email and password are in the database
-	const user = await userModel.findOne({
+	const user = await db.user.findOne({
 		where : {
 			email : email,
 		},
+		raw : true,
 	})
 	
 	// if no user found throw an error
-	if (!user) throw new Error('email is incorrect')
+	if (!user) throw new AppErr(401, 'email is incorrect', 'email')
 	
 	// compare passwords
 	if (!bcrypt.compareSync(password, user.password))
-		throw new Error('password is incorrect')
+		throw new AppErr(401, 'password is incorrect', 'password')
 	
 	// generate token based on user id
-	const token = generateToken({id : user.id, isAdmin : false})
+	const token = jwt.sign(
+		{id : user.id, isAdmin : false},
+		process.env.TOKEN_ENCRYPTION_KEY,
+	)
 	
-	res.send(responseTemplate(true, 200, '', {token}))
+	res.send(AppRes(200, 'user loged in', {token}))
 })
 
 
@@ -45,34 +51,50 @@ const loginUser = asyncHandler(async (req, res) => {
 //@access user
 const getUser = asyncHandler(async (req, res) => {
 	let result
+	let option = {
+		attributes : {exclude : ['password']},
+		where : {},
+		limit : req.limit,
+		offset : req.offset,
+		raw : true
+	}
+	
 	if (req.isAdmin) {
 		// if admin
-		// check pagination queries
-		let {limit, offset} = req.query
+		// is email confirmed
+		if (req.query.isEmailConfirmed in ['0', '1'])
+			option.where.isEmailConfirmed = (req.query.isEmailConfirmed == '1') ? true : false
 		
-		limit = parseInt(limit) || 20
-		limit = (limit > 20 || limit < 1) ? 20 : limit
+		// email
+		if (req.query.email)
+			option.where.email = {[Op.substring]: req.query.email}
 		
-		offset = parseInt(offset) || 0
 		
-		// find users
-		result = await userModel.findAll({
-			attributes : {exclude : ['password'],},
-			limit : limit,
-			offset : offset,
-		})
+		// user id 
+		if (parseInt(req.query.id))
+			option.where.id = req.query.id
+		
+		
+		// if count query is present
+		if (req.count) {
+			option.attributes = [[sequelize.fn('COUNT', sequelize.col('id')), 'count']]
+			result = await db.user.findOne(option)
+		} else {
+			// find users
+			result = await db.user.findAll(option)
+		}
 		
 	} else {
 		// if user
 		// search by id
-		result = await userModel.findOne({
-			where : {id : req.id},
-			attributes : {exclude : ['password']},
-		})
+		option.where = {id : req.id}
+		result = await db.user.findOne(option)
+		
+		if (!result) 
+			return res.status(409).send(AppRes(409, 'Somthing wrong with your account', 'userId'))
 	}
 	
-	if (!result) throw new Error('Didn\'t found what you are looking for')
-	res.send(responseTemplate(true, 200, 'data fetched', result))
+	res.send(AppRes(200, 'data fetched', result))
 })
 	
 
@@ -80,7 +102,7 @@ const getUser = asyncHandler(async (req, res) => {
 //@route POST /api/user
 //@access public
 const createUser = asyncHandler(async (req, res) => {
-	const user = {...req.body}
+	const user = req.body
 	
 	// delete unnecessary data
 	// if someone try to inject them
@@ -88,23 +110,13 @@ const createUser = asyncHandler(async (req, res) => {
 	delete user.isEmailConfirmed
 	delete user.username
 	
-	// generate username
-	user.username = user.firstname + Math.floor(Math.random()*1000)
-	while (await userModel.findOne({where : {username : user.username}})) {
-		// add a random digit if username exist
-		user.username += user.firstname + Math.floor(Math.random()*10)
-	}
-	
-	// FIXME
-	// confirm the email using mailer package
-	
 	// create the user
-	let result = await userModel.create(user)
+	let result = await db.user.create(user)
 	
 	result = result.toJSON()
 	delete result.password
 	
-	res.send(responseTemplate(true, 200, 'user created successfully', result))
+	res.status(201).send(AppRes(201, 'user created successfully', result))
 })
 
 
@@ -112,7 +124,7 @@ const createUser = asyncHandler(async (req, res) => {
 //@route PUT /api/user
 //@access user
 const updateUser = asyncHandler(async (req, res) => {
-	const user = {...req.body}
+	const user = req.body
 	
 	// delete unnecessary data
 	// if someone try to inject them
@@ -122,13 +134,19 @@ const updateUser = asyncHandler(async (req, res) => {
 	if (user.password) 
 		user.password = bcrypt.hashSync(user.password, 10)
 	
-	// update the user
-	const result = await userModel.update(user, {
+	// find user
+	let result = await db.user.findOne({
 		where : {id : req.id}
 	})
 	
+	// update user
+	result.update(user)
 	
-	res.send(responseTemplate(true, 200, 'user updated successfully', {infected : result[0]}))
+	// send the new user
+	result = result.toJSON()
+	delete result.password
+	
+	res.send(AppRes(200, 'user updated successfully', result))
 })
 
 
@@ -137,12 +155,18 @@ const updateUser = asyncHandler(async (req, res) => {
 //@access user
 const deleteUser = asyncHandler(async (req, res) => {
 	
-	// delete the user
-	const result = await userModel.destroy({
+	// find the user
+	let result = await db.user.findOne({
 		where : {id : req.id}
 	})
 	
-	res.send(responseTemplate(true, 200, 'user deleted successfully', {infected : result}))
+	result.destroy()
+	
+	// send the deleted user
+	result = result.toJSON()
+	delete result.password
+	
+	res.send(AppRes(200, 'user deleted successfully', result))
 })
 
 
@@ -150,12 +174,64 @@ const deleteUser = asyncHandler(async (req, res) => {
 //@route DELETE /api/user/:id
 //@access private
 const deleteUserById = asyncHandler(async (req, res) => {
-	// delete the user
-	const result = await userModel.destroy({
+	// find the user
+	let result = await db.user.findOne({
 		where : {id : req.params.id}
 	})
 	
-	res.send(responseTemplate(true, 200, 'user deleted successfully', {infected : result}))
+	if (!result) throw new AppErr(404, 'Didn\'t find any user with id of '+req.params.id, 'userId')
+	
+	result.destroy()
+	
+	// send the deleted user
+	result = result.toJSON()
+	delete result.password
+	
+	res.send(AppRes(200, 'user deleted successfully', {infected : result}))
+})
+
+//@desc send confirmation email
+//@route GET /api/user/send/confirmation/email
+//@access user
+const sendConfirmationEmail = asyncHandler(async (req, res) => {
+	// check if email is confirmed
+	const user = await db.user.findOne({
+		where : {id : req.id},
+		raw : true,
+	})
+	
+	if (user.isEmailConfirmed) throw new AppErr(405, 'Email is already confirmed', 'email')
+	
+	// generate token
+	const token = jwt.sign(
+		{id : user.id},
+		process.env.TOKEN_ENCRYPTION_KEY,
+		{ expiresIn : '1d'}
+	)
+	
+	// FIXME
+	// set a dynamic url instead
+	const url = 'http://' + req.hostname + ':3000/api/user/email/confirmation/' + token
+	
+	// FIXME
+	// send the email here
+	
+	res.send(AppRes(200, 'email has been sent', {url, email : user.email}))
+})
+
+//@desc receive confirmation email
+//@route GET /api/user/receive/confirmation/email/:token
+//@access public
+const receiveConfirmationEmail = asyncHandler(async (req, res) => {
+	await jwt.verify(req.params.token, process.env.TOKEN_ENCRYPTION_KEY, async (err, data) => {
+		if (err) throw new AppErr(401, 'Invalid token', 'token')
+		
+		const user = await db.user.findByPk(data.id)
+		user.isEmailConfirmed = true
+		user.save()
+		
+		res.send(AppRes(202, 'email confirmed'))
+	})
 })
 
 module.exports =  {
@@ -165,4 +241,6 @@ module.exports =  {
 	updateUser,
 	deleteUser,
 	deleteUserById,
+	sendConfirmationEmail,
+	receiveConfirmationEmail,
 }
