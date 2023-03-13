@@ -7,7 +7,7 @@ const ctrl = require('../controllers/ticket.controller')
 // valid user only
 router.get('/', authenticate, role('valid-user'), ctrl.getTickets)
 router.post('/', authenticate, role('valid-user'), ctrl.createTicket)
-router.get('/:id/qrcode', authenticate, role('valid-user'), ctrl.generateQrCode)
+router.get('/:id/generate-pdf', authenticate, role('valid-user'), ctrl.generatePDF)
 router.delete('/:id', authenticate, role('valid-user'), ctrl.deleteTicket)
 
 module.exports = router

@@ -12,6 +12,7 @@ const AppErr = require('../../utils/AppErr')
 const {findFreeSeat} = require('../../utils/modelUtils')
 const crypto = require('../../utils/crypto')
 
+const buildPDF = require('../../utils/generateTicket')
 
 //@desc get tickets
 //@route GET /api/ticket
@@ -72,7 +73,7 @@ const createTicket = asyncHandler(async (req, res) => {
 //@desc generate QR code
 //@route GET /api/ticket/:id/qrcode
 //@access user 
-const generateQrCode = asyncHandler(async (req, res) => {
+const generatePDF = asyncHandler(async (req, res) => {
 	
 	// get ticket
 	const ticket = await ticketModel.findOne({
@@ -94,23 +95,33 @@ const generateQrCode = asyncHandler(async (req, res) => {
 	// decrypt
 	// console.log(crypto.decrypt(qrcodestr))
 	
+	const qrcodeImage = path.join(__dirname + '/../../images/tempQrCode/qr-'+ticket.userId+'.png')
 	
 	// generate Qr Code image
 	const qr = await QRCode.toFile(
-		'src/images/tempQrCode/qr.png',
+		qrcodeImage,
 		[{data: qrcodestr, mode: 'byte'}],
 		{
-			// control the resistance against dust here
-			// L : low (7%)
-			// M : Medium (15%)
-			// Q : Quartile (25%)
-			// H : High (30%)
 			errorCorrectionLevel: 'H',
 		}
 	)
+    
+    
+	// stream the PDF
 	
-	// SKETCHY-CODE
-	res.status(201).sendFile(path.join(__dirname + '/../../images/tempQrCode/qr.png'))
+	const stream = res.writeHead(200, {
+		'Content-Type' : 'application/pdf',
+		'Contenet-Disposition' : 'attachment;filname=ticket.pdf',
+	})
+	
+	
+	buildPDF(
+		(chunk) => stream.write(chunk),
+		() => stream.end(),
+		{
+			qrcodeImage,
+		},
+	)
 })
 
 
@@ -136,6 +147,6 @@ const deleteTicket = asyncHandler(async (req, res) => {
 module.exports = {
 	getTickets,
 	createTicket,
-	generateQrCode,
+	generatePDF,
 	deleteTicket,
 }
