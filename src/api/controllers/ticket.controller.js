@@ -77,12 +77,29 @@ const generatePDF = asyncHandler(async (req, res) => {
 	
 	// get ticket
 	const ticket = await ticketModel.findOne({
+		include : [
+			db.user,
+			db.seat,
+			{
+				model : db.game,
+				include: [
+					db.league,
+					{
+						model: db.team,
+						as: 'team1',
+					},
+			
+					{
+						model: db.team,
+						as: 'team2',
+					},
+				],
+			},
+		],
 		where : {
 			id : req.params.id,
 			userId : req.id,
 		},
-		
-		raw : true,
 	})
 	
 	// if no ticket found exit
@@ -103,9 +120,12 @@ const generatePDF = asyncHandler(async (req, res) => {
 		[{data: qrcodestr, mode: 'byte'}],
 		{
 			errorCorrectionLevel: 'H',
+			color : {
+				dark : '#222222ff' ,
+				light : '#ffffff00',
+			},
 		}
 	)
-    
     
 	// stream the PDF
 	
@@ -119,7 +139,9 @@ const generatePDF = asyncHandler(async (req, res) => {
 		(chunk) => stream.write(chunk),
 		() => stream.end(),
 		{
+			qrcodestr,
 			qrcodeImage,
+			ticket : ticket.toJSON(),
 		},
 	)
 })
