@@ -24,7 +24,7 @@ async function init() {
 	await assertDatabaseConnectionOk();
 
 	server.listen(PORT, () => {
-		console.log('(+) Server listening at port', PORT, '...')
+		console.log('(+) Server listening on port', PORT, '...')
 	});
 }
 

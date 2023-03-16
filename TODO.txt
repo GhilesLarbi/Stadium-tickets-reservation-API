@@ -30,12 +30,12 @@
 - Fix status Codes (done)
 - Improve the response template (done)
 - Fix sequelize error template (done partially)
+- Generate PDF files instead of QR code images (done partially)
 - Fix models validation
 - Validate body, query and params
 - Do some code refactoring
 - Add ORM scopes to reuse the code
 (!) There is no use case for scopes at the moment
-- Generate PDF files instead of QR code images
 - Add documentation
 
 
