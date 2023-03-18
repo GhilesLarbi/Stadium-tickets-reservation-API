@@ -28,7 +28,7 @@ title: Stadium Tickets Reservation API Documentation
 # Quick access 
 - [Installation](#Installation)
 - [Authentication](#Authentication)
-- [Response Template](#Response\ Template)
+- [Response Template](#Response-Template)
 - [Authorization](#Authorization)
 - [Query](#Query)
 - [Pagination](#Pagination)
@@ -248,8 +248,8 @@ is a client with an `admin token`
     - [Login](#Admin##Login)
 - [USER](#User)
     - [login](#User##Login)
-    - [create new user](#User##Create\ new\ user)
-    - [get user data](##Get\ user\ data)
+    - [create new user](#User##Create-new-user)
+    - [get user data](##Get-user-data)
 
 
 <hr />
@@ -274,7 +274,6 @@ You have to include the admin credentials in the request `body` using `json` for
 The expect response looks like this :
 ```json
 {
-    // ...
     "data" : {
         "token" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6bnVsbCwiaXNBZG1pbiI6dHJ1ZSwiaWF0IjoxNjc3ODkzMjcwfQ.Dn9YYg7V1FIMAGg_2M6RDPon_nu6fUdsMQQ3eW_E2mk"
     }
@@ -290,7 +289,7 @@ If you give wrong credentials you may get a `401` status code with a response li
     "field" : "password"
 }
 ```
-See more about [response template](#Response\ Template) to learn about the expect response format
+See more about [response template](#Response-Template) to learn about the expect response format
 
 
 <hr />
@@ -315,7 +314,6 @@ You have to include the user credentials in the request `body` using `json` form
 The expect response looks like this :
 ```json
 {
-    // ...
     ​​​"data" : {
         "token" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6bnVsbCwiaXNBZG1pbiI6dHJ1ZSwiaWF0IjoxNjc3ODkzMjcwfQ.Dn9YYg7V1FIMAGg_2M6RDPon_nu6fUdsMQQ3eW_E2mk"
     }
@@ -367,13 +365,13 @@ if you use an email or a phone number that already exist you will get a `406` `n
 
 
 if everything goes well you will get :
-```json
+```javascript
 {
     "success" : true,
     "code" : 201,
     "message" : "user created",
     "data" : {
-        // the new user data
+        // the new user datat
     }
 }
 ```
@@ -390,7 +388,6 @@ GET /api/user
 You will get different results based on the `access token` included in the `authorization header`. If you are using the `user token`, you will only get the data related to that user :
 ```json 
 {
-    // ...
     "data" : {
         "id" : 1,
         "username" : "test_1",
@@ -406,16 +403,13 @@ You will get different results based on the `access token` included in the `auth
 if you use the `admin token`, you will get an array of all users data :
 ```json
 {
-    // ...
-    "results" : 2, // number of users
+    "results" : 2,
     "data" : [
         {
             "id" : 1,
-            // ...
         },
         {
             "id" : 2,
-            // ...
         }
     ]
 }
