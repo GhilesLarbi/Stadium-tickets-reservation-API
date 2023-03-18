@@ -10,76 +10,61 @@ const AppErr = require('../../utils/AppErr')
 //@route GET /api/league
 //@access public
 const getGames = asyncHandler(async (req, res) => {
+	let result
+	let option = {
+		where : {},
+		limit : req.limit,
+		offset : req.offset,
+		include : [],
+	}
+	
+	console.log(req.offset)
+	
 	// read queries
-	let includeQuery = req.query.include || ''
-	includeQuery = includeQuery.split(',')
 	const {isOver, isLive} = req.query
 	
-	let options = {where : {}, include : []}
-	
 	// include teams
-	if (includeQuery.includes('team')) {
-		options.include.push({
+	if (req.include.includes('team')) {
+		option.include.push({
 			model : sequelize.models.team,
 			as : 'team1',
 		})
 		
-		options.include.push({
+		option.include.push({
 			model : sequelize.models.team,
 			as : 'team2',
 		})
 	}
 	
 	// include league
-	if (includeQuery.includes('league')) options.include.push(sequelize.models.league)
+	if (req.include.includes('league')) 
+		option.include.push(sequelize.models.league)
 	
 	// filter data
-	if (isOver == '1') options.where.isOver = true
-	else if (isOver == '0') options.where.isOver = false
+	/*
+	if (isOver == '1') option.where.isOver = true
+	else if (isOver == '0') option.where.isOver = false
 	
-	if (isLive == '1') options.where.isLive = true
-	else if (isLive == '0') options.where.isLive = false
+	if (isLive == '1') option.where.isLive = true
+	else if (isLive == '0') option.where.isLive = false
+	*/
 	
+	// if id query included then drop all filters
+	// and return the game
+	if (parseInt(req.query.id) >= 0) 
+		option.where = {id : req.query.id}
 	
-	// get data
-	const result = await gameModel.findAll(options)
+	// if count query is present
+	if (req.count) {
+		option.attributes = [[sequelize.fn('COUNT', sequelize.col('id')), 'count']]
+		result = await db.game.findOne(option)
+	} else 
+		result = await db.game.findAll(option)
 	
 	res.send(AppRes(200, 'data fetched', result))
 })
 
 
-//@desc get league by id
-//@route GET /api/league/:id
-//@access public
-const getGame = asyncHandler(async (req, res) => {
-	// read query
-	let includeQuery = req.query.include || ''
-	includeQuery = includeQuery.split(',')
-	
-	
-	let options = {where : {id : req.params.id}, include : []}
-	
-	// include teams
-	if (includeQuery.includes('team')) {
-		options.include.push({
-			model : sequelize.models.team,
-			as : 'team1',
-		})
-		
-		options.include.push({
-			model : sequelize.models.team,
-			as : 'team2',
-		})
-	}
-	
-	// include league
-	if (includeQuery.includes('league')) options.include.push(sequelize.models.league)
-	
-	// get data
-	const result = await gameModel.findOne(options)
-	
-	res.send(AppRes(200, 'data fetched', result))
-})
 
 //@desc delete league by id
 //@route DELETE /api/league/:id
@@ -151,7 +136,6 @@ const updateGame = asyncHandler(async (req, res) => {
 
 module.exports = {
 	getGames, 
-	getGame,
 	deleteGame,
 	createGame,
 	updateGame,

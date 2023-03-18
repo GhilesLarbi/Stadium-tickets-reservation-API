@@ -73,11 +73,11 @@ function buildPDF(dataCallback, endCallback, option) {
 <g id="Group 14">
 <g id="Group 12">
 <text id="BLEACHER" fill="#4D8B64" xml:space="preserve" style="white-space: pre" font-family="Poppins" font-size="16" letter-spacing="0.02em"><tspan x="584" y="309.6">BLEACHER</tspan></text>
-<text id="bleacherType" fill="#166634" xml:space="preserve" style="white-space: pre" font-family="Poppins" font-size="20" font-weight="bold" letter-spacing="0.05em"><tspan x="584" y="292">${option.ticket.seat.bleacherType}</tspan></text>
+<text id="bleacherType" fill="#166634" xml:space="preserve" style="white-space: pre" font-family="Poppins" font-size="20" font-weight="bold" letter-spacing="0.05em"><tspan x="584" y="292">${option.ticket.bleacherType}</tspan></text>
 </g>
 <g id="Group 11">
 <text id="SEAT" fill="#4D8B64" xml:space="preserve" style="white-space: pre" font-family="Poppins" font-size="16" letter-spacing="0.02em"><tspan x="724" y="309.6">SEAT</tspan></text>
-<text id="seatCode" fill="#166634" xml:space="preserve" style="white-space: pre" font-family="Poppins" font-size="20" font-weight="bold" letter-spacing="0.05em"><tspan x="724" y="292">${option.ticket.seat.code}</tspan></text>
+<text id="seatCode" fill="#166634" xml:space="preserve" style="white-space: pre" font-family="Poppins" font-size="20" font-weight="bold" letter-spacing="0.05em"><tspan x="724" y="292">${''}</tspan></text>
 </g>
 <line id="Line 3" x1="700" y1="267" x2="700" y2="322" stroke="#44A368" stroke-opacity="0.6" stroke-width="2"/>
 <g id="Group 16">

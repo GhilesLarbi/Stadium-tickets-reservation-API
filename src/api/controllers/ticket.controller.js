@@ -1,6 +1,5 @@
 const sequelize = require('../models')
 const db = sequelize.models
-const ticketModel = sequelize.models.ticket 
 
 const path = require('path')
 const QRCode = require('qrcode');
@@ -9,7 +8,6 @@ const asyncHandler = require('../../utils/asyncErrorHandler')
 const AppRes = require('../../utils/AppRes')
 const AppErr = require('../../utils/AppErr')
 
-const {findFreeSeat} = require('../../utils/modelUtils')
 const crypto = require('../../utils/crypto')
 
 const buildPDF = require('../../utils/generateTicket')
@@ -18,21 +16,45 @@ const buildPDF = require('../../utils/generateTicket')
 //@route GET /api/ticket
 //@access user 
 const getTickets = asyncHandler(async (req, res) => {
-	// read queries
-	let includeQuery = req.query.include || ''
-	includeQuery = includeQuery.split(',')
+	let result
 	
-	let options = {where : {userId : req.id}, include : []}
+	let option = {
+		attributes : {exclude : ['password']},
+		where : {},
+		limit : req.limit,
+		offset : req.offset,
+		include : [],
+	}
 	
 	// include seat
-	if (includeQuery.includes('seat')) options.include.push('seat')
+	if (req.include.includes('bleacher')) option.include.push('bleacher')
 	
 	// include game
-	if (includeQuery.includes('game')) options.include.push('game')
+	if (req.include.includes('game')) option.include.push('game')
+	
+	// include user
+	if (req.include.includes('user')) option.include.push('user')
 	
 	
-	// get data
-	const result = await ticketModel.findAll(options)
+	// search by game ID
+	
+	if (parseInt(req.query.gameId) >= 0)
+		option.where.gameId = req.query.gameId
+	
+	
+	if (parseInt(req.query.userId) >= 0)
+		option.where.userId = req.query.userId
+		
+	if (!req.isAdmin) 
+		option.where.userId = req.id
+	
+	// if count query is present
+	if (req.count) {
+		option.attributes = [[sequelize.fn('COUNT', sequelize.col('id')), 'count']]
+		result = await db.ticket.findOne(option)
+	} else {
+		result = await db.ticket.findAll(option)
+	}
 	
 	res.send(AppRes(200, 'data fetched', result))
 })
@@ -50,20 +72,13 @@ const createTicket = asyncHandler(async (req, res) => {
 	if (!bleacher) throw new AppErr(404, 'No bleacher with type of ' + req.body.bleacherType, 'bleacherType')
 	
 	
-	
-	// find free seat
-	const seat = await findFreeSeat(req.body.gameId, req.body.bleacherType)
-	
-	if (!seat) throw new AppErr(404, 'All seats of type '+req.body.bleacherType+' are taken', 'bleacherType')
-	
-	
 	// integrate stripe here
 	
 	// create Ticket
-	const ticket = await ticketModel.create({
+	const ticket = await db.ticket.create({
 		userId : req.id,
 		gameId : req.body.gameId,
-		seatId : seat,
+		bleacherType : req.body.bleacherType,
 	})
 	
 	res.status(201).send(AppRes(201, 'ticket created', ticket))
@@ -76,10 +91,10 @@ const createTicket = asyncHandler(async (req, res) => {
 const generatePDF = asyncHandler(async (req, res) => {
 	
 	// get ticket
-	const ticket = await ticketModel.findOne({
+	const ticket = await db.ticket.findOne({
 		include : [
 			db.user,
-			db.seat,
+			db.bleacher,
 			{
 				model : db.game,
 				include: [
@@ -151,12 +166,10 @@ const generatePDF = asyncHandler(async (req, res) => {
 //@route DELETE /api/ticket/:id
 //@access user 
 const deleteTicket = asyncHandler(async (req, res) => {
-	let result = await ticketModel.findOne({
-		where : {
-			id : req.params.id,
-			userId : req.id,
-		},
-	})
+	const option = {where : {id : req.params.id}}
+	if (!req.isAdmin) option.where.userId = req.id
+	
+	let result = await db.ticket.findOne(option)
 	
 	if (!result) throw new AppErr(404, 'Didn\'t find any ticket with id of ' + req.params.id, 'ticketId')
 	

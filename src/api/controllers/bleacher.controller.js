@@ -23,13 +23,14 @@ const getBleachers = asyncHandler(async (req, res) => {
 		return null
 	}
 	
-	let option = {where : {}}
 	let result
 	
-	// split include query
-	if (req.query.include) 
-		req.query.include = req.query.include.split(',')
-	else req.query.include = []
+	let option = {
+		where : {},
+		limit : req.limit,
+		offset : req.offset,
+		include : [],
+	}
 	
 	// type query
 	if (req.query.type)
@@ -49,7 +50,7 @@ const getBleachers = asyncHandler(async (req, res) => {
 	}
 	
 	// if count query is present
-	if (req.query.count) {
+	if (req.count) {
 		
 		option.attributes = [[sequelize.fn('COUNT', sequelize.col('type')), 'count']]
 		result = await db.bleacher.findOne(option)

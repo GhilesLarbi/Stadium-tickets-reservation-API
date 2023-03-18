@@ -17,18 +17,6 @@ module.exports = (sequelize) => {
 			defaultValue : DataTypes.NOW,
 		},
 		
-		isOver : {
-			type : DataTypes.BOOLEAN,
-			allowNull : false,
-			defaultValue : false,
-		},
-		
-		isLive : {
-			type : DataTypes.BOOLEAN,
-			allowNull : false,
-			defaultValue : false,
-		},
-		
 		description : {
 			type : DataTypes.STRING,
 		},

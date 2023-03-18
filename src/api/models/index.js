@@ -24,7 +24,6 @@ const modelDefiners = [
 	require('./tables/game.model'),
 	require('./tables/league.model'),
 	require('./tables/bleacher.model'),
-	require('./tables/seat.model'),
 	// Add more models here...
 ];
 

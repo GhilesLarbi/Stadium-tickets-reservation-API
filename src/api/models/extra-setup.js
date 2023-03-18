@@ -1,5 +1,5 @@
 function applyExtraSetup(sequelize) {
-	const { user, ticket, game, seat, bleacher, team, league} = sequelize.models;
+	const { user, ticket, game, bleacher, team, league} = sequelize.models;
 	
 	// *****************
 	// user associations
@@ -17,41 +17,22 @@ function applyExtraSetup(sequelize) {
 		forignKey : 'userId',
 	})
 	
-	
 	ticket.belongsTo(game, {
 		onDelete : 'CASCADE',
 		onUpdate : 'CASCADE',
 		foreignKey : 'gameId',
 	})
 	
-	ticket.belongsTo(seat, {
+	ticket.belongsTo(bleacher, {
 		onDelete : 'CASCADE',
 		onUpdate : 'CASCADE',
-		foreignKey : 'seatId',
-	})
-	
-	// *****************
-	// seat associations
-	seat.belongsTo(bleacher, {
-		onDelete : 'CASCADE',
-		onUpdate : 'CASCADE',
-		foreignKey: 'bleacherType',
-	})
-	
-	seat.hasMany(ticket, {
-		onDelete : 'CASCADE',
-		onUpdate : 'CASCADE',
-		foreignKey : 'seatId',
-	})
-	
-	seat.belongsToMany(game, {
-		through : ticket,
+		foreignKey : 'bleacherType',
 	})
 	
 	
 	// *********************
 	// bleacher associations
-	bleacher.hasMany(seat, {
+	bleacher.hasMany(ticket, {
 		onDelete : 'CASCADE',
 		onUpdate : 'CASCADE',
 		foreignKey: 'bleacherType',
@@ -63,10 +44,6 @@ function applyExtraSetup(sequelize) {
 	game.hasMany(ticket, {
 		onDelete : 'CASCADE',
 		onUpdate : 'CASCADE',
-	})
-	
-	game.belongsToMany(seat, {
-		through : ticket,
 	})
 	
 	game.belongsTo(league, {

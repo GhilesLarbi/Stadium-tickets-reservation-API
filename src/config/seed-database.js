@@ -92,7 +92,7 @@ const users = [
 
 const games = [
 	{
-		date : new Date('2023-4-9'),
+		date : new Date('2023-11-9'),
 		description : 'semi-final',
 		leagueId : 1,
 		team1Id : 1,
@@ -101,7 +101,7 @@ const games = [
 	},
 	
 	{
-		date : new Date('2023-3-15'),
+		date : new Date('2023-9-15'),
 		description : 'final',
 		leagueId : 1,
 		team1Id : 1,
@@ -112,7 +112,6 @@ const games = [
 	{
 		date : new Date('2023-2-22'),
 		description : 'demi-final',
-		isOver : true,
 		leagueId : 2,
 		team1Id : 1,
 		team2Id : 4,
@@ -121,7 +120,6 @@ const games = [
 	
 	{
 		date : new Date('2023-2-3'),
-		isOver : true,
 		leagueId : 3,
 		team1Id : 1,
 		team2Id : 2,
@@ -204,27 +202,6 @@ async function createTables(config) {
 		
 		await db.game.bulkCreate(games, {validate : true, individualHooks: true})
 		console.log('(+) Done seeding Game table')
-		
-		
-		// generate seats
-		const blchrs = await db.bleacher.findAll({
-			attributes : ['type'],
-		})
-		
-		const letters = 'ABCDEF'
-		let seat = {}
-		for (let i = 0; i < blchrs.length; i++){
-			for (let j = 0; j < letters.length; j++) {
-				for (let k = 1; k < 10; k++) {
-					seat.code = letters[j] + k;
-					seat.bleacherType = blchrs[i].type
-					
-					await db.seat.create(seat)
-				}
-			}
-		}
-		
-		console.log('(+) Done generating seats')
 		
 		
 		/*
