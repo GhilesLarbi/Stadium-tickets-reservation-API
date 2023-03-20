@@ -127,23 +127,16 @@ const generatePDF = asyncHandler(async (req, res) => {
 	// decrypt
 	// console.log(crypto.decrypt(qrcodestr))
 	
-	const qrcodeImage = path.join(__dirname + '/../../images/tempQrCode/qr-'+ticket.userId+'.png')
-	
 	// generate Qr Code image
-	const qr = await QRCode.toFile(
-		qrcodeImage,
-		[{data: qrcodestr, mode: 'byte'}],
-		{
-			errorCorrectionLevel: 'H',
+	const qrcodeImage = await QRCode.toDataURL(qrcodestr, {
+		errorCorrectionLevel: 'H',
 			color : {
 				dark : '#222222ff' ,
 				light : '#ffffff00',
 			},
-		}
-	)
+	})
     
 	// stream the PDF
-	
 	const stream = res.writeHead(200, {
 		'Content-Type' : 'application/pdf',
 		'Contenet-Disposition' : 'attachment;filname=ticket.pdf',
