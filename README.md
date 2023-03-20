@@ -52,9 +52,21 @@ Change directory to the repository folder
 cd Stadium-tickets-reservation-API
 ```
 
+Install nodemon package for development
+```bash
+npm install nodemon --save-dev
+```
+
 Install dependencies
 ```bash 
 npm install
+```
+
+if you face any issues while installing dependencies
+especially on windows OS try :
+
+```bash
+npm install --no-bin-links
 ```
 
 Start and configure your mariadb server and make sure the user have the `READ` and the `WRITE` privileges 
@@ -171,21 +183,21 @@ GET /api/team/1928
 is the response status code 
 Here are some status codes that you might see a lot : 
 
-`200` : `everything ok`
-`201` : `created`
-`202` : `accepted`
-`204` : `no content`
+`200` : `everything ok` <br/>
+`201` : `created` <br/>
+`202` : `accepted` <br/>
+`204` : `no content` <br/>
 
-`400` : `bad request`
-`401` : `unautorized`
-`402` : `payement required`
-`403` : `forbidden`
-`404` : `not found`
-`405` : `method not allowd`
-`406` : `not acceptable`
+`400` : `bad request` <br/>
+`401` : `unautorized` <br/>
+`402` : `payement required` <br/>
+`403` : `forbidden` <br/>
+`404` : `not found` <br/>
+`405` : `method not allowd` <br/>
+`406` : `not acceptable` <br/>
 
-`500` : `internal server error`
-`501` : `not implemented`
+`500` : `internal server error` <br/>
+`501` : `not implemented` <br/>
 
 
 
@@ -238,7 +250,32 @@ is a client with an `admin token`
 <hr />
 
 # Pagination
+Some endpoints support pagination through query, you can preform pagination using two queries `limit` and `page`
+__example :__
+Fetching users using an `admin token` if you don't include any query you will get by default 20 users
+```http 
+GET /api/user
+```
 
+You can change that by adding the `page` query  `?page=2` to the path
+```http
+GET /api/user/?page=2
+```
+
+This will fetch the next 20 users, from 20 to 40.
+
+By default you get 20 users each time. You can change that by including the `limit` query 
+```http 
+GET /api/user/?limit=10&page=2
+```
+
+Now you will get an array of users from 10 to 20
+
+### endpoint that support pagination :
+- [get user data](##get-user-data)
+- [get leagues data](##get-leagues-data)
+- [get teams data](##get-teams-data)
+- [get games data](##get-games-data)
 
 <hr />
 
@@ -248,8 +285,14 @@ is a client with an `admin token`
     - [Login](#Admin##Login)
 - [USER](#User)
     - [login](#User##Login)
-    - [create new user](#User##Create-new-user)
+    - [create new user](##Create-new-user)
     - [get user data](##Get-user-data)
+    - [update user](##update-user)
+    - [delete user](##delete-user)
+    - [delete user by id](##delete-user-by-id)
+    - [send confirmation email](##send-confirmation-email)
+    - [receive confirmation email](##receive-confirmation-email)
+
 
 
 <hr />
@@ -272,8 +315,9 @@ You have to include the admin credentials in the request `body` using `json` for
 ```
 
 The expect response looks like this :
-```json
+```javascript
 {
+    // ...
     "data" : {
         "token" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6bnVsbCwiaXNBZG1pbiI6dHJ1ZSwiaWF0IjoxNjc3ODkzMjcwfQ.Dn9YYg7V1FIMAGg_2M6RDPon_nu6fUdsMQQ3eW_E2mk"
     }
@@ -312,8 +356,9 @@ You have to include the user credentials in the request `body` using `json` form
 ```
 
 The expect response looks like this :
-```json
+```javascript
 {
+    // ...
     ​​​"data" : {
         "token" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6bnVsbCwiaXNBZG1pbiI6dHJ1ZSwiaWF0IjoxNjc3ODkzMjcwfQ.Dn9YYg7V1FIMAGg_2M6RDPon_nu6fUdsMQQ3eW_E2mk"
     }
@@ -322,7 +367,7 @@ The expect response looks like this :
 
 
 ## Create new user 
-__access level : __ #visitor 
+__access level :__  #visitor 
 
 To create a user send a `POST` request to `/api/user` endpoint :
 ```http
@@ -371,7 +416,7 @@ if everything goes well you will get :
     "code" : 201,
     "message" : "user created",
     "data" : {
-        // the new user datat
+        // the new user data
     }
 }
 ```
@@ -386,8 +431,9 @@ GET /api/user
 ```
 
 You will get different results based on the `access token` included in the `authorization header`. If you are using the `user token`, you will only get the data related to that user :
-```json 
+```javascript
 {
+    // ...
     "data" : {
         "id" : 1,
         "username" : "test_1",
@@ -401,15 +447,18 @@ You will get different results based on the `access token` included in the `auth
 ```
 
 if you use the `admin token`, you will get an array of all users data :
-```json
+```javascript
 {
-    "results" : 2,
+    // ...
+    "results" : 2, // number of users
     "data" : [
         {
             "id" : 1,
+            // ...
         },
         {
             "id" : 2,
+            // ...
         }
     ]
 }

@@ -3,7 +3,7 @@ const { Op } = require('sequelize');
 const db = sequelize.models
 
 const jwt = require('jsonwebtoken')
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcryptjs')
 const asyncHandler = require('../../utils/asyncErrorHandler')
 
 const AppRes = require('../../utils/AppRes')
