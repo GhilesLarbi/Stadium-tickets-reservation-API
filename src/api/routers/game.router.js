@@ -2,10 +2,10 @@ const router = require('express').Router()
 const authenticate = require('../../middlewares/authenticate')
 const role = require('../../middlewares/manageRoles')
 const ctrl = require('../controllers/game.controller')
-const {paginationHandler} = require('../../middlewares/utilMiddlewares')
+const queryHandler = require('../../middlewares/queryHandler')
 
 // public
-router.get('/', paginationHandler, ctrl.getGames)
+router.get('/', queryHandler('game'), ctrl.getGames)
 
 // private
 router.delete('/:id', authenticate, role('admin'), ctrl.deleteGame)

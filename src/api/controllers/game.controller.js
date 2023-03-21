@@ -11,52 +11,9 @@ const AppErr = require('../../utils/AppErr')
 //@access public
 const getGames = asyncHandler(async (req, res) => {
 	let result
-	let option = {
-		where : {},
-		limit : req.limit,
-		offset : req.offset,
-		include : [],
-	}
-	
-	console.log(req.offset)
-	
-	// read queries
-	const {isOver, isLive} = req.query
-	
-	// include teams
-	if (req.include.includes('team')) {
-		option.include.push({
-			model : sequelize.models.team,
-			as : 'team1',
-		})
-		
-		option.include.push({
-			model : sequelize.models.team,
-			as : 'team2',
-		})
-	}
-	
-	// include league
-	if (req.include.includes('league')) 
-		option.include.push(sequelize.models.league)
-	
-	// filter data
-	/*
-	if (isOver == '1') option.where.isOver = true
-	else if (isOver == '0') option.where.isOver = false
-	
-	if (isLive == '1') option.where.isLive = true
-	else if (isLive == '0') option.where.isLive = false
-	*/
-	
-	// if id query included then drop all filters
-	// and return the game
-	if (parseInt(req.query.id) >= 0) 
-		option.where = {id : req.query.id}
-	
-	// if count query is present
+	let option = req.option
+
 	if (req.count) {
-		option.attributes = [[sequelize.fn('COUNT', sequelize.col('id')), 'count']]
 		result = await db.game.findOne(option)
 	} else 
 		result = await db.game.findAll(option)

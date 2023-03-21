@@ -1,13 +1,13 @@
 const router = require('express').Router()
 const authenticate = require('../../middlewares/authenticate')
 const role = require('../../middlewares/manageRoles')
-const {paginationHandler} = require('../../middlewares/utilMiddlewares')
+const queryHandler = require('../../middlewares/queryHandler')
 const ctrl = require('../controllers/team.controller')
 const fileUpload = require('express-fileupload')
 
 
 // public
-router.get('/', paginationHandler, ctrl.getTeams)
+router.get('/', queryHandler('team'), ctrl.getTeams)
 router.get('/:id', ctrl.getTeam)
 
 // private

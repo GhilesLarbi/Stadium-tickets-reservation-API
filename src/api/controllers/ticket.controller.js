@@ -17,40 +17,10 @@ const buildPDF = require('../../utils/generateTicket')
 //@access user 
 const getTickets = asyncHandler(async (req, res) => {
 	let result
-	
-	let option = {
-		attributes : {exclude : ['password']},
-		where : {},
-		limit : req.limit,
-		offset : req.offset,
-		include : [],
-	}
-	
-	// include seat
-	if (req.include.includes('bleacher')) option.include.push('bleacher')
-	
-	// include game
-	if (req.include.includes('game')) option.include.push('game')
-	
-	// include user
-	if (req.include.includes('user')) option.include.push('user')
-	
-	
-	// search by game ID
-	
-	if (parseInt(req.query.gameId) >= 0)
-		option.where.gameId = req.query.gameId
-	
-	
-	if (parseInt(req.query.userId) >= 0)
-		option.where.userId = req.query.userId
-		
-	if (!req.isAdmin) 
-		option.where.userId = req.id
+	let option = req.option
 	
 	// if count query is present
 	if (req.count) {
-		option.attributes = [[sequelize.fn('COUNT', sequelize.col('id')), 'count']]
 		result = await db.ticket.findOne(option)
 	} else {
 		result = await db.ticket.findAll(option)

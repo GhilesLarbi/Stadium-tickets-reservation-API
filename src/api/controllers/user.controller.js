@@ -49,35 +49,15 @@ const loginUser = asyncHandler(async (req, res) => {
 //@desc send all users info if admin by limit && offset pagination queries
 //@route GET /api/user
 //@access user
-const getUser = asyncHandler(async (req, res) => {
+const getUsers = asyncHandler(async (req, res) => {
 	let result
-	let option = {
-		attributes : {exclude : ['password']},
-		where : {},
-		limit : req.limit,
-		offset : req.offset,
-		raw : true
-	}
+	let option = req.option
 	
 	if (req.isAdmin) {
-		// if admin
-		// is email confirmed
-		if (req.query.isEmailConfirmed in ['0', '1'])
-			option.where.isEmailConfirmed = (req.query.isEmailConfirmed == '1') ? true : false
-		
-		// email
-		if (req.query.email)
-			option.where.email = {[Op.substring]: req.query.email}
-		
-		
-		// user id 
-		if (parseInt(req.query.id))
-			option.where.id = req.query.id
-		
+		// if isAdmin
 		
 		// if count query is present
 		if (req.count) {
-			option.attributes = [[sequelize.fn('COUNT', sequelize.col('id')), 'count']]
 			result = await db.user.findOne(option)
 		} else {
 			// find users
@@ -96,7 +76,28 @@ const getUser = asyncHandler(async (req, res) => {
 	
 	res.send(AppRes(200, 'data fetched', result))
 })
+
+
+//@desc send user info
+//@desc send all users info if admin by limit && offset pagination queries
+//@route GET /api/user/:id
+//@access user & admin
+const getUser = asyncHandler(async (req, res) => {
+	const result = await db.user.findOne({
+		where : {id : req.params.id},
+		attributes : {exclude : ['password'],},
+		raw : true,
+	})
 	
+	if (!result)
+		throw new AppErr(404, `No user with id of ${req.params.id}`, "userId")
+	
+	if (!req.isAdmin && (req.id != result.id))
+		throw new AppErr(401, "you are not authorized", "userId")
+		
+	res.send(AppRes(200, "data fetched", result))
+	
+})
 
 //@desc create new user
 //@route POST /api/user
@@ -236,6 +237,7 @@ const receiveConfirmationEmail = asyncHandler(async (req, res) => {
 
 module.exports =  {
 	loginUser,
+	getUsers,
 	getUser,
 	createUser,
 	updateUser,

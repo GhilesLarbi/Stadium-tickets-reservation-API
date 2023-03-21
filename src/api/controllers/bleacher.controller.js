@@ -10,53 +10,13 @@ const AppErr = require('../../utils/AppErr')
 //@route GET /api/bleacher
 //@access public
 const getBleachers = asyncHandler(async (req, res) => {
-	const splitQuery = (query) => {
-		const op = query.slice(0,2)
-		const num = parseInt(query.slice(2))
-		if (!num) return null
-		
-		
-		if (op == 'gt') return { [Op.gte] : num}
-		else if (op == 'lt') return { [Op.lte] : num }
-		else if (op == 'eq') return { [Op.eq] : num }
-		
-		return null
-	}
-	
 	let result
-	
-	let option = {
-		where : {},
-		limit : req.limit,
-		offset : req.offset,
-		include : [],
-	}
-	
-	// type query
-	if (req.query.type)
-		option.where.type =  {[Op.substring]: req.query.type}
-	
-	
-	// quantity query
-	if (req.query.quantity) {
-		const quantity = splitQuery(req.query.quantity)
-		if (quantity) option.where.quantity = splitQuery(req.query.quantity)
-	}
-	
-	// price query
-	if (req.query.price) {
-		const price = splitQuery(req.query.price)
-		if (price) option.where.price = splitQuery(req.query.price)
-	}
+	let option = req.option 
 	
 	// if count query is present
 	if (req.count) {
-		
-		option.attributes = [[sequelize.fn('COUNT', sequelize.col('type')), 'count']]
 		result = await db.bleacher.findOne(option)
-		
 	} else {
-		
 		result = await db.bleacher.findAll(option)
 	}
 	

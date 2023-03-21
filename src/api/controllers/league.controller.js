@@ -1,6 +1,5 @@
 const sequelize = require('../models')
 const db = sequelize.models
-const leagueModel = sequelize.models.league
 const { Op } = require('sequelize');
 
 const asyncHandler = require('../../utils/asyncErrorHandler')
@@ -13,33 +12,13 @@ const path = require('path')
 //@access public
 const getLeagues = asyncHandler(async (req, res) => {
 	let result
-	let option = {
-		where : {},
-		limit : req.limit,
-		offset : req.offset,
-		// raw : true
-	}
-	
-	// include game
-	if (req.include.includes('game') ) 
-		option.include = db.game
-	
-	// name
-	if (req.query.name)
-		option.where.name =  {[Op.substring]: req.query.name}
-	
-	// id
-	if (parseInt(req.query.id))
-		option.where.id = req.query.id
-	
+	let option = req.option 
 	
 	// count
 	if (req.count) {
-		option.attributes = [[sequelize.fn('COUNT', sequelize.col('id')), 'count']]
-		result = await leagueModel.findOne(option)
-		
+		result = await db.league.findOne(option)
 	} else {
-		result = await leagueModel.findAll(option)
+		result = await db.league.findAll(option)
 	}
 	
 	res.send(AppRes(200, 'data fetched', result))
@@ -56,7 +35,7 @@ const getLeague = asyncHandler(async (req, res) => {
 	if (includeQuery.length > 0) 
 		options.include = sequelize.models.game
 	
-	const result = await leagueModel.findOne(options)
+	const result = await db.league.findOne(options)
 	
 	res.send(AppRes(200, 'data fetched', result))
 })
@@ -65,7 +44,7 @@ const getLeague = asyncHandler(async (req, res) => {
 //@route DELETE /api/league/:id
 //@access private
 const deleteLeague = asyncHandler(async (req, res) => {
-	const result = await leagueModel.findOne({
+	const result = await db.league.findOne({
 		where : {id : req.params.id},
 	})
 	
@@ -82,7 +61,7 @@ const deleteLeague = asyncHandler(async (req, res) => {
 const createLeague = asyncHandler(async (req, res) => {
 	const league = req.body
 	
-	const result = await leagueModel.create(league)
+	const result = await db.league.create(league)
 	
 	
 	res.status(201).send(AppRes(201, 'league created', result))
@@ -96,7 +75,7 @@ const updateLeague = asyncHandler(async (req, res) => {
 	const league = req.body
 	delete league.logo
 	
-	const result = await leagueModel.findOne({
+	const result = await db.league.findOne({
 		where : {id : req.params.id},
 	})
 	
@@ -130,7 +109,7 @@ const uploadLogo = asyncHandler(async (req, res) => {
  
 	// generate a random unique name for the image
 	// get league name
-	const league = await leagueModel.findByPk(req.params.id)
+	const league = await db.league.findByPk(req.params.id)
 	
 	if (!league) throw new AppErr(400, 'no team with ' + req.params.id + ' id found', 'leagueId')
 	

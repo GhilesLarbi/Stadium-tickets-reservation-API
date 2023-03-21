@@ -1,12 +1,12 @@
 const router = require('express').Router()
 const authenticate = require('../../middlewares/authenticate')
 const role = require('../../middlewares/manageRoles')
-const {paginationHandler} = require('../../middlewares/utilMiddlewares')
+const queryHandler = require('../../middlewares/queryHandler')
 const ctrl = require('../controllers/bleacher.controller')
 
 
 // public
-router.get('/', paginationHandler, ctrl.getBleachers)
+router.get('/', queryHandler('bleacher'), ctrl.getBleachers)
 router.get('/:type', ctrl.getBleacher)
 
 // private

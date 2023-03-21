@@ -1,6 +1,5 @@
 const sequelize = require('../models')
-const teamModel = sequelize.models.team
-const { Op } = require('sequelize');
+const db = sequelize.models
 
 const asyncHandler = require('../../utils/asyncErrorHandler')
 const AppRes = require('../../utils/AppRes')
@@ -12,37 +11,30 @@ const path = require('path')
 //@access public
 const getTeams = asyncHandler(async (req, res) => {
 	let result
-	let option = {
-		where : {},
-		limit : req.limit,
-		offset : req.offset,
-		// raw : true,
-	}
-	
-	
-	// include game
-	// if (req.include.includes('game') ) 
-	//	option.include = db.game
-	
-	// name
-	if (req.query.name)
-		option.where.name =  {[Op.substring]: req.query.name}
-	
-	// id
-	if (parseInt(req.query.id))
-		option.where.id = req.query.id
-	
-	// captain name
-	if (req.query.captainName)
-		option.where.captainName =  {[Op.substring]: req.query.captainName}
+	let option = req.option
 	
 	// count
 	if (req.count) {
-		option.attributes = [[sequelize.fn('COUNT', sequelize.col('id')), 'count']]
-		result = await teamModel.findOne(option)
-		
+		result = await db.team.findOne(option)
 	} else {
-		result = await teamModel.findAll(option)
+		result = await db.team.findAll(option)
+		
+		// delete team1 && team2 and replace them with games 
+		for (let i = 0; i < result.length; i++) {
+			result[i] = result[i].toJSON()
+			
+			if (result[i].team1 && result[i].team1) {
+				result[i].games = []
+				for (let j = 0; j < result[i].team1.length ; j++) 
+					result[i].games.push(result[i].team1[j])
+				for (let j = 0; j < result[i].team2.length ; j++)
+					result[i].games.push(result[i].team2[j])
+				
+				delete result[i].team1
+				delete result[i].team2
+			}
+			
+		}
 	}
 	
 	res.send(AppRes(200, 'data fetched', result))
@@ -53,7 +45,7 @@ const getTeams = asyncHandler(async (req, res) => {
 //@route GET /api/team/:id
 //@access public
 const getTeam = asyncHandler(async (req, res) => {
-	const result = await teamModel.findOne({
+	const result = await db.team.findOne({
 		where : {id : req.params.id},
 	})
 	
@@ -68,7 +60,7 @@ const getTeam = asyncHandler(async (req, res) => {
 //@access private
 const createTeam = asyncHandler(async (req, res) => {
 	const team = req.body
-	const result = await teamModel.create(team)
+	const result = await db.team.create(team)
 	
 	res.status(201).send(AppRes(201, 'team created', result))
 })
@@ -80,7 +72,7 @@ const updateTeam = asyncHandler(async (req, res) => {
 	const team = req.body
 	delete team.logo
 	
-	let result = await teamModel.findOne({
+	let result = await db.team.findOne({
 		where : {id : req.params.id},
 	})
 	
@@ -96,7 +88,7 @@ const updateTeam = asyncHandler(async (req, res) => {
 //@route DELETE /api/team/:id
 //@access private
 const deleteTeam = asyncHandler(async (req, res) => {
-	const result = await teamModel.findOne({
+	const result = await db.team.findOne({
 		where : {id : req.params.id},
 	})
 	
@@ -131,7 +123,7 @@ const uploadLogo = asyncHandler(async (req, res) => {
  
 	// generate a random unique name for the image
 	// get league name
-	const team = await teamModel.findByPk(req.params.id)
+	const team = await db.team.findByPk(req.params.id)
 	
 	if (!team) throw new AppErr(400, 'no team with ' + req.params.id + ' id found', 'teamId')
 	
