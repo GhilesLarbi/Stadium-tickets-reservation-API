@@ -3,9 +3,8 @@ const AppRes = require('../../utils/AppRes')
 const AppErr = require('../../utils/AppErr')
 
 const jwt = require('jsonwebtoken')
-//@desc check if user is in datanase and send the token
-//@route POST /api/user/login
-//@access public
+
+
 const loginAdmin = asyncHandler(async (req, res) => {
 	const {user, password} = req.body
 	

@@ -6,9 +6,7 @@ const asyncHandler = require('../../utils/asyncErrorHandler')
 const AppRes = require('../../utils/AppRes')
 const AppErr = require('../../utils/AppErr')
 
-//@desc get leagues
-//@route GET /api/league
-//@access public
+
 const getGames = asyncHandler(async (req, res) => {
 	let result
 	let option = req.option
@@ -22,25 +20,29 @@ const getGames = asyncHandler(async (req, res) => {
 })
 
 
+const getGame = asyncHandler(async (req, res) => {
+	let option = req.option
+	option.where = {id : req.params.id}
+	const result = await db.game.findOne(option)
+	
+	if (!result) throw new AppErr(404, 'game not found', 'gameId')
+	
+	res.send(AppRes(200, 'data fetched', result))
+})
 
-//@desc delete league by id
-//@route DELETE /api/league/:id
-//@access private
 const deleteGame = asyncHandler(async (req, res) => {
-	const result = await gameModel.findOne({
+	const result = await db.game.findOne({
 		where : {id : req.params.id},
 	})
 	
 	if (!result) throw new AppErr(404, 'No game with id of '+req.params.id, 'gameId')
 	
-	result.destroy()
+	await result.destroy()
 	
 	res.send(AppRes(200, 'game deleted', result))
 })
 
-//@desc create league
-//@route POST /api/league
-//@access private
+
 const createGame = asyncHandler(async (req, res) => {
 	const game = req.body
 	
@@ -54,16 +56,12 @@ const createGame = asyncHandler(async (req, res) => {
 	if (!team2) throw new AppErr(404, 'No team with id of ' + game.team2Id, 'team2Id')
 	
 	
-	
-	const result = await gameModel.create(game)
+	const result = await db.game.create(game)
 	
 	res.status(201).send(AppRes(201, 'game created', result))
 })
 
 
-//@desc update league
-//@route PUT /api/league/:id
-//@access private
 const updateGame = asyncHandler(async (req, res) => {
 	const game = req.body
 	
@@ -79,13 +77,13 @@ const updateGame = asyncHandler(async (req, res) => {
 	
 	
 	
-	const result = await gameModel.findOne({
+	const result = await db.game.findOne({
 		where : {id : req.params.id},
 	})
 	
 	if (!result) throw new AppErr(404, 'No game with id of '+req.params.id, 'gameId')
 	
-	result.update(game)
+	await result.update(game)
 	
 	res.send(AppRes(200, 'game updated', result))
 })
@@ -93,6 +91,7 @@ const updateGame = asyncHandler(async (req, res) => {
 
 module.exports = {
 	getGames, 
+	getGame,
 	deleteGame,
 	createGame,
 	updateGame,

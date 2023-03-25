@@ -1,5 +1,4 @@
 const sequelize = require('../models')
-const { Op } = require('sequelize');
 const db = sequelize.models
 
 const jwt = require('jsonwebtoken')
@@ -10,9 +9,6 @@ const AppRes = require('../../utils/AppRes')
 const AppErr = require('../../utils/AppErr')
 
 
-//@desc check if user is in the database && generate && send the token
-//@route POST /api/user/login
-//@access public
 const loginUser = asyncHandler(async (req, res) => {
 	const {email, password} = req.body
 	
@@ -21,15 +17,11 @@ const loginUser = asyncHandler(async (req, res) => {
 	if (!password) throw new AppErr(400, 'password is expected')
 	
 	// check if email and password are in the database
-	const user = await db.user.findOne({
-		where : {
-			email : email,
-		},
-		raw : true,
-	})
+	const user = await db.user.scope({method : ['login', email]}).findOne()
 	
 	// if no user found throw an error
 	if (!user) throw new AppErr(401, 'email is incorrect', 'email')
+	
 	
 	// compare passwords
 	if (!bcrypt.compareSync(password, user.password))
@@ -45,63 +37,39 @@ const loginUser = asyncHandler(async (req, res) => {
 })
 
 
-//@desc send user info
-//@desc send all users info if admin by limit && offset pagination queries
-//@route GET /api/user
-//@access user
 const getUsers = asyncHandler(async (req, res) => {
 	let result
 	let option = req.option
 	
 	if (req.isAdmin) {
-		// if isAdmin
-		
-		// if count query is present
-		if (req.count) {
-			result = await db.user.findOne(option)
-		} else {
-			// find users
-			result = await db.user.findAll(option)
-		}
+		if (req.count) result = await db.user.findOne(option)
+		else result = await db.user.findAll(option)
 		
 	} else {
-		// if user
-		// search by id
-		option.where = {id : req.id}
 		result = await db.user.findOne(option)
-		
 		if (!result) 
-			return res.status(409).send(AppRes(409, 'Somthing wrong with your account', 'userId'))
+			return res.status(409).send(AppRes(409, 'Somthing went wrong', 'userId'))
 	}
 	
 	res.send(AppRes(200, 'data fetched', result))
 })
 
 
-//@desc send user info
-//@desc send all users info if admin by limit && offset pagination queries
-//@route GET /api/user/:id
-//@access user & admin
 const getUser = asyncHandler(async (req, res) => {
-	const result = await db.user.findOne({
-		where : {id : req.params.id},
-		attributes : {exclude : ['password'],},
-		raw : true,
-	})
-	
-	if (!result)
-		throw new AppErr(404, `No user with id of ${req.params.id}`, "userId")
-	
-	if (!req.isAdmin && (req.id != result.id))
+	if (!req.isAdmin && (req.id != req.params.id))
 		throw new AppErr(401, "you are not authorized", "userId")
+	
+	
+	let option = req.option 
+	option.where = {id : req.params.id}
+	const result = await db.user.findOne(option)
+	
+	if (!result) throw new AppErr(404, `No user with id of ${req.params.id}`, "userId")
 		
 	res.send(AppRes(200, "data fetched", result))
-	
 })
 
-//@desc create new user
-//@route POST /api/user
-//@access public
+
 const createUser = asyncHandler(async (req, res) => {
 	const user = req.body
 	
@@ -121,9 +89,6 @@ const createUser = asyncHandler(async (req, res) => {
 })
 
 
-//@desc update user
-//@route PUT /api/user
-//@access user
 const updateUser = asyncHandler(async (req, res) => {
 	const user = req.body
 	
@@ -132,28 +97,22 @@ const updateUser = asyncHandler(async (req, res) => {
 	delete user.id
 	delete user.isEmailConfirmed
 	
-	if (user.password) 
-		user.password = bcrypt.hashSync(user.password, 10)
-	
 	// find user
 	let result = await db.user.findOne({
 		where : {id : req.id}
-	})
+	}) 
 	
-	// update user
-	result.update(user)
+	// check if the email is different 
+	if (user.email && result.email.toLowerCase() != user.email.toLowerCase())
+		user.isEmailConfirmed = false
 	
-	// send the new user
-	result = result.toJSON()
-	delete result.password
+	// update user 
+	await result.update(user) 
 	
 	res.send(AppRes(200, 'user updated successfully', result))
 })
 
 
-//@desc delete user
-//@route DELETE /api/user
-//@access user
 const deleteUser = asyncHandler(async (req, res) => {
 	
 	// find the user
@@ -161,39 +120,32 @@ const deleteUser = asyncHandler(async (req, res) => {
 		where : {id : req.id}
 	})
 	
-	result.destroy()
-	
-	// send the deleted user
-	result = result.toJSON()
-	delete result.password
+	await result.destroy()
 	
 	res.send(AppRes(200, 'user deleted successfully', result))
 })
 
 
-//@desc delete user by id
-//@route DELETE /api/user/:id
-//@access private
 const deleteUserById = asyncHandler(async (req, res) => {
+	if (!req.isAdmin && (req.id != req.params.id))
+		throw new AppErr(401, "you are not authorized", "userId")
+	
 	// find the user
 	let result = await db.user.findOne({
-		where : {id : req.params.id}
+		where : {id : req.params.id},
+		attributes : {
+			exclude : ['password'],
+		},
 	})
 	
 	if (!result) throw new AppErr(404, 'Didn\'t find any user with id of '+req.params.id, 'userId')
 	
-	result.destroy()
-	
-	// send the deleted user
-	result = result.toJSON()
-	delete result.password
+	await result.destroy()
 	
 	res.send(AppRes(200, 'user deleted successfully', {infected : result}))
 })
 
-//@desc send confirmation email
-//@route GET /api/user/send/confirmation/email
-//@access user
+
 const sendConfirmationEmail = asyncHandler(async (req, res) => {
 	// check if email is confirmed
 	const user = await db.user.findOne({
@@ -212,7 +164,7 @@ const sendConfirmationEmail = asyncHandler(async (req, res) => {
 	
 	// FIXME
 	// set a dynamic url instead
-	const url = 'http://' + req.hostname + ':3000/api/user/receive/confirmation/email/' + token
+	const url = 'http://' + req.hostname + '/api/user/receive/confirmation/email/' + token
 	
 	// FIXME
 	// send the email here
@@ -220,9 +172,7 @@ const sendConfirmationEmail = asyncHandler(async (req, res) => {
 	res.send(AppRes(200, 'email has been sent', {url, email : user.email}))
 })
 
-//@desc receive confirmation email
-//@route GET /api/user/receive/confirmation/email/:token
-//@access public
+
 const receiveConfirmationEmail = asyncHandler(async (req, res) => {
 	await jwt.verify(req.params.token, process.env.TOKEN_ENCRYPTION_KEY, async (err, data) => {
 		if (err) throw new AppErr(401, 'Invalid token', 'token')

@@ -1,14 +1,11 @@
 const sequelize = require('../models')
 const db = sequelize.models
-const { Op } = require('sequelize')
 
 const asyncHandler = require('../../utils/asyncErrorHandler')
 const AppRes = require('../../utils/AppRes')
 const AppErr = require('../../utils/AppErr')
 
-//@desc get all bleachers
-//@route GET /api/bleacher
-//@access public
+
 const getBleachers = asyncHandler(async (req, res) => {
 	let result
 	let option = req.option 
@@ -23,13 +20,11 @@ const getBleachers = asyncHandler(async (req, res) => {
 	res.send(AppRes(200, 'data fetched', result))
 })
 
-//@desc get single bleacher by type
-//@route GET /api/bleacher/:type
-//@access public
+
 const getBleacher = asyncHandler(async (req, res) => {
-	const result = await db.bleacher.findOne({
-		where : {type : req.params.type},
-	})
+	const option = req.option
+	option.where = {type : req.params.type}
+	const result = await db.bleacher.findOne(option)
 	
 	// if no bleacher found send error msg
 	if (!result) throw new AppErr(404, req.params.type + ' bleacher not found', 'bleacherType')
@@ -38,9 +33,6 @@ const getBleacher = asyncHandler(async (req, res) => {
 })
 
 
-//@desc create bleacher
-//@route POST /api/bleacher
-//@access private
 const createBleacher = asyncHandler(async (req, res) => {
 	const bleacher = {...req.body}
 	
@@ -53,9 +45,6 @@ const createBleacher = asyncHandler(async (req, res) => {
 })
 
 
-//@desc update bleacher
-//@route PUT /api/bleacher/:type
-//@access private
 const updateBleacher = asyncHandler(async (req, res) => {
 	const bleacher = req.body
 	
@@ -78,9 +67,6 @@ const updateBleacher = asyncHandler(async (req, res) => {
 })
 
 
-//@desc delete bleacher
-//@route DELETE /api/bleacher/:type
-//@access private
 const deleteBleacher = asyncHandler(async (req, res) => {
 	const result = await db.bleacher.findOne({
 		where : {type : req.params.type},

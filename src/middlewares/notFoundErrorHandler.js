@@ -1,6 +1,7 @@
+const AppErr = require ('../utils/AppErr')
+
 function notFoundErrorHandler(req, res, next) {
-	const err = new Error(`cannot find ${req.originalUrl} on the server`)
-	err.statusCode = 404
+	const err = new AppErr(404, 'page not found', 'path')
 	next(err)
 }
 

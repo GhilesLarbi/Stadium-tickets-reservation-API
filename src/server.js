@@ -1,5 +1,7 @@
 const dotenv = require('dotenv')
-dotenv.config({path : '.env'})
+dotenv.config( {
+	path: '.env'
+})
 
 const server = require('./app/app')
 const sequelize = require('./api/models');

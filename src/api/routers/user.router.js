@@ -5,20 +5,22 @@ const queryHandler = require('../../middlewares/queryHandler')
 const ctrl = require('../controllers/user.controller')
 
 
-// public
 router.post('/login', ctrl.loginUser)
+
 router.post('/', ctrl.createUser)
+
 router.get('/receive/confirmation/email/:token', ctrl.receiveConfirmationEmail)
 
-// user && admin
 router.get('/', authenticate, queryHandler('user'), ctrl.getUsers)
-router.get('/:id', authenticate, ctrl.getUser)
-// user only
+
+router.get('/:id', authenticate, queryHandler('user') ,ctrl.getUser)
+
 router.put('/', authenticate, role('user'), ctrl.updateUser)
+
 router.delete('/', authenticate, role('user'), ctrl.deleteUser)
+
 router.get('/send/confirmation/email', authenticate, role('user'), ctrl.sendConfirmationEmail)
 
-// admin only
-router.delete('/:id', authenticate, role('admin'), ctrl.deleteUserById)
+router.delete('/:id', authenticate, ctrl.deleteUserById)
 
 module.exports = router

@@ -7,7 +7,7 @@ const fileUpload = require('express-fileupload')
 
 // public
 router.get('/', queryHandler('league'), ctrl.getLeagues)
-router.get('/:id', ctrl.getLeague)
+router.get('/:id', queryHandler('league'), ctrl.getLeague)
 
 // private
 router.delete('/:id', authenticate, role('admin'), ctrl.deleteLeague)

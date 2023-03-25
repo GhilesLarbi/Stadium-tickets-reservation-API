@@ -8,15 +8,14 @@ module.exports = (sequelize) => {
 			allowNull : false,
 			primaryKey : true,
 			autoIncrement : true,
-			// defaultValue : DataTypes.UUIDV4,
 			unique : true,
 		},
 	
 		username : {
-			type : DataTypes.STRING,
-			allowNull : false,
-			defaultValue : 'user',
-			unique : true,
+			type : DataTypes.VIRTUAL,
+			get() {
+				return this.getDataValue('firstname') + '_' + this.getDataValue('id')
+			}
 		},
 	
 		firstname : {
@@ -50,6 +49,10 @@ module.exports = (sequelize) => {
 		password : {
 			type : DataTypes.STRING,
 			allowNull : false,
+			set(value) {
+				this.setDataValue('password', bcrypt.hashSync(value, 10))
+			},
+			
 			validate : {
 				notEmpty : {
 					msg : 'Password cannot be empty',
@@ -65,6 +68,11 @@ module.exports = (sequelize) => {
 			type : DataTypes.STRING,
 			allowNull : false,
 			unique : true,
+			
+			set(value) {
+				this.setDataValue('email', value.toLowerCase())
+			},
+			
 			validate: {
 				isEmail: {
 					msg : "Doesn't look like an email",
@@ -122,23 +130,21 @@ module.exports = (sequelize) => {
 			},
 		},
 	}, {
-		hooks : {
-			beforeCreate : async (user, options) => {
-				user.password = bcrypt.hashSync(user.password, 10)
-				
-				// generate username
-				user.username = user.firstname + '_' + Math.floor(Math.random()*10)
-				while (await sequelize.models.user.findOne({
+		defaultScope : {
+			attributes : {
+				exclude : ['password'],
+			},
+		},
+		
+		scopes : {
+			login(email) {
+				return {
+					attributes : ['password', 'email'],
 					where : {
-						username : user.username
+						email : email,
 					},
 					raw : true,
-				})) {
-					
-					// add a random digit if username exist
-					user.username += user.firstname + Math.floor(Math.random()*10)
 				}
-	
 			},
 		},
 	})

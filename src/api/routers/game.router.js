@@ -6,7 +6,7 @@ const queryHandler = require('../../middlewares/queryHandler')
 
 // public
 router.get('/', queryHandler('game'), ctrl.getGames)
-
+router.get('/:id', queryHandler('game'), ctrl.getGame)
 // private
 router.delete('/:id', authenticate, role('admin'), ctrl.deleteGame)
 router.post('/', authenticate, role('admin'), ctrl.createGame)

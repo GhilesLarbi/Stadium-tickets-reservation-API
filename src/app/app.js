@@ -1,8 +1,9 @@
 const express = require('express')
 const app = express()
 
-const path = require('path')
+const cors = require('cors')
 
+const path = require('path')
 const API = process.env.API_URL
 
 const notFoundErrorHandler = require('../middlewares/notFoundErrorHandler')
@@ -16,11 +17,17 @@ const globalErrorHandler = require('../middlewares/globalErrorHandler')
 const morgan = require('morgan')
 app.use(morgan('dev'))
 
+// alow external access
+app.use(cors( {
+	origin: '*',
+	credentials: true,
+}))
+
 // parse incomming data to json
 app.use(express.json())
 
 // serve images
-app.use('/api/images', express.static(path.join(__dirname + '/../images/')));
+app.use(`${API}/images`, express.static(path.join(__dirname + '/../images/')));
 
 
 // SKETCHY-CODE
@@ -36,13 +43,13 @@ const gameRouter = require('../api/routers/game.router')
 const ticketRouter = require('../api/routers/ticket.router')
 
 // use api routers
-app.use('/api/admin', adminRouter)
-app.use('/api/user', userRouter)
-app.use('/api/bleacher', bleacherRouter)
-app.use('/api/league', leagueRouter)
-app.use('/api/team', teamRouter)
-app.use('/api/game', gameRouter)
-app.use('/api/ticket', ticketRouter)
+app.use(`${API}/admin`, adminRouter)
+app.use(`${API}/user`, userRouter)
+app.use(`${API}/bleacher`, bleacherRouter)
+app.use(`${API}/league`, leagueRouter)
+app.use(`${API}/team`, teamRouter)
+app.use(`${API}/game`, gameRouter)
+app.use(`${API}/ticket`, ticketRouter)
 
 // error middlewares
 app.use(notFoundErrorHandler)

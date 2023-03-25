@@ -47,20 +47,20 @@ function applyExtraSetup(sequelize) {
 	})
 	
 	game.belongsTo(league, {
-		onDelete : 'SET NULL',
+		onDelete : 'CASCADE',
 		onUpdate : 'CASCADE',
 		foreignKey : 'leagueId',
 	})
 	
 	game.belongsTo(team, {
-		onDelete : 'SET NULL',
+		onDelete : 'CASCADE',
 		onUpdate : 'CASCADE',
 		foreignKey : 'team1Id',
 		as : 'team1',
 	})
 	
 	game.belongsTo(team, {
-		onDelete : 'SET NULL',
+		onDelete : 'CASCADE',
 		onUpdate : 'CASCADE',
 		foreignKey : 'team2Id',
 		as : 'team2',
@@ -70,14 +70,14 @@ function applyExtraSetup(sequelize) {
 	// *******************
 	// team associations
 	team.hasMany(game, {
-		onDelete : 'SET NULL',
+		onDelete : 'CASCADE',
 		onUpdate : 'CASCADE',
 		foreignKey : 'team1Id',
 		as : 'team1',
 	})
 	
 	team.hasMany(game, {
-		onDelete : 'SET NULL',
+		onDelete : 'CASCADE',
 		onUpdate : 'CASCADE',
 		foreignKey : 'team2Id',
 		as : 'team2',
@@ -87,7 +87,7 @@ function applyExtraSetup(sequelize) {
 	// *******************
 	// league associations
 	league.hasMany(game, {
-		onDelete : 'SET NULL',
+		onDelete : 'CASCADE',
 		onUpdate : 'CASCADE',
 		foreignKey : 'leagueId',
 	})

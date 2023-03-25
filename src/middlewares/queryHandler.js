@@ -6,12 +6,12 @@ const associations = {
 	user : ['ticket'],
 	ticket : ['user', 'game', 'bleacher'],
 	bleacher : ['ticket'],
-	game : ['league', 'ticket'],
+	game : ['league', 'ticket', {'team' : 'team1'}, {'team' : 'team2'}],
 	league : ['game'],
-	team : [],
+	team : [{'game' : 'team1'}, {'game' : 'team2'}],
 }
 
-const countPks = {
+const primaryKeys = {
 	user : 'id',
 	ticket : 'id',
 	bleacher : 'type',
@@ -20,11 +20,39 @@ const countPks = {
 	league : 'id',
 }
 
-/*
-const filtetBy = {
-	user : 
+const findBy = {
+	user : {
+		isEmailConfirmed : "bool",
+		email : "string",
+		id : "integer",
+	},
+	
+	ticket : {
+		gameId : "integer",
+		userId : "integer" ,
+	},
+	
+	game : {
+		id : "integer",
+	},
+	
+	bleacher : {
+		type : "string",
+		quantity : "compare",
+		price : "compare",
+	},
+	
+	team : {
+		name : "string" ,
+		id : "integer" ,
+		captainName : "string",
+	},
+	
+	league : {
+		name : "string",
+		id : "integer",
+	}
 }
-*/
 
 const compareQuery = (query) => {
 	// find first number
@@ -62,120 +90,57 @@ function queryHandler(model) {
 			offset : null,
 		}
 		
-		// filter by
+		// filter by 
+		Object.entries(findBy[model]).forEach(([query, type], index) => {
+			if (type == "integer") 
+				if (req.query[query])
+					option.where[query] = req.query[query]
+			
+			else if (type == "string") 
+				if (req.query[query]) 
+					option.where[query] = {[Op.substring]: req.query[query]}
+			
+			else if (type == "bool") {
+				const value = (req.query[query] in ['0', '1'])? req.query[query] : null
+				if (value)
+					option.where[query] = (value == '1') ? true : false
+			}
+			else if (type == "compare") {
+				if (req.query[query]) {
+					const value = compareQuery(req.query[query])
+					if (value) option.where[query] = value
+				}
+			}
+		})
+		
+		
+		// special
 		if (model == 'user') {
-			// exclude user password
-			option.attributes.exclude = ['password']
-			// is email confirmed
-			if (req.query.isEmailConfirmed in ['0', '1'])
-				option.where.isEmailConfirmed = (req.query.isEmailConfirmed == '1') ? true : false
-		
-			// email
-			if (req.query.email)
-				option.where.email = {[Op.substring]: req.query.email}
-		
-			// user id 
-			if (parseInt(req.query.id))
-				option.where.id = req.query.id 
-				
+			if (!req.isAdmin) option.where = {id : req.id}
 		} else if (model == 'ticket') {
-			// search by game ID
-			if (parseInt(req.query.gameId) >= 0)
-				option.where.gameId = req.query.gameId
-	
-	
-			if (parseInt(req.query.userId) >= 0)
-				option.where.userId = req.query.userId
-		
-			if (!req.isAdmin) 
-				option.where.userId = req.id 
-				
-		} else if (model == 'team') {
-			// name
-			if (req.query.name)
-				option.where.name =  {[Op.substring]: req.query.name}
-			
-			// id
-			if (parseInt(req.query.id))
-				option.where.id = req.query.id
-			
-			// captain name
-			if (req.query.captainName)
-				option.where.captainName =  {[Op.substring]: req.query.captainName}
-		
-		} else if (model == 'league') {
-			// name
-			if (req.query.name)
-				option.where.name =  {[Op.substring]: req.query.name}
-			
-			// id
-			if (parseInt(req.query.id))
-				option.where.id = req.query.id
-	
-		} else if (model == 'game') {
-			if (parseInt(req.query.id) >= 0) 
-				option.where = {id : req.query.id}
-		
-		} else if (model == 'bleacher') {
-	
-			// type query
-			if (req.query.type)
-				option.where.type =  {[Op.substring]: req.query.type}
-			
-			// quantity query
-			if (req.query.quantity) {
-				const quantity = compareQuery(req.query.quantity)
-				if (quantity) option.where.quantity = compareQuery(req.query.quantity)
-			}
-			
-			// price query
-			if (req.query.price) {
-				const price = compareQuery(req.query.price)
-				if (price) option.where.price = compareQuery(req.query.price)
-			}
+			if (!req.isAdmin) option.where.userId = req.id 
 		}
+	
 	
 		// split include query
 		let queryInclude = []
 		if (req.query.include)
 			queryInclude = req.query.include.split(',')
 		
-		
 		// add includes
 		if (queryInclude.length != 0 && associations[model]) {
-			// to include 
-			const includeStrings = queryInclude.filter(value => associations[model].includes(value))
-			
-			for (let i = 0; i < includeStrings.length; i++) {
-				option.include.push(db[includeStrings[i]])
-			}
-			
-			// special includes 
-			// include teams in game
-			if (model == 'game' && queryInclude.includes('team')) {
-				option.include.push({
-					model : db.team,
-					as : 'team1',
+			associations[model].forEach(association => {
+				queryInclude.forEach(query => {
+					if (association == query) {
+						option.include.push(db[query])
+					} else if (typeof association == "object" && association[query]) {
+						option.include.push({
+							model : db[query],
+							as : association[query]
+						})
+					}
 				})
-				
-				option.include.push({
-					model : db.team,
-					as : 'team2',
-				})
-			}
-			
-			// include games in team
-			if (model == 'team' && queryInclude.includes('game')){
-				option.include.push({
-					model : db.game,
-					as : 'team1',
-				})
-				
-				option.include.push({
-					model : db.game,
-					as : 'team2',
-				})
-			}
+			})
 		}
 		
 		req.count = false
@@ -196,7 +161,7 @@ function queryHandler(model) {
 			delete option.include 
 			delete option.limit
 			delete option.offset
-			option.attributes = [[sequelize.fn('COUNT', sequelize.col(countPks[model])), 'count']]
+			option.attributes = [[sequelize.fn('COUNT', sequelize.col(primaryKeys[model])), 'count']]
 		}
 		
 		req.option = option

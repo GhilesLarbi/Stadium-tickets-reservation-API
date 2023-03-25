@@ -6,8 +6,11 @@ module.exports = (sequelize) => {
 		type : {
 			type : DataTypes.STRING,
 			allowNull : false,
-			unique : true,
 			primaryKey : true,
+			
+			set(value) {
+				this.setDataValue('type', value.toUpperCase())
+			},
 		},
 	
 		price : {

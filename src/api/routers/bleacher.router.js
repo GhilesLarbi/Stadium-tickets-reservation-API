@@ -7,7 +7,7 @@ const ctrl = require('../controllers/bleacher.controller')
 
 // public
 router.get('/', queryHandler('bleacher'), ctrl.getBleachers)
-router.get('/:type', ctrl.getBleacher)
+router.get('/:type', queryHandler('bleacher'), ctrl.getBleacher)
 
 // private
 router.post('/', authenticate, role('admin'), ctrl.createBleacher)

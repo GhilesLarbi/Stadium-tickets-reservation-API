@@ -7,9 +7,7 @@ const AppRes = require('../../utils/AppRes')
 const AppErr = require('../../utils/AppErr')
 const path = require('path')
 
-//@desc get leagues
-//@route GET /api/league
-//@access public
+
 const getLeagues = asyncHandler(async (req, res) => {
 	let result
 	let option = req.option 
@@ -25,24 +23,16 @@ const getLeagues = asyncHandler(async (req, res) => {
 })
 
 
-//@desc get league by id
-//@route GET /api/league/:id
-//@access public
 const getLeague = asyncHandler(async (req, res) => {
-	const includeQuery = req.query.include || ''
-	let options = {where : {id : req.params.id}}
+	const option = req.option
+	option.where = {id : req.params.id}
 	
-	if (includeQuery.length > 0) 
-		options.include = sequelize.models.game
-	
-	const result = await db.league.findOne(options)
+	const result = await db.league.findOne(option)
 	
 	res.send(AppRes(200, 'data fetched', result))
 })
 
-//@desc delete league by id
-//@route DELETE /api/league/:id
-//@access private
+
 const deleteLeague = asyncHandler(async (req, res) => {
 	const result = await db.league.findOne({
 		where : {id : req.params.id},
@@ -55,9 +45,7 @@ const deleteLeague = asyncHandler(async (req, res) => {
 	res.send(AppRes(200, 'league deleted', result))
 })
 
-//@desc create league
-//@route POST /api/league
-//@access private
+
 const createLeague = asyncHandler(async (req, res) => {
 	const league = req.body
 	
@@ -68,9 +56,6 @@ const createLeague = asyncHandler(async (req, res) => {
 })
 
 
-//@desc update league
-//@route PUT /api/league/:id
-//@access private
 const updateLeague = asyncHandler(async (req, res) => {
 	const league = req.body
 	delete league.logo
@@ -87,9 +72,6 @@ const updateLeague = asyncHandler(async (req, res) => {
 })
 
 
-//@desc upload league logo
-//@route POST /api/league/:id/upload/logo
-//@access private
 const uploadLogo = asyncHandler(async (req, res) => {
 	let logo
 	try {
@@ -107,7 +89,7 @@ const uploadLogo = asyncHandler(async (req, res) => {
 	// if (logo.mimetype.match(/^image/)) console.log('it\'s an image')
 	// else console.log('it\'s not an image')
  
-	// generate a random unique name for the image
+ 
 	// get league name
 	const league = await db.league.findByPk(req.params.id)
 	
@@ -117,12 +99,12 @@ const uploadLogo = asyncHandler(async (req, res) => {
 	let extension = logo.name.split('.')
 	extension = '.' + extension[extension.length -1].toLowerCase()
 	
-	let leagueImagePath = league.name.toLowerCase() + league.id + extension
+	let leagueImage = league.name.toLowerCase() + '_' + league.id + extension
 	
-	logo.mv(path.join(__dirname + '/../../images/league/' + leagueImagePath))
+	logo.mv(path.join(__dirname + '/../images/league/' + leagueImage))
 	
 	// save the image path in the database
-	league.logo = '/images/league/' + leagueImagePath
+	league.logo = leagueImage
 	
 	await league.save()
 	

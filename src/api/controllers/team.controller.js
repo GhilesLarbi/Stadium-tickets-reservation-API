@@ -6,9 +6,7 @@ const AppRes = require('../../utils/AppRes')
 const AppErr = require('../../utils/AppErr')
 const path = require('path')
 
-//@desc get all teams
-//@route GET /api/team
-//@access public
+
 const getTeams = asyncHandler(async (req, res) => {
 	let result
 	let option = req.option
@@ -19,7 +17,9 @@ const getTeams = asyncHandler(async (req, res) => {
 	} else {
 		result = await db.team.findAll(option)
 		
+		
 		// delete team1 && team2 and replace them with games 
+
 		for (let i = 0; i < result.length; i++) {
 			result[i] = result[i].toJSON()
 			
@@ -41,23 +41,34 @@ const getTeams = asyncHandler(async (req, res) => {
 })
 
 
-//@desc get single team
-//@route GET /api/team/:id
-//@access public
+
 const getTeam = asyncHandler(async (req, res) => {
-	const result = await db.team.findOne({
-		where : {id : req.params.id},
-	})
+	let option = req.option 
+	option.where = {id : req.params.id}
+	
+	let result = await db.team.findOne(option)
 	
 	if (!result) throw new AppErr(404, 'No team with id of '+req.params.id, 'teamId')
+	// delete team1 && team2 and replace them with games
+	result = result.toJSON()
+	if (result.team1 && result.team1) {
+		result.games = [] 
+		result.team1.forEach(game => {
+			result.games.push(game)
+		})
+		result.team2.forEach(game => {
+			result.games.push(game)
+		})
+		
+		delete result.team1
+		delete result.team2
+	}
+	
 	
 	res.send(AppRes(200, 'data fetched', result))
 })
 
 
-//@desc create team
-//@route POST /api/team
-//@access private
 const createTeam = asyncHandler(async (req, res) => {
 	const team = req.body
 	const result = await db.team.create(team)
@@ -65,9 +76,8 @@ const createTeam = asyncHandler(async (req, res) => {
 	res.status(201).send(AppRes(201, 'team created', result))
 })
 
-//@desc update team
-//@route PUT /api/team/:id
-//@access private
+
+
 const updateTeam = asyncHandler(async (req, res) => {
 	const team = req.body
 	delete team.logo
@@ -84,9 +94,6 @@ const updateTeam = asyncHandler(async (req, res) => {
 })
 
 
-//@desc delete team
-//@route DELETE /api/team/:id
-//@access private
 const deleteTeam = asyncHandler(async (req, res) => {
 	const result = await db.team.findOne({
 		where : {id : req.params.id},
@@ -100,9 +107,6 @@ const deleteTeam = asyncHandler(async (req, res) => {
 })
 
 
-//@desc upload team logo
-//@route POST /api/team/:id/upload/logo
-//@access private
 const uploadLogo = asyncHandler(async (req, res) => {
 	let logo
 	try {
@@ -120,9 +124,7 @@ const uploadLogo = asyncHandler(async (req, res) => {
 	// if (logo.mimetype.match(/^image/)) console.log('it\'s an image')
 	// else console.log('it\'s not an image')
 
- 
-	// generate a random unique name for the image
-	// get league name
+	// get team
 	const team = await db.team.findByPk(req.params.id)
 	
 	if (!team) throw new AppErr(400, 'no team with ' + req.params.id + ' id found', 'teamId')
@@ -132,12 +134,12 @@ const uploadLogo = asyncHandler(async (req, res) => {
 	extension = '.' + extension[extension.length -1].toLowerCase()
 	
 	
-	let teamImagePath = team.name.toLowerCase() + team.id + extension
+	let teamImage = team.name.toLowerCase() + '_' + team.id + extension
 	
-	logo.mv(path.join(__dirname + '/../../images/team/' + teamImagePath))
+	logo.mv(path.join(__dirname + '/../images/team/' + teamImage))
 	
 	// save the image path in database
-	team.logo = '/images/team/' + teamImagePath
+	team.logo = teamImage
 	await team.save()
 	
 	res.send(AppRes(200, 'logo updated', team))

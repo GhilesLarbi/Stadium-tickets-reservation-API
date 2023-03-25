@@ -8,12 +8,13 @@ const fileUpload = require('express-fileupload')
 
 // public
 router.get('/', queryHandler('team'), ctrl.getTeams)
-router.get('/:id', ctrl.getTeam)
+router.get('/:id', queryHandler('team'), ctrl.getTeam)
 
 // private
 router.post('/', authenticate, role('admin'), ctrl.createTeam)
 router.put('/:id', authenticate, role('admin'), ctrl.updateTeam)
 router.delete('/:id', authenticate, role('admin'), ctrl.deleteTeam)
+
 // league logo upload
 router.post('/:id/upload/logo', authenticate, role('admin'), fileUpload({
 	createParentPath : true,
