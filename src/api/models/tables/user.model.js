@@ -139,7 +139,7 @@ module.exports = (sequelize) => {
 		scopes : {
 			login(email) {
 				return {
-					attributes : ['password', 'email'],
+					attributes : ['password', 'email', 'id'],
 					where : {
 						email : email,
 					},

@@ -11,7 +11,7 @@ router.get('/:id', authenticate, role('admin-valid-user'), queryHandler('ticket'
 
 router.post('/', authenticate, role('valid-user'), ctrl.createTicket)
 
-router.get('/:id/:type', authenticate, role('valid-user'), ctrl.generate)
+router.get('/:id/:type', authenticate, role('admin-valid-user'), ctrl.generate)
 
 router.delete('/:id', authenticate, role('admin-valid-user'), ctrl.deleteTicket)
 

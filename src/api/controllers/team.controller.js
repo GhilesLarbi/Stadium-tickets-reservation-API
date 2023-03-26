@@ -7,6 +7,9 @@ const AppErr = require('../../utils/AppErr')
 const path = require('path')
 
 
+
+//@route GET /team
+//@middlewares queryHandler
 const getTeams = asyncHandler(async (req, res) => {
 	let result
 	let option = req.option
@@ -41,7 +44,8 @@ const getTeams = asyncHandler(async (req, res) => {
 })
 
 
-
+//@route GET /team/:id
+//@middlewares queryHandler
 const getTeam = asyncHandler(async (req, res) => {
 	let option = req.option 
 	option.where = {id : req.params.id}
@@ -69,6 +73,8 @@ const getTeam = asyncHandler(async (req, res) => {
 })
 
 
+//@route POST /team
+//@middlewares authenticate => role(admin)
 const createTeam = asyncHandler(async (req, res) => {
 	const team = req.body
 	const result = await db.team.create(team)
@@ -77,7 +83,8 @@ const createTeam = asyncHandler(async (req, res) => {
 })
 
 
-
+//@route PUT /team/:id
+//@middlewares authenticate => role(admin)
 const updateTeam = asyncHandler(async (req, res) => {
 	const team = req.body
 	delete team.logo
@@ -94,6 +101,8 @@ const updateTeam = asyncHandler(async (req, res) => {
 })
 
 
+//@route DELETE /team/:id
+//@middlewares authenticate => role(admin)
 const deleteTeam = asyncHandler(async (req, res) => {
 	const result = await db.team.findOne({
 		where : {id : req.params.id},
@@ -107,6 +116,8 @@ const deleteTeam = asyncHandler(async (req, res) => {
 })
 
 
+//@route POST /team/:id/upload/logo
+//@middlewares authenticate => role(admin)
 const uploadLogo = asyncHandler(async (req, res) => {
 	let logo
 	try {

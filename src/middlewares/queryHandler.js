@@ -5,7 +5,7 @@ const db = sequelize.models
 const associations = {
 	user : ['ticket'],
 	ticket : ['user', 'game', 'bleacher'],
-	bleacher : ['ticket'],
+	bleacher : [],
 	game : ['league', 'ticket', {'team' : 'team1'}, {'team' : 'team2'}],
 	league : ['game'],
 	team : [{'game' : 'team1'}, {'game' : 'team2'}],
@@ -91,15 +91,15 @@ function queryHandler(model) {
 		}
 		
 		// filter by 
-		Object.entries(findBy[model]).forEach(([query, type], index) => {
-			if (type == "integer") 
+		Object.entries(findBy[model]).forEach(([query, type], index) => { 
+			if (type == "integer") {
 				if (req.query[query])
 					option.where[query] = req.query[query]
-			
-			else if (type == "string") 
+			}
+			else if (type == "string") {
 				if (req.query[query]) 
 					option.where[query] = {[Op.substring]: req.query[query]}
-			
+			}
 			else if (type == "bool") {
 				const value = (req.query[query] in ['0', '1'])? req.query[query] : null
 				if (value)
@@ -112,7 +112,6 @@ function queryHandler(model) {
 				}
 			}
 		})
-		
 		
 		// special
 		if (model == 'user') {

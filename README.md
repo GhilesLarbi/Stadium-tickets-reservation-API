@@ -225,6 +225,8 @@ Fetching users using an <code>admin token</code> if you don't include any query 
 
 - [Admin](#Admin)
   - [Admin login](#Admin##Admin-login)
+- [Authentication](#Authentication)
+  - [User login](#Authentication##User-login)
 - [Bleacher](#Bleacher)
   - [Create a bleacher](#Bleacher##Create-a-bleacher)
   - [Delete bleacher by type](#Bleacher##Delete-bleacher-by-type)
@@ -257,15 +259,14 @@ Fetching users using an <code>admin token</code> if you don't include any query 
   - [Download ticket PDF](#Ticket##Download-ticket-PDF)
   - [Get tickets data](#Ticket##Get-tickets-data)
 - [User](#User)
-  - [Create user](#User##Create-user)
+  - [Create User](#User##Create-User)
   - [Delete user](#User##Delete-user)
   - [Delete user by id](#User##Delete-user-by-id)
-  - [Get user data](#User##Get-user-data)
   - [Get user data by id](#User##Get-user-data-by-id)
+  - [Get User(s)](#User##Get-User(s))
   - [Receive email confirmation](#User##Receive-email-confirmation)
   - [Send a confirmation email](#User##Send-a-confirmation-email)
   - [Update user](#User##Update-user)
-  - [User login](#User##User-login)
 
 ___
 # <a name='Admin'></a> Admin
@@ -321,6 +322,89 @@ HTTP/1.1 200 OK
 | token | `String` | <p>Admin access token.</p> |
 
 ___
+# <a name='Authentication'></a> Authentication
+___
+## <a name='User-login'></a> User login
+
+<p>This endpoint allows a user to log in by providing their email and password. If the provided credentials are correct, the server will return an access token which the user can use to authenticate future requests.</p>
+
+```http
+POST /api/user/login
+```
+
+> ### Request Body 
+
+The request body must be in `JSON` format
+__example :__ 
+```javascript
+{
+	"email" : "EMAIL",
+	"password" : "PASSWORD",
+}
+```
+
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| email | `String` | <p>User email.</p> |
+| password | `String` | <p>User password.</p> |
+
+> ### Success response 
+
+
+##### `Success 200`
+
+
+The expect response is in `JSON` format and may look like this :
+__example :__
+
+```json
+HTTP/1.1 200 OK
+{
+  "success": true,
+  "code": 200,
+  "message": "User authenticated successfully.",
+  "data": {
+      "token": "ACCESS_TOKEN"
+  }
+}
+```
+
+
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| success | `Boolean` | <p>Whether or not the request was successful.</p> |
+| code | `Number` | <p>The HTTP status code returned by the server.</p> |
+| message | `String` | <p>A message explaining the status of the request.</p> |
+| data | `Object` | <p>The data returned by the endpoint.</p> |
+| data.token | `String` | <p>Access token for the authenticated user.</p> |
+
+
+> ### Error response 
+
+
+##### `Error 4xx`
+
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| success | `Boolean` | <p>Whether or not the request was successful.</p> |
+| code | `Number` | <p>The HTTP status code returned by the server.</p> |
+| message | `String` | <p>A message explaining the status of the request.</p> |
+| field | `String` | <p>The field in which the error occurred.</p> |
+
+### Error response example
+
+##### `Error-Response:`
+
+```json
+HTTP/1.1 401 Unauthorized
+{
+  "success": false,
+  "code": 401,
+  "message": "Invalid email or password.",
+  "field": "email"
+}
+```
+___
 # <a name='Bleacher'></a> Bleacher
 ___
 ## <a name='Create-a-bleacher'></a> Create a bleacher
@@ -344,8 +428,8 @@ __example :__
 ```javascript
 {
 	"type" : "TYPE",
-	"price" : 458,
-	"quantity" : 499,
+	"price" : 328,
+	"quantity" : 970,
 }
 ```
 
@@ -549,8 +633,8 @@ __example :__
 ```javascript
 {
 	"type" : "TYPE",
-	"price" : 55,
-	"quantity" : 265,
+	"price" : 758,
+	"quantity" : 453,
 }
 ```
 
@@ -1531,7 +1615,7 @@ __example :__
 ```javascript
 {
 	"bleacherType" : "BLEACHERTYPE",
-	"gameId" : 436,
+	"gameId" : 740,
 }
 ```
 
@@ -1698,9 +1782,9 @@ HTTP/1.1 200 OK
 ___
 # <a name='User'></a> User
 ___
-## <a name='Create-user'></a> Create user
+## <a name='Create-User'></a> Create User
 
-<p><strong>Access Level :</strong> visitor <br/> To create new user send <code>POST</code> request to <code>/api/user</code> endpoint and make sure to include the data needed in the request body :</p>
+<p>This endpoint allows a user to be created by providing required user data. If successful, the new user data will be returned in the response.</p>
 
 ```http
 POST /api/user
@@ -1723,12 +1807,12 @@ __example :__
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
-| firstname | `String` | <p>User first name</p> |
-| lastname | `String` | <p>User last name</p> |
-| email | `String` | <p>User email</p> |
-| password | `String` | <p>User password</p> |
-| phone | `String` | <p>User phone number</p> |
-| nationalId | `String` | <p>User national Id</p> |
+| firstname | `String` | <p>First name of the user.</p> |
+| lastname | `String` | <p>Last name of the user.</p> |
+| email | `String` | <p>Email address of the user.</p> |
+| password | `String` | <p>Password for the user account.</p> |
+| phone | `String` | <p>Phone number of the user.</p> |
+| nationalId | `String` | <p>National ID of the user.</p> |
 
 > ### Success response 
 
@@ -1740,29 +1824,66 @@ The expect response is in `JSON` format and may look like this :
 __example :__
 
 ```json
-HTTP/1.1 201 CREATED
+HTTP/1.1 201 Created
 {
-	"success" : true,
-	"code" : 201,
-	"message" : "user created",
-	"data" : {
-		"id" : 1,
-		"username" : "test_1",
-		"firstname" : "test",
-		"lastname" : "test",
-		"email" : "example@example.com",
-		"isEmailConfirmed" : false,
-		"phone" : "+213667667067",
-		"nationalId" : "123456789"
-	}
+  "success": true,
+  "code": 201,
+  "message": "User created successfully.",
+  "data": {
+      "id": 123,
+      "username": "johndoe",
+      "firstname": "John",
+      "lastname": "Doe",
+      "email": "johndoe@example.com",
+      "isEmailConfirmed": false,
+      "phone": "+1234567890",
+      "nationalId": "ABC123"
+  }
 }
 ```
 
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
-| Data | `String` | <p>The new user data.</p> |
+| success | `Boolean` | <p>Whether or not the request was successful.</p> |
+| code | `Number` | <p>The HTTP status code returned by the server.</p> |
+| message | `String` | <p>A message explaining the status of the request.</p> |
+| data | `Object` | <p>The data returned by the endpoint.</p> |
+| data.id | `Number` | <p>The ID of the newly created user.</p> |
+| data.username | `String` | <p>The username of the newly created user.</p> |
+| data.firstname | `String` | <p>The first name of the newly created user.</p> |
+| data.lastname | `String` | <p>The last name of the newly created user.</p> |
+| data.email | `String` | <p>The email address of the newly created user.</p> |
+| data.isEmailConfirmed | `Boolean` | <p>Whether or not the user's email address has been confirmed.</p> |
+| data.phone | `String` | <p>The phone number of the newly created user.</p> |
+| data.nationalId | `String` | <p>The national ID of the newly created user.</p> |
 
+
+> ### Error response 
+
+
+##### `Error 4xx`
+
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| success | `Boolean` | <p>Whether or not the request was successful.</p> |
+| code | `Number` | <p>The HTTP status code returned by the server.</p> |
+| message | `String` | <p>A message explaining the status of the request.</p> |
+| field | `String` | <p>The field in which the error occurred.</p> |
+
+### Error response example
+
+##### `Error-Response:`
+
+```json
+HTTP/1.1 400 Bad Request
+{
+  "success": false,
+  "code": 400,
+  "message": "Missing required field(s).",
+  "field": "email"
+}
+```
 ___
 ## <a name='Delete-user'></a> Delete user
 
@@ -1864,53 +1985,6 @@ HTTP/1.1 200 OK
 | Data | `Object` | <p>The deleted user data.</p> |
 
 ___
-## <a name='Get-user-data'></a> Get user data
-
-<p><strong>Access Level :</strong> user admin <br/> To fetch user data send a <code>GET</code> request to <code>/api/user</code> endpoint :</p>
-
-```http
-GET /api/user
-```
-
-> ### Headers
-
-| Name    | Type      | Description                          |
-|---------|-----------|--------------------------------------|
-| Authorization | `String` | <p>User or Admin Authorization token.</p> |
-> ### Success response 
-
-
-##### `Success 200`
-
-
-The expect response is in `JSON` format and may look like this :
-__example :__
-
-```json
-HTTP/1.1 200 OK
-{
-	"success" : true,
-	"code" : 200,
-	"message" : "data fetched",
-	"data" : {
-		"id" : 1,
-		"username" : "test_1",
-		"firstname" : "test",
-		"lastname" : "test",
-		"email" : "example@example.com",
-		"isEmailConfirmed" : true,
-		"phone" : "+213667667067",
-		"nationalId" : "123456789"
-	}
-}
-```
-
-
-| Name     | Type       | Description                           |
-|----------|------------|---------------------------------------|
-| Data | `Object` | <p>User Data</p> |
-
-___
 ## <a name='Get-user-data-by-id'></a> Get user data by id
 
 <p><strong>Access Level :</strong> user admin <br/> To fetch user data send <code>GET</code> request to <code>/api/user/:id</code> endpoint where <code>:id</code> is the user id :</p>
@@ -1963,6 +2037,109 @@ HTTP/1.1 200 OK
 |----------|------------|---------------------------------------|
 | Data | `Object` | <p>User Data</p> |
 
+___
+## <a name='Get-User(s)'></a> Get User(s)
+
+<p>Returns information about a user or an array of users.</p>
+
+```http
+GET /api/user
+```
+
+> ### Headers
+
+| Name    | Type      | Description                          |
+|---------|-----------|--------------------------------------|
+| Authorization | `String` | <p>User or Admin JWT token.</p> |
+
+> ### Parameters
+
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| id | `Number` | **optional** <p>User ID to retrieve. Only for admin.</p> |
+| email | `String` | **optional** <p>Email to filter users by. Only for admin.</p> |
+| isEmailConfirmed | `Number` | **optional** <p>Email confirmed status to filter users by. Only for admin.</p>_Allowed values: 0,1_ |
+| page | `Number` | **optional** <p>Page number for pagination. Only for admin.</p>_Default value: 1_<br> |
+| limit | `Number` | **optional** <p>Number of users per page for pagination. Only for admin.</p>_Default value: 20_<br> |
+
+__Examples :__
+
+Example usage:
+
+```curl
+curl -i -H "Authorization: Bearer {user_token}" http://localhost:3000/api/users?id=1
+curl -i -H "Authorization: Bearer {admin_token}" http://localhost:3000/api/users?isEmailConfirmed=1&email=test@test.com
+```
+
+Example usage:
+
+```javascript
+axios.get('/api/users?id=1', { headers: { Authorization: `Bearer {user_token}` } })
+axios.get('/api/users?isEmailConfirmed=1&email=test@test.com', { headers: { Authorization: `Bearer {admin_token}` } })
+```
+
+> ### Success response 
+
+
+##### `Success 200`
+
+
+The expect response is in `JSON` format and may look like this :
+__example :__
+
+```json
+HTTP/1.1 200 OK
+{
+  "success": true,
+  "code": 200,
+  "message": "Data fetched",
+  "data": {
+    "id": 1,
+    "username": "test_1",
+    "firstname": "test",
+    "lastname": "test",
+    "email": "test@test.com",
+    "isEmailConfirmed": true,
+    "phone": "+213667667067",
+    "nationalId": "123456789"
+  }
+}
+```
+
+
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| success | `Boolean` | <p>Request status.</p> |
+| code | `Number` | <p>Request status code.</p> |
+| message | `String` | <p>Request status message.</p> |
+| data | `Object|Array` | <p>User or array of users.</p> |
+
+
+> ### Error response 
+
+
+##### `Error 4xx`
+
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| success | `Boolean` | <p>Request status.</p> |
+| code | `Number` | <p>Request status code.</p> |
+| message | `String` | <p>Request status message.</p> |
+| field | `String` | <p>Name of the field that caused the error.</p> |
+
+### Error response example
+
+##### `Error-Response:`
+
+```json
+HTTP/1.1 301 Unauthorized
+{
+  "success": false,
+  "code": 301,
+  "message": "You are not logged in",
+  "field": "token"
+}
+```
 ___
 ## <a name='Receive-email-confirmation'></a> Receive email confirmation
 
@@ -2064,56 +2241,5 @@ HTTP/1.1 200 OK
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
 | Data | `Object` | <p>The updated user data.</p> |
-
-___
-## <a name='User-login'></a> User login
-
-<p><strong>Access Level :</strong> visitor <br/> To login as a user and obtain an access token, send <code>POST</code> request to <code>/api/user/login</code> endpoint :</p>
-
-```http
-POST /api/user/login
-```
-
-> ### Request Body 
-
-The request body must be in `JSON` format
-__example :__ 
-```javascript
-{
-	"email" : "EMAIL",
-	"password" : "PASSWORD",
-}
-```
-
-| Name     | Type       | Description                           |
-|----------|------------|---------------------------------------|
-| email | `String` | <p>User email</p> |
-| password | `String` | <p>User Password</p> |
-
-> ### Success response 
-
-
-##### `Success 200`
-
-
-The expect response is in `JSON` format and may look like this :
-__example :__
-
-```json
-HTTP/1.1 200 OK
-{
-	"success" : true,
-	"code" : 200,
-	"message" : "user loged in",
-	"data" : {
-		"token" : "ACCESS_TOKEN"
-	}
-}
-```
-
-
-| Name     | Type       | Description                           |
-|----------|------------|---------------------------------------|
-| token | `String` | <p>User access token.</p> |
 
 

@@ -9,6 +9,7 @@ const AppRes = require('../../utils/AppRes')
 const AppErr = require('../../utils/AppErr')
 
 
+//@route GET /user/login 
 const loginUser = asyncHandler(async (req, res) => {
 	const {email, password} = req.body
 	
@@ -36,10 +37,11 @@ const loginUser = asyncHandler(async (req, res) => {
 	res.send(AppRes(200, 'user loged in', {token}))
 })
 
-
+//@route GET /user 
+//@middlewares authenticate => queryHandler
 const getUsers = asyncHandler(async (req, res) => {
 	let result
-	let option = req.option
+	let option = req.option 
 	
 	if (req.isAdmin) {
 		if (req.count) result = await db.user.findOne(option)
@@ -54,7 +56,8 @@ const getUsers = asyncHandler(async (req, res) => {
 	res.send(AppRes(200, 'data fetched', result))
 })
 
-
+//@route GET /user/:id
+//@middlewares authenticate => queryHandler
 const getUser = asyncHandler(async (req, res) => {
 	if (!req.isAdmin && (req.id != req.params.id))
 		throw new AppErr(401, "you are not authorized", "userId")
@@ -69,7 +72,7 @@ const getUser = asyncHandler(async (req, res) => {
 	res.send(AppRes(200, "data fetched", result))
 })
 
-
+//@route POST /user 
 const createUser = asyncHandler(async (req, res) => {
 	const user = req.body
 	
@@ -88,7 +91,8 @@ const createUser = asyncHandler(async (req, res) => {
 	res.status(201).send(AppRes(201, 'user created successfully', result))
 })
 
-
+//@route PUT /user 
+//@middlewares authenticate => role(user)
 const updateUser = asyncHandler(async (req, res) => {
 	const user = req.body
 	
@@ -112,7 +116,8 @@ const updateUser = asyncHandler(async (req, res) => {
 	res.send(AppRes(200, 'user updated successfully', result))
 })
 
-
+//@route DELETE /user 
+//@middlewares authenticate => role(user)
 const deleteUser = asyncHandler(async (req, res) => {
 	
 	// find the user
@@ -125,7 +130,8 @@ const deleteUser = asyncHandler(async (req, res) => {
 	res.send(AppRes(200, 'user deleted successfully', result))
 })
 
-
+//@route DELETE /user/:id
+//@middlewares authenticate
 const deleteUserById = asyncHandler(async (req, res) => {
 	if (!req.isAdmin && (req.id != req.params.id))
 		throw new AppErr(401, "you are not authorized", "userId")
@@ -145,7 +151,8 @@ const deleteUserById = asyncHandler(async (req, res) => {
 	res.send(AppRes(200, 'user deleted successfully', {infected : result}))
 })
 
-
+//@route GET /user/send/confirmation/email 
+//@middlewares authenticate => role(user)
 const sendConfirmationEmail = asyncHandler(async (req, res) => {
 	// check if email is confirmed
 	const user = await db.user.findOne({
@@ -172,7 +179,7 @@ const sendConfirmationEmail = asyncHandler(async (req, res) => {
 	res.send(AppRes(200, 'email has been sent', {url, email : user.email}))
 })
 
-
+//@route GET /user/receive/confirmation/email/:toke 
 const receiveConfirmationEmail = asyncHandler(async (req, res) => {
 	await jwt.verify(req.params.token, process.env.TOKEN_ENCRYPTION_KEY, async (err, data) => {
 		if (err) throw new AppErr(401, 'Invalid token', 'token')

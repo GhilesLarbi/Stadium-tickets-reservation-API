@@ -8,7 +8,8 @@ const AppErr = require('../../utils/AppErr')
 const crypto = require('../../utils/crypto')
 const buildPDF = require('../../utils/generateTicket')
 
-
+//@route GET /ticket
+//@middlewares authenticate => role(admin/valid-user)
 const getTickets = asyncHandler(async (req, res) => {
 	let result
 	let option = req.option
@@ -23,15 +24,21 @@ const getTickets = asyncHandler(async (req, res) => {
 	res.send(AppRes(200, 'data fetched', result))
 })
 
+
+//@route GET /ticket/:id
+//@middlewares authenticate => role(admin/valid-user)
 const getTicket = asyncHandler(async (req, res) => {
 	let option = req.option 
 	option.where.id = req.params.id
 	
 	const result = await db.ticket.findOne(option)
+	
 	res.send(AppRes(200, 'data fetched', result))
 })
 
 
+//@route POST /ticket
+//@middlewares authenticate => role(valid-user)
 const createTicket = asyncHandler(async (req, res) => {
 	
 	const game = await db.game.findByPk(req.body.gameId)
@@ -54,7 +61,8 @@ const createTicket = asyncHandler(async (req, res) => {
 })
 
 
-// @route /api/ticket/:id/:type
+//@route GET /ticket/:id/:type 
+//@middlewares authenticate => role(admin/valid-user)
 const generate = asyncHandler(async (req, res) => {
 	const type = (['qrcode','pdf','string', 'base64'].includes(req.params.type))? req.params.type : 'qrcode'
 	
@@ -134,6 +142,8 @@ const generate = asyncHandler(async (req, res) => {
 })
 
 
+//@route DELETE /ticket/:id
+//@middlewares authenticate => role(admin/vaTypeErro
 const deleteTicket = asyncHandler(async (req, res) => {
 	const option = {where : {id : req.params.id}}
 	if (!req.isAdmin) option.where.userId = req.id

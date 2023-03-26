@@ -18,7 +18,6 @@ const authenticate = asyncHandler(async (req, res, next) => {
 		req.isAdmin = data.isAdmin
 		req.id = data.id
 		
-		
 		// if it's the admin just call next
 		if (data.isAdmin) return next()
 		
