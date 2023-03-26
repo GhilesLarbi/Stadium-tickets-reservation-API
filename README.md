@@ -226,8 +226,6 @@ Fetching users using an <code>admin token</code> if you don't include any query 
 
 - [Admin](#Admin)
   - [Admin login](#Admin-login)
-- [Authentication](#Authentication)
-  - [User login](#User-login)
 - [Bleacher](#Bleacher)
   - [Create a bleacher](#Create-a-bleacher)
   - [Delete bleacher by type](#Delete-bleacher-by-type)
@@ -264,10 +262,11 @@ Fetching users using an <code>admin token</code> if you don't include any query 
   - [Delete user](#Delete-user)
   - [Delete user by id](#Delete-user-by-id)
   - [Get user data by id](#Get-user-data-by-id)
-  - [Get User(s)](#Get-User(s))
+  - [Get User Information](#Get-User-Information)
   - [Receive email confirmation](#Receive-email-confirmation)
   - [Send a confirmation email](#Send-a-confirmation-email)
   - [Update user](#Update-user)
+  - [User login](#User-login)
 
 ___
 
@@ -310,76 +309,6 @@ HTTP/1.1 200 OK
 	"data" : {
 		"token" : "ADMIN_ACCESS_TOKEN"
 	}
-}
-```
-
-# <a name='Authentication'></a> Authentication
-
-## <a name='User-login'></a> User login
-[Back to top](#top)
-
-<p>This endpoint allows a user to log in by providing their email and password. If the provided credentials are correct, the server will return an access token which the user can use to authenticate future requests.</p>
-
-```
-POST /api/user/login
-```
-
-### Request Body
-
-| Name     | Type       | Description                           |
-|----------|------------|---------------------------------------|
-| email | `String` | <p>User email.</p> |
-| password | `String` | <p>User password.</p> |
-### Success response
-
-#### Success response - `Success 200`
-
-| Name     | Type       | Description                           |
-|----------|------------|---------------------------------------|
-| success | `Boolean` | <p>Whether or not the request was successful.</p> |
-| code | `Number` | <p>The HTTP status code returned by the server.</p> |
-| message | `String` | <p>A message explaining the status of the request.</p> |
-| data | `Object` | <p>The data returned by the endpoint.</p> |
-| data.token | `String` | <p>Access token for the authenticated user.</p> |
-
-### Success response example
-
-#### Success response example - `Success-Response:`
-
-```json
-HTTP/1.1 200 OK
-{
-  "success": true,
-  "code": 200,
-  "message": "User authenticated successfully.",
-  "data": {
-      "token": "ACCESS_TOKEN"
-  }
-}
-```
-
-### Error response
-
-#### Error response - `Error 4xx`
-
-| Name     | Type       | Description                           |
-|----------|------------|---------------------------------------|
-| success | `Boolean` | <p>Whether or not the request was successful.</p> |
-| code | `Number` | <p>The HTTP status code returned by the server.</p> |
-| message | `String` | <p>A message explaining the status of the request.</p> |
-| field | `String` | <p>The field in which the error occurred.</p> |
-
-### Error response example
-
-#### Error response example - `Error-Response:`
-
-```json
-HTTP/1.1 401 Unauthorized
-{
-  "success": false,
-  "code": 401,
-  "message": "Invalid email or password.",
-  "field": "email"
 }
 ```
 
@@ -1861,10 +1790,10 @@ HTTP/1.1 200 OK
 }
 ```
 
-## <a name='Get-User(s)'></a> Get User(s)
+## <a name='Get-User-Information'></a> Get User Information
 [Back to top](#top)
 
-<p>Returns information about a user or an array of users.</p>
+<p>This endpoint returns the user information or an array of users based on the access token provided.</p> <p>If an admin access token is provided, an array of users can be fetched and pagination and filtering can be applied. If a user access token is provided, only the user's information is returned.</p>
 
 ```
 GET /api/user
@@ -1874,90 +1803,96 @@ GET /api/user
 
 | Name    | Type      | Description                          |
 |---------|-----------|--------------------------------------|
-| Authorization | `String` | <p>User or Admin JWT token.</p> |
+| Authorization | `String` | <p>Bearer access token.</p> |
 
-### Parameters - `Query`
+### Query Parameters
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
-| id | `Number` | **optional** <p>User ID to retrieve. Only for admin.</p> |
-| email | `String` | **optional** <p>Email to filter users by. Only for admin.</p> |
-| isEmailConfirmed | `Number` | **optional** <p>Email confirmed status to filter users by. Only for admin.</p>_Allowed values: 0,1_ |
-| page | `Number` | **optional** <p>Page number for pagination. Only for admin.</p>_Default value: 1_<br> |
-| limit | `Number` | **optional** <p>Number of users per page for pagination. Only for admin.</p>_Default value: 20_<br> |
-
-### Examples
-
-Example usage:
-
-```curl
-curl -i -H "Authorization: Bearer {user_token}" http://localhost:3000/api/users?id=1
-curl -i -H "Authorization: Bearer {admin_token}" http://localhost:3000/api/users?isEmailConfirmed=1&email=test@test.com
-```
-
-Example usage:
-
-```javascript
-axios.get('/api/users?id=1', { headers: { Authorization: `Bearer {user_token}` } })
-axios.get('/api/users?isEmailConfirmed=1&email=test@test.com', { headers: { Authorization: `Bearer {admin_token}` } })
-```
-
+| page | `Number` | **optional** <p>Page number for pagination (admin only).</p>_Default value: 1_<br> |
+| limit | `Number` | **optional** <p>Number of users to fetch per page (admin only).</p>_Default value: 20_<br> |
+| id | `Number` | **optional** <p>Filter users by user ID (admin only).</p> |
+| email | `String` | **optional** <p>Filter users by email address (admin only).</p> |
+| isEmailConfirmed | `Number` | **optional** <p>Filter users by email confirmation status (admin only).</p> |
+| count | `Boolean` | **optional** <p>If set to true, returns the number of users matching the specified filters (admin only).</p> |
 ### Success response
 
 #### Success response - `Success 200`
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
-| success | `Boolean` | <p>Request status.</p> |
-| code | `Number` | <p>Request status code.</p> |
-| message | `String` | <p>Request status message.</p> |
-| data | `Object|Array` | <p>User or array of users.</p> |
+| success | `Boolean` | <p>Indicates whether the request was successful.</p> |
+| code | `Number` | <p>HTTP status code for the response.</p> |
+| message | `String` | <p>A message indicating the result of the request.</p> |
+| data | `Object|Array` | <p>The user information or array of users.</p> |
 
 ### Success response example
 
-#### Success response example - `Success-Response:`
+#### Success response example - `Successful Response (Admin):`
 
 ```json
 HTTP/1.1 200 OK
 {
-  "success": true,
-  "code": 200,
-  "message": "Data fetched",
-  "data": {
-    "id": 1,
-    "username": "test_1",
-    "firstname": "test",
-    "lastname": "test",
-    "email": "test@test.com",
-    "isEmailConfirmed": true,
-    "phone": "+213667667067",
-    "nationalId": "123456789"
-  }
+    "success": true,
+    "code": 200,
+    "message": "Users fetched successfully.",
+    "data": [
+        {
+            "id": 1,
+            "username": "user1",
+            "firstname": "John",
+            "lastname": "Doe",
+            "email": "johndoe@example.com",
+            "isEmailConfirmed": false,
+            "phone": "555-1234",
+            "nationalId": "1234567890"
+        },
+        {
+            "id": 2,
+            "username": "user2",
+            "firstname": "Jane",
+            "lastname": "Doe",
+            "email": "janedoe@example.com",
+            "isEmailConfirmed": true,
+            "phone": "555-5678",
+            "nationalId": "0987654321"
+        }
+    ]
 }
 ```
 
-### Error response
+#### Success response example - `Successful Response (User):`
 
-#### Error response - `Error 4xx`
-
-| Name     | Type       | Description                           |
-|----------|------------|---------------------------------------|
-| success | `Boolean` | <p>Request status.</p> |
-| code | `Number` | <p>Request status code.</p> |
-| message | `String` | <p>Request status message.</p> |
-| field | `String` | <p>Name of the field that caused the error.</p> |
+```json
+HTTP/1.1 200 OK
+{
+    "success": true,
+    "code": 200,
+    "message": "User fetched successfully.",
+    "data": {
+        "id": 1,
+        "username": "user1",
+        "firstname": "John",
+        "lastname": "Doe",
+        "email": "johndoe@example.com",
+        "isEmailConfirmed": false,
+        "phone": "555-1234",
+        "nationalId": "1234567890"
+    }
+}
+```
 
 ### Error response example
 
-#### Error response example - `Error-Response:`
+#### Error response example - `Error Response:`
 
 ```json
-HTTP/1.1 301 Unauthorized
+HTTP/1.1 401 Unauthorized
 {
-  "success": false,
-  "code": 301,
-  "message": "You are not logged in",
-  "field": "token"
+    "success": false,
+    "code": 401,
+    "message": "Authorization failed. Access token invalid or expired.",
+    "data": null
 }
 ```
 
@@ -2072,6 +2007,74 @@ HTTP/1.1 200 OK
 		"phone" : "+213667667067",
 		"nationalId" : "123456789"
 	}
+}
+```
+
+## <a name='User-login'></a> User login
+[Back to top](#top)
+
+<p>This endpoint allows a user to log in by providing their email and password. If the provided credentials are correct, the server will return an access token which the user can use to authenticate future requests.</p>
+
+```
+POST /api/user/login
+```
+
+### Request Body
+
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| email | `String` | <p>User email.</p> |
+| password | `String` | <p>User password.</p> |
+### Success response
+
+#### Success response - `Success 200`
+
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| success | `Boolean` | <p>Whether or not the request was successful.</p> |
+| code | `Number` | <p>The HTTP status code returned by the server.</p> |
+| message | `String` | <p>A message explaining the status of the request.</p> |
+| data | `Object` | <p>The data returned by the endpoint.</p> |
+| data.token | `String` | <p>Access token for the authenticated user.</p> |
+
+### Success response example
+
+#### Success response example - `Success-Response:`
+
+```json
+HTTP/1.1 200 OK
+{
+  "success": true,
+  "code": 200,
+  "message": "User authenticated successfully.",
+  "data": {
+      "token": "ACCESS_TOKEN"
+  }
+}
+```
+
+### Error response
+
+#### Error response - `Error 4xx`
+
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| success | `Boolean` | <p>Whether or not the request was successful.</p> |
+| code | `Number` | <p>The HTTP status code returned by the server.</p> |
+| message | `String` | <p>A message explaining the status of the request.</p> |
+| field | `String` | <p>The field in which the error occurred.</p> |
+
+### Error response example
+
+#### Error response example - `Error-Response:`
+
+```json
+HTTP/1.1 401 Unauthorized
+{
+  "success": false,
+  "code": 401,
+  "message": "Invalid email or password.",
+  "field": "email"
 }
 ```
 

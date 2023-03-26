@@ -125,63 +125,86 @@
 * }
 */
 
+
 /**
- * @api {get} /api/user Get User(s)
- * @apiDescription Returns information about a user or an array of users.
- * @apiName GetUser
+ * @api {get} /api/user Get User Information
  * @apiGroup User
+ * @apiDescription This endpoint returns the user information or an array of users based on the access token provided.
  *
- * @apiHeader {String} Authorization User or Admin JWT token.
+ * If an admin access token is provided, an array of users can be fetched and pagination and filtering can be applied. If a user access token is provided, only the user's information is returned.
  *
- * @apiParam (Query) {Number} [id] User ID to retrieve. Only for admin.
- * @apiParam (Query) {String} [email] Email to filter users by. Only for admin.
- * @apiParam (Query) {Number=0,1} [isEmailConfirmed] Email confirmed status to filter users by. Only for admin.
- * @apiParam (Query) {Number} [page=1] Page number for pagination. Only for admin.
- * @apiParam (Query) {Number} [limit=20] Number of users per page for pagination. Only for admin.
+ * @apiHeader {String} Authorization Bearer access token.
  *
- * @apiSuccess {Boolean} success Request status.
- * @apiSuccess {Number} code Request status code.
- * @apiSuccess {String} message Request status message.
- * @apiSuccess {Object|Array} data User or array of users.
- * @apiSuccessExample {json} Success-Response:
+ * @apiQuery {Number} [page=1] Page number for pagination (admin only).
+ * @apiQuery {Number} [limit=20] Number of users to fetch per page (admin only).
+ * @apiQuery {Number} [id] Filter users by user ID (admin only).
+ * @apiQuery {String} [email] Filter users by email address (admin only).
+ * @apiQuery {Number} [isEmailConfirmed] Filter users by email confirmation status (admin only).
+ * @apiQuery {Boolean} [count] If set to true, returns the number of users matching the specified filters (admin only).
+ *
+ * @apiSuccess {Boolean} success Indicates whether the request was successful.
+ * @apiSuccess {Number} code HTTP status code for the response.
+ * @apiSuccess {String} message A message indicating the result of the request.
+ * @apiSuccess {Object|Array} data The user information or array of users.
+ *
+ * @apiSuccessExample {json} Successful Response (Admin):
  *     HTTP/1.1 200 OK
  *     {
- *       "success": true,
- *       "code": 200,
- *       "message": "Data fetched",
- *       "data": {
- *         "id": 1,
- *         "username": "test_1",
- *         "firstname": "test",
- *         "lastname": "test",
- *         "email": "test@test.com",
- *         "isEmailConfirmed": true,
- *         "phone": "+213667667067",
- *         "nationalId": "123456789"
- *       }
+ *         "success": true,
+ *         "code": 200,
+ *         "message": "Users fetched successfully.",
+ *         "data": [
+ *             {
+ *                 "id": 1,
+ *                 "username": "user1",
+ *                 "firstname": "John",
+ *                 "lastname": "Doe",
+ *                 "email": "johndoe@example.com",
+ *                 "isEmailConfirmed": false,
+ *                 "phone": "555-1234",
+ *                 "nationalId": "1234567890"
+ *             },
+ *             {
+ *                 "id": 2,
+ *                 "username": "user2",
+ *                 "firstname": "Jane",
+ *                 "lastname": "Doe",
+ *                 "email": "janedoe@example.com",
+ *                 "isEmailConfirmed": true,
+ *                 "phone": "555-5678",
+ *                 "nationalId": "0987654321"
+ *             }
+ *         ]
  *     }
  *
- * @apiError {Boolean} success Request status.
- * @apiError {Number} code Request status code.
- * @apiError {String} message Request status message.
- * @apiError {String} field Name of the field that caused the error.
- * @apiErrorExample {json} Error-Response:
- *     HTTP/1.1 301 Unauthorized
+ * @apiSuccessExample {json} Successful Response (User):
+ *     HTTP/1.1 200 OK
  *     {
- *       "success": false,
- *       "code": 301,
- *       "message": "You are not logged in",
- *       "field": "token"
+ *         "success": true,
+ *         "code": 200,
+ *         "message": "User fetched successfully.",
+ *         "data": {
+ *             "id": 1,
+ *             "username": "user1",
+ *             "firstname": "John",
+ *             "lastname": "Doe",
+ *             "email": "johndoe@example.com",
+ *             "isEmailConfirmed": false,
+ *             "phone": "555-1234",
+ *             "nationalId": "1234567890"
+ *         }
  *     }
  *
- * @apiExample {curl} Example usage:
- *     curl -i -H "Authorization: Bearer {user_token}" http://localhost:3000/api/users?id=1
- *     curl -i -H "Authorization: Bearer {admin_token}" http://localhost:3000/api/users?isEmailConfirmed=1&email=test@test.com
- *
- * @apiExample {javascript} Example usage:
- *     axios.get('/api/users?id=1', { headers: { Authorization: `Bearer {user_token}` } })
- *     axios.get('/api/users?isEmailConfirmed=1&email=test@test.com', { headers: { Authorization: `Bearer {admin_token}` } })
+ * @apiErrorExample {json} Error Response:
+ *     HTTP/1.1 401 Unauthorized
+ *     {
+ *         "success": false,
+ *         "code": 401,
+ *         "message": "Authorization failed. Access token invalid or expired.",
+ *         "data": null
+ *     }
  */
+
 
 
 /**
