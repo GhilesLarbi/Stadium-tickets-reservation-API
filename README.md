@@ -1,4 +1,5 @@
-# Stadium tickets reservation API 
+<a name="top"></a>
+# Stadium tickets reservation API v1.0.0
 
  
 
@@ -221,88 +222,84 @@ Fetching users using an <code>admin token</code> if you don't include any query 
 <hr />
 
 
-# Endpoints
+# Table of contents
 
 - [Admin](#Admin)
-  - [Admin login](#Admin##Admin-login)
+  - [Admin login](#Admin-login)
 - [Authentication](#Authentication)
-  - [User login](#Authentication##User-login)
+  - [User login](#User-login)
 - [Bleacher](#Bleacher)
-  - [Create a bleacher](#Bleacher##Create-a-bleacher)
-  - [Delete bleacher by type](#Bleacher##Delete-bleacher-by-type)
-  - [Get bleacher data by type](#Bleacher##Get-bleacher-data-by-type)
-  - [Get bleachers data](#Bleacher##Get-bleachers-data)
-  - [Update bleacher](#Bleacher##Update-bleacher)
+  - [Create a bleacher](#Create-a-bleacher)
+  - [Delete bleacher by type](#Delete-bleacher-by-type)
+  - [Get bleacher data by type](#Get-bleacher-data-by-type)
+  - [Get bleachers data](#Get-bleachers-data)
+  - [Update bleacher](#Update-bleacher)
 - [Game](#Game)
-  - [Create a game](#Game##Create-a-game)
-  - [Delete game by id](#Game##Delete-game-by-id)
-  - [Get game data](#Game##Get-game-data)
-  - [Get games data](#Game##Get-games-data)
-  - [Update game](#Game##Update-game)
+  - [Create a game](#Create-a-game)
+  - [Delete game by id](#Delete-game-by-id)
+  - [Get game data](#Get-game-data)
+  - [Get games data](#Get-games-data)
+  - [Update game](#Update-game)
 - [League](#League)
-  - [Create a league](#League##Create-a-league)
-  - [Delete league by id](#League##Delete-league-by-id)
-  - [Get league data by id](#League##Get-league-data-by-id)
-  - [Get leagues data](#League##Get-leagues-data)
-  - [Update league](#League##Update-league)
-  - [Upload league logo](#League##Upload-league-logo)
+  - [Create a league](#Create-a-league)
+  - [Delete league by id](#Delete-league-by-id)
+  - [Get league data by id](#Get-league-data-by-id)
+  - [Get leagues data](#Get-leagues-data)
+  - [Update league](#Update-league)
+  - [Upload league logo](#Upload-league-logo)
 - [Team](#Team)
-  - [Create a team](#Team##Create-a-team)
-  - [Delete team by id](#Team##Delete-team-by-id)
-  - [Get team data by id](#Team##Get-team-data-by-id)
-  - [Get teams data](#Team##Get-teams-data)
-  - [Update team](#Team##Update-team)
-  - [Upload team logo](#Team##Upload-team-logo)
+  - [Create a team](#Create-a-team)
+  - [Delete team by id](#Delete-team-by-id)
+  - [Get team data by id](#Get-team-data-by-id)
+  - [Get teams data](#Get-teams-data)
+  - [Update team](#Update-team)
+  - [Upload team logo](#Upload-team-logo)
 - [Ticket](#Ticket)
-  - [Buy ticket](#Ticket##Buy-ticket)
-  - [Delete ticket](#Ticket##Delete-ticket)
-  - [Download ticket PDF](#Ticket##Download-ticket-PDF)
-  - [Get tickets data](#Ticket##Get-tickets-data)
+  - [Buy ticket](#Buy-ticket)
+  - [Delete ticket](#Delete-ticket)
+  - [Download ticket PDF](#Download-ticket-PDF)
+  - [Get tickets data](#Get-tickets-data)
 - [User](#User)
-  - [Create User](#User##Create-User)
-  - [Delete user](#User##Delete-user)
-  - [Delete user by id](#User##Delete-user-by-id)
-  - [Get user data by id](#User##Get-user-data-by-id)
-  - [Get User(s)](#User##Get-User(s))
-  - [Receive email confirmation](#User##Receive-email-confirmation)
-  - [Send a confirmation email](#User##Send-a-confirmation-email)
-  - [Update user](#User##Update-user)
+  - [Create User](#Create-User)
+  - [Delete user](#Delete-user)
+  - [Delete user by id](#Delete-user-by-id)
+  - [Get user data by id](#Get-user-data-by-id)
+  - [Get User(s)](#Get-User(s))
+  - [Receive email confirmation](#Receive-email-confirmation)
+  - [Send a confirmation email](#Send-a-confirmation-email)
+  - [Update user](#Update-user)
 
 ___
+
+
 # <a name='Admin'></a> Admin
-___
+
 ## <a name='Admin-login'></a> Admin login
+[Back to top](#top)
 
 <p><strong>Access Level :</strong> visitor <br/> To login as an admin and obtain an access token, send <code>POST</code> request to <code>/api/admin/login</code> endpoint, and make sure to include the right credentials in the request body :</p>
 
-```http
+```
 POST /api/admin/login
 ```
 
-> ### Request Body 
-
-The request body must be in `JSON` format
-__example :__ 
-```javascript
-{
-	"user" : "USER",
-	"password" : "PASSWORD",
-}
-```
+### Request Body
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
 | user | `String` | <p>Admin user name</p> |
 | password | `String` | <p>Admin Password</p> |
+### Success response
 
-> ### Success response 
+#### Success response - `Success 200`
 
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| token | `String` | <p>Admin access token.</p> |
 
-##### `Success 200`
+### Success response example
 
-
-The expect response is in `JSON` format and may look like this :
-__example :__
+#### Success response example - `Success-Response:`
 
 ```json
 HTTP/1.1 200 OK
@@ -316,46 +313,38 @@ HTTP/1.1 200 OK
 }
 ```
 
-
-| Name     | Type       | Description                           |
-|----------|------------|---------------------------------------|
-| token | `String` | <p>Admin access token.</p> |
-
-___
 # <a name='Authentication'></a> Authentication
-___
+
 ## <a name='User-login'></a> User login
+[Back to top](#top)
 
 <p>This endpoint allows a user to log in by providing their email and password. If the provided credentials are correct, the server will return an access token which the user can use to authenticate future requests.</p>
 
-```http
+```
 POST /api/user/login
 ```
 
-> ### Request Body 
-
-The request body must be in `JSON` format
-__example :__ 
-```javascript
-{
-	"email" : "EMAIL",
-	"password" : "PASSWORD",
-}
-```
+### Request Body
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
 | email | `String` | <p>User email.</p> |
 | password | `String` | <p>User password.</p> |
+### Success response
 
-> ### Success response 
+#### Success response - `Success 200`
 
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| success | `Boolean` | <p>Whether or not the request was successful.</p> |
+| code | `Number` | <p>The HTTP status code returned by the server.</p> |
+| message | `String` | <p>A message explaining the status of the request.</p> |
+| data | `Object` | <p>The data returned by the endpoint.</p> |
+| data.token | `String` | <p>Access token for the authenticated user.</p> |
 
-##### `Success 200`
+### Success response example
 
-
-The expect response is in `JSON` format and may look like this :
-__example :__
+#### Success response example - `Success-Response:`
 
 ```json
 HTTP/1.1 200 OK
@@ -369,20 +358,9 @@ HTTP/1.1 200 OK
 }
 ```
 
+### Error response
 
-| Name     | Type       | Description                           |
-|----------|------------|---------------------------------------|
-| success | `Boolean` | <p>Whether or not the request was successful.</p> |
-| code | `Number` | <p>The HTTP status code returned by the server.</p> |
-| message | `String` | <p>A message explaining the status of the request.</p> |
-| data | `Object` | <p>The data returned by the endpoint.</p> |
-| data.token | `String` | <p>Access token for the authenticated user.</p> |
-
-
-> ### Error response 
-
-
-##### `Error 4xx`
+#### Error response - `Error 4xx`
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
@@ -393,7 +371,7 @@ HTTP/1.1 200 OK
 
 ### Error response example
 
-##### `Error-Response:`
+#### Error response example - `Error-Response:`
 
 ```json
 HTTP/1.1 401 Unauthorized
@@ -404,49 +382,42 @@ HTTP/1.1 401 Unauthorized
   "field": "email"
 }
 ```
-___
+
 # <a name='Bleacher'></a> Bleacher
-___
+
 ## <a name='Create-a-bleacher'></a> Create a bleacher
+[Back to top](#top)
 
 <p><strong>Access Level :</strong> admin <br/> To create a bleacher send <code>POST</code> request to <code>/api/bleacher</code> endpoint, make sure to include the data needed in the request body :</p>
 
-```http
+```
 POST /api/bleacher
 ```
 
-> ### Headers
+### Headers - `Header`
 
 | Name    | Type      | Description                          |
 |---------|-----------|--------------------------------------|
 | Authorization | `String` | <p>Admin Authorization token.</p> |
 
-> ### Request Body 
-
-The request body must be in `JSON` format
-__example :__ 
-```javascript
-{
-	"type" : "TYPE",
-	"price" : 328,
-	"quantity" : 970,
-}
-```
+### Request Body
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
 | type | `String` | <p>Bleacher type</p> |
 | price | `Number` | <p>Bleacher price</p> |
 | quantity | `number` | <p>number of places</p> |
+### Success response
 
-> ### Success response 
+#### Success response - `Success 200`
 
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| Data | `Object` | <p>The new created bleacher</p> |
 
-##### `Success 200`
+### Success response example
 
-
-The expect response is in `JSON` format and may look like this :
-__example :__
+#### Success response example - `Success-Response:`
 
 ```json
 HTTP/1.1 201 CREATED
@@ -462,39 +433,37 @@ HTTP/1.1 201 CREATED
 }
 ```
 
-
-| Name     | Type       | Description                           |
-|----------|------------|---------------------------------------|
-| Data | `Object` | <p>The new created bleacher</p> |
-
-___
 ## <a name='Delete-bleacher-by-type'></a> Delete bleacher by type
+[Back to top](#top)
 
 <p><strong>Access Level :</strong> admin <br/> to delete a bleacher send <code>DELETE</code> request to <code>/api/bleacher/:type</code> endpoint where <code>:type</code> is the bleacher type :</p>
 
-```http
+```
 DELETE /api/bleacher/:type
 ```
 
-> ### Headers
+### Headers - `Header`
 
 | Name    | Type      | Description                          |
 |---------|-----------|--------------------------------------|
 | Authorization | `String` | <p>Admin Authorization token.</p> |
 
-> ### Parameters
+### Parameters - `Parameter`
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
 | type | `String` | <p>Bleacher type</p> |
-> ### Success response 
+### Success response
 
+#### Success response - `Success 200`
 
-##### `Success 200`
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| Data | `Object` | <p>The deleted bleacher data.</p> |
 
+### Success response example
 
-The expect response is in `JSON` format and may look like this :
-__example :__
+#### Success response example - `Success-Response:`
 
 ```json
 HTTP/1.1 200 OK
@@ -510,33 +479,31 @@ HTTP/1.1 200 OK
 }
 ```
 
-
-| Name     | Type       | Description                           |
-|----------|------------|---------------------------------------|
-| Data | `Object` | <p>The deleted bleacher data.</p> |
-
-___
 ## <a name='Get-bleacher-data-by-type'></a> Get bleacher data by type
+[Back to top](#top)
 
 <p><strong>Access Level :</strong> visitor <br/> To fetch bleacher data send <code>GET</code> request to <code>/api/team/:type</code> endpoint, where <code>type</code> is the bleacher type :</p>
 
-```http
+```
 GET /api/bleacher/:type
 ```
 
-> ### Parameters
+### Parameters - `Parameter`
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
 | type | `String` | <p>bleacher type</p> |
-> ### Success response 
+### Success response
 
+#### Success response - `Success 200`
 
-##### `Success 200`
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| Data | `Object` | <p>bleacher data</p> |
 
+### Success response example
 
-The expect response is in `JSON` format and may look like this :
-__example :__
+#### Success response example - `Success-Response:`
 
 ```json
 HTTP/1.1 200 OK
@@ -552,27 +519,25 @@ HTTP/1.1 200 OK
 }
 ```
 
-
-| Name     | Type       | Description                           |
-|----------|------------|---------------------------------------|
-| Data | `Object` | <p>bleacher data</p> |
-
-___
 ## <a name='Get-bleachers-data'></a> Get bleachers data
+[Back to top](#top)
 
 <p><strong>Access Level :</strong> visitor <br/> To fetch bleachers data send <code>GET</code> request to <code>/api/bleacher</code> endpoint :</p>
 
-```http
+```
 GET /api/bleacher
 ```
-> ### Success response 
+### Success response
 
+#### Success response - `Success 200`
 
-##### `Success 200`
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| Data | `Array` | <p>Array of bleachers data</p> |
 
+### Success response example
 
-The expect response is in `JSON` format and may look like this :
-__example :__
+#### Success response example - `Success-Response:`
 
 ```json
 HTTP/1.1 200 OK
@@ -600,58 +565,45 @@ HTTP/1.1 200 OK
 }
 ```
 
-
-| Name     | Type       | Description                           |
-|----------|------------|---------------------------------------|
-| Data | `Array` | <p>Array of bleachers data</p> |
-
-___
 ## <a name='Update-bleacher'></a> Update bleacher
+[Back to top](#top)
 
 <p><strong>Access Level :</strong> admin <br/> To update the bleacher data send <code>PUT</code> request to <code>/api/bleacher/:type</code> endpoint, where <code>:type</code> is the bleacher type. Make sure to include the data you want to modify in the request body :</p>
 
-```http
+```
 PUT /api/bleacher/:type
 ```
 
-> ### Headers
+### Headers - `Header`
 
 | Name    | Type      | Description                          |
 |---------|-----------|--------------------------------------|
 | Authorization | `String` | <p>Admin Authorization token.</p> |
 
-> ### Parameters
+### Parameters - `Parameter`
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
 | type | `String` | <p>Bleacher type</p> |
 
-> ### Request Body 
-
-The request body must be in `JSON` format
-__example :__ 
-```javascript
-{
-	"type" : "TYPE",
-	"price" : 758,
-	"quantity" : 453,
-}
-```
+### Request Body
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
 | type | `String` | **optional** <p>Bleacher type</p> |
 | price | `Number` | **optional** <p>Bleacher price</p> |
 | quantity | `number` | **optional** <p>number of places</p> |
+### Success response
 
-> ### Success response 
+#### Success response - `Success 200`
 
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| Data | `Object` | <p>The updated bleacher data.</p> |
 
-##### `Success 200`
+### Success response example
 
-
-The expect response is in `JSON` format and may look like this :
-__example :__
+#### Success response example - `Success-Response:`
 
 ```json
 HTTP/1.1 200 OK
@@ -667,31 +619,24 @@ HTTP/1.1 200 OK
 }
 ```
 
-
-| Name     | Type       | Description                           |
-|----------|------------|---------------------------------------|
-| Data | `Object` | <p>The updated bleacher data.</p> |
-
-___
 # <a name='Game'></a> Game
-___
+
 ## <a name='Create-a-game'></a> Create a game
+[Back to top](#top)
 
 <p><strong>Access Level :</strong> admin <br/> To create a game send <code>POST</code> request to <code>/api/game</code> endpoint, make sure to include the data needed in the request body :</p>
 
-```http
+```
 POST /api/game
 ```
 
-> ### Headers
+### Headers - `Header`
 
 | Name    | Type      | Description                          |
 |---------|-----------|--------------------------------------|
 | Authorization | `String` | <p>Admin Authorization token.</p> |
 
-> ### Request Body 
-
-The request body must be in `FormData` format
+### Request Body
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
@@ -701,15 +646,17 @@ The request body must be in `FormData` format
 | score | `String` | <p>The game score</p> |
 | team1Id | `Number` | <p>Team 1 unique id</p> |
 | team2Id | `Number` | <p>Team 2 unique id</p> |
+### Success response
 
-> ### Success response 
+#### Success response - `Success 200`
 
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| Data | `Object` | <p>The new created league</p> |
 
-##### `Success 200`
+### Success response example
 
-
-The expect response is in `JSON` format and may look like this :
-__example :__
+#### Success response example - `Success-Response:`
 
 ```json
 HTTP/1.1 201 CREATED
@@ -729,39 +676,37 @@ HTTP/1.1 201 CREATED
 }
 ```
 
-
-| Name     | Type       | Description                           |
-|----------|------------|---------------------------------------|
-| Data | `Object` | <p>The new created league</p> |
-
-___
 ## <a name='Delete-game-by-id'></a> Delete game by id
+[Back to top](#top)
 
 <p><strong>Access Level :</strong> admin <br/> to Delete a game send <code>DELETE</code> request to <code>/api/game/:id</code> endpoint where <code>:id</code> is the game unique id :</p>
 
-```http
+```
 DELETE /api/game/:id
 ```
 
-> ### Headers
+### Headers - `Header`
 
 | Name    | Type      | Description                          |
 |---------|-----------|--------------------------------------|
 | Authorization | `String` | <p>Admin Authorization token.</p> |
 
-> ### Parameters
+### Parameters - `Parameter`
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
 | id | `Number` | <p>Game unique id</p> |
-> ### Success response 
+### Success response
 
+#### Success response - `Success 200`
 
-##### `Success 200`
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| Data | `Object` | <p>The deleted game data.</p> |
 
+### Success response example
 
-The expect response is in `JSON` format and may look like this :
-__example :__
+#### Success response example - `Success-Response:`
 
 ```json
 HTTP/1.1 200 OK
@@ -781,33 +726,31 @@ HTTP/1.1 200 OK
 }
 ```
 
-
-| Name     | Type       | Description                           |
-|----------|------------|---------------------------------------|
-| Data | `Object` | <p>The deleted game data.</p> |
-
-___
 ## <a name='Get-game-data'></a> Get game data
+[Back to top](#top)
 
 <p><strong>Access Level :</strong> visitor <br/> To fetch game data send <code>GET</code> request to <code>/api/game/:id</code> endpoint where <code>:id</code> is the game unique id :</p>
 
-```http
+```
 GET /api/game/:id
 ```
 
-> ### Parameters
+### Parameters - `Parameter`
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
 | id | `Number` | <p>Game unique id</p> |
-> ### Success response 
+### Success response
 
+#### Success response - `Success 200`
 
-##### `Success 200`
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| Data | `Object` | <p>game data</p> |
 
+### Success response example
 
-The expect response is in `JSON` format and may look like this :
-__example :__
+#### Success response example - `Success-Response:`
 
 ```json
 HTTP/1.1 200 OK
@@ -827,27 +770,25 @@ HTTP/1.1 200 OK
 }
 ```
 
-
-| Name     | Type       | Description                           |
-|----------|------------|---------------------------------------|
-| Data | `Object` | <p>game data</p> |
-
-___
 ## <a name='Get-games-data'></a> Get games data
+[Back to top](#top)
 
 <p><strong>Access Level :</strong> visitor <br/> To fetch games data send <code>GET</code> request to <code>/api/game</code> endpoint :</p>
 
-```http
+```
 GET /api/game
 ```
-> ### Success response 
+### Success response
 
+#### Success response - `Success 200`
 
-##### `Success 200`
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| Data | `Object[]` | <p>Array of games data</p> |
 
+### Success response example
 
-The expect response is in `JSON` format and may look like this :
-__example :__
+#### Success response example - `Success-Response:`
 
 ```json
 HTTP/1.1 200 OK
@@ -878,35 +819,28 @@ HTTP/1.1 200 OK
 }
 ```
 
-
-| Name     | Type       | Description                           |
-|----------|------------|---------------------------------------|
-| Data | `Object[]` | <p>Array of games data</p> |
-
-___
 ## <a name='Update-game'></a> Update game
+[Back to top](#top)
 
 <p><strong>Access Level :</strong> admin <br/> To update the game data send <code>PUT</code> request to <code>/api/game/:id</code> endpoint, where <code>:id</code> is the game unique id. Make sure to include the data you want to modify in the request body :</p>
 
-```http
+```
 PUT /api/game/:id
 ```
 
-> ### Headers
+### Headers - `Header`
 
 | Name    | Type      | Description                          |
 |---------|-----------|--------------------------------------|
 | Authorization | `String` | <p>Admin Authorization token</p> |
 
-> ### Parameters
+### Parameters - `Parameter`
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
 | id | `Number` | <p>Game unique id</p> |
 
-> ### Request Body 
-
-The request body must be in `FormData` format
+### Request Body
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
@@ -916,15 +850,17 @@ The request body must be in `FormData` format
 | score | `String` | **optional** <p>The game score</p> |
 | team1Id | `Number` | **optional** <p>Team 1 unique id</p> |
 | team2Id | `Number` | **optional** <p>Team 2 unique id</p> |
+### Success response
 
-> ### Success response 
+#### Success response - `Success 200`
 
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| Data | `Object` | <p>The updated game data.</p> |
 
-##### `Success 200`
+### Success response example
 
-
-The expect response is in `JSON` format and may look like this :
-__example :__
+#### Success response example - `Success-Response:`
 
 ```json
 HTTP/1.1 200 OK
@@ -944,50 +880,39 @@ HTTP/1.1 200 OK
 }
 ```
 
-
-| Name     | Type       | Description                           |
-|----------|------------|---------------------------------------|
-| Data | `Object` | <p>The updated game data.</p> |
-
-___
 # <a name='League'></a> League
-___
+
 ## <a name='Create-a-league'></a> Create a league
+[Back to top](#top)
 
 <p><strong>Access Level :</strong> admin <br/> To create a league send <code>POST</code> request to <code>/api/league</code> endpoint, make sure to include the data needed in the request body :</p>
 
-```http
+```
 POST /api/league
 ```
 
-> ### Headers
+### Headers - `Header`
 
 | Name    | Type      | Description                          |
 |---------|-----------|--------------------------------------|
 | Authorization | `String` | <p>Admin Authorization token.</p> |
 
-> ### Request Body 
-
-The request body must be in `JSON` format
-__example :__ 
-```javascript
-{
-	"name" : "NAME",
-}
-```
+### Request Body
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
 | name | `String` | <p>The league name</p> |
+### Success response
 
-> ### Success response 
+#### Success response - `Success 200`
 
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| Data | `Object` | <p>The new created league</p> |
 
-##### `Success 200`
+### Success response example
 
-
-The expect response is in `JSON` format and may look like this :
-__example :__
+#### Success response example - `Success-Response:`
 
 ```json
 HTTP/1.1 201 CREATED
@@ -1003,39 +928,37 @@ HTTP/1.1 201 CREATED
 }
 ```
 
-
-| Name     | Type       | Description                           |
-|----------|------------|---------------------------------------|
-| Data | `Object` | <p>The new created league</p> |
-
-___
 ## <a name='Delete-league-by-id'></a> Delete league by id
+[Back to top](#top)
 
 <p><strong>Access Level :</strong> admin <br/> to Delete a league send <code>DELETE</code> request to <code>/api/league/:id</code> endpoint where <code>:id</code> is the league unique id :</p>
 
-```http
+```
 DELETE /api/league/:id
 ```
 
-> ### Headers
+### Headers - `Header`
 
 | Name    | Type      | Description                          |
 |---------|-----------|--------------------------------------|
 | Authorization | `String` | <p>Admin Authorization token.</p> |
 
-> ### Parameters
+### Parameters - `Parameter`
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
 | id | `Number` | <p>League unique id</p> |
-> ### Success response 
+### Success response
 
+#### Success response - `Success 200`
 
-##### `Success 200`
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| Data | `Object` | <p>The deleted league data.</p> |
 
+### Success response example
 
-The expect response is in `JSON` format and may look like this :
-__example :__
+#### Success response example - `Success-Response:`
 
 ```json
 HTTP/1.1 200 OK
@@ -1051,33 +974,31 @@ HTTP/1.1 200 OK
 }
 ```
 
-
-| Name     | Type       | Description                           |
-|----------|------------|---------------------------------------|
-| Data | `Object` | <p>The deleted league data.</p> |
-
-___
 ## <a name='Get-league-data-by-id'></a> Get league data by id
+[Back to top](#top)
 
 <p><strong>Access Level :</strong> visitor <br/> To fetch league data send <code>GET</code> request to <code>/api/league/:id</code> endpoint, where <code>id</code> is the league unique id :</p>
 
-```http
+```
 GET /api/league/:id
 ```
 
-> ### Parameters
+### Parameters - `Parameter`
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
 | id | `Number` | <p>league unique id</p> |
-> ### Success response 
+### Success response
 
+#### Success response - `Success 200`
 
-##### `Success 200`
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| Data | `Object` | <p>league data</p> |
 
+### Success response example
 
-The expect response is in `JSON` format and may look like this :
-__example :__
+#### Success response example - `Success-Response:`
 
 ```json
 HTTP/1.1 200 OK
@@ -1093,27 +1014,25 @@ HTTP/1.1 200 OK
 }
 ```
 
-
-| Name     | Type       | Description                           |
-|----------|------------|---------------------------------------|
-| Data | `Object` | <p>league data</p> |
-
-___
 ## <a name='Get-leagues-data'></a> Get leagues data
+[Back to top](#top)
 
 <p><strong>Access Level :</strong> visitor <br/> To fetch leagues data send <code>GET</code> request to <code>/api/league</code> endpoint :</p>
 
-```http
+```
 GET /api/league
 ```
-> ### Success response 
+### Success response
 
+#### Success response - `Success 200`
 
-##### `Success 200`
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| Data | `Object` | <p>Array of leagues data</p> |
 
+### Success response example
 
-The expect response is in `JSON` format and may look like this :
-__example :__
+#### Success response example - `Success-Response:`
 
 ```json
 HTTP/1.1 200 OK
@@ -1136,54 +1055,43 @@ HTTP/1.1 200 OK
 }
 ```
 
-
-| Name     | Type       | Description                           |
-|----------|------------|---------------------------------------|
-| Data | `Object` | <p>Array of leagues data</p> |
-
-___
 ## <a name='Update-league'></a> Update league
+[Back to top](#top)
 
 <p><strong>Access Level :</strong> admin <br/> To update the league data send <code>PUT</code> request to <code>/api/league/:id</code> endpoint, where <code>:id</code> is the league unique id. Make sure to include the data you want to modify in the request body :</p>
 
-```http
+```
 PUT /api/league/:id
 ```
 
-> ### Headers
+### Headers - `Header`
 
 | Name    | Type      | Description                          |
 |---------|-----------|--------------------------------------|
 | Authorization | `String` | <p>User Authorization token.</p> |
 
-> ### Parameters
+### Parameters - `Parameter`
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
 | id | `Number` | <p>League unique id</p> |
 
-> ### Request Body 
-
-The request body must be in `JSON` format
-__example :__ 
-```javascript
-{
-	"name" : "NAME",
-}
-```
+### Request Body
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
 | name | `String` | **optional** <p>league name</p> |
+### Success response
 
-> ### Success response 
+#### Success response - `Success 200`
 
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| Data | `Object` | <p>The updated league data.</p> |
 
-##### `Success 200`
+### Success response example
 
-
-The expect response is in `JSON` format and may look like this :
-__example :__
+#### Success response example - `Success-Response:`
 
 ```json
 HTTP/1.1 200 OK
@@ -1199,48 +1107,43 @@ HTTP/1.1 200 OK
 }
 ```
 
-
-| Name     | Type       | Description                           |
-|----------|------------|---------------------------------------|
-| Data | `Object` | <p>The updated league data.</p> |
-
-___
 ## <a name='Upload-league-logo'></a> Upload league logo
+[Back to top](#top)
 
 <p><strong>Access Level :</strong> admin <br/> To upload a league logo send <code>POST</code> request to <code>/api/league/:id/upload/logo</code> endpoint where <code>:id</code> is the league unique id, Make sure to include the logo image in the request body as <code>FormData</code>:</p>
 
-```http
+```
 POST /api/league/:id/upload/logo
 ```
 
-> ### Headers
+### Headers - `Header`
 
 | Name    | Type      | Description                          |
 |---------|-----------|--------------------------------------|
 | Authorization | `String` | <p>Admin Authorization token.</p> |
 
-> ### Parameters
+### Parameters - `Parameter`
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
 | id | `Number` | <p>League unique id</p> |
 
-> ### Request Body 
-
-The request body must be in `FormData` format
+### Request Body
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
 | Image | `Image` | <p>The logo image</p> |
+### Success response
 
-> ### Success response 
+#### Success response - `Success 200`
 
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| Data | `Object` | <p>The league data.</p> |
 
-##### `Success 200`
+### Success response example
 
-
-The expect response is in `JSON` format and may look like this :
-__example :__
+#### Success response example - `Success-Response:`
 
 ```json
 HTTP/1.1 200 OK
@@ -1256,52 +1159,40 @@ HTTP/1.1 200 OK
 }
 ```
 
-
-| Name     | Type       | Description                           |
-|----------|------------|---------------------------------------|
-| Data | `Object` | <p>The league data.</p> |
-
-___
 # <a name='Team'></a> Team
-___
+
 ## <a name='Create-a-team'></a> Create a team
+[Back to top](#top)
 
 <p><strong>Access Level :</strong> admin <br/> To create a team send <code>POST</code> request to <code>/api/team</code> endpoint, make sure to include the data needed in the request body :</p>
 
-```http
+```
 POST /api/team
 ```
 
-> ### Headers
+### Headers - `Header`
 
 | Name    | Type      | Description                          |
 |---------|-----------|--------------------------------------|
 | Authorization | `String` | <p>Admin Authorization token.</p> |
 
-> ### Request Body 
-
-The request body must be in `JSON` format
-__example :__ 
-```javascript
-{
-	"name" : "NAME",
-	"captainName" : "CAPTAINNAME",
-}
-```
+### Request Body
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
 | name | `String` | <p>The team name</p> |
 | captainName | `String` | <p>The captainName</p> |
+### Success response
 
-> ### Success response 
+#### Success response - `Success 200`
 
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| Data | `Object` | <p>The new created team</p> |
 
-##### `Success 200`
+### Success response example
 
-
-The expect response is in `JSON` format and may look like this :
-__example :__
+#### Success response example - `Success-Response:`
 
 ```json
 HTTP/1.1 201 CREATED
@@ -1319,39 +1210,37 @@ HTTP/1.1 201 CREATED
 }
 ```
 
-
-| Name     | Type       | Description                           |
-|----------|------------|---------------------------------------|
-| Data | `Object` | <p>The new created team</p> |
-
-___
 ## <a name='Delete-team-by-id'></a> Delete team by id
+[Back to top](#top)
 
 <p><strong>Access Level :</strong> admin <br/> to Delete a team send <code>DELETE</code> request to <code>/api/team/:id</code> endpoint where <code>:id</code> is the team unique id :</p>
 
-```http
+```
 DELETE /api/team/:id
 ```
 
-> ### Headers
+### Headers - `Header`
 
 | Name    | Type      | Description                          |
 |---------|-----------|--------------------------------------|
 | Authorization | `String` | <p>Admin Authorization token.</p> |
 
-> ### Parameters
+### Parameters - `Parameter`
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
 | id | `Number` | <p>Team unique id</p> |
-> ### Success response 
+### Success response
 
+#### Success response - `Success 200`
 
-##### `Success 200`
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| Data | `Object` | <p>The deleted team data.</p> |
 
+### Success response example
 
-The expect response is in `JSON` format and may look like this :
-__example :__
+#### Success response example - `Success-Response:`
 
 ```json
 HTTP/1.1 200 OK
@@ -1369,33 +1258,31 @@ HTTP/1.1 200 OK
 }
 ```
 
-
-| Name     | Type       | Description                           |
-|----------|------------|---------------------------------------|
-| Data | `Object` | <p>The deleted team data.</p> |
-
-___
 ## <a name='Get-team-data-by-id'></a> Get team data by id
+[Back to top](#top)
 
 <p><strong>Access Level :</strong> visitor <br/> To fetch team data send <code>GET</code> request to <code>/api/team/:id</code> endpoint, where <code>id</code> is the team unique id :</p>
 
-```http
+```
 GET /api/team/:id
 ```
 
-> ### Parameters
+### Parameters - `Parameter`
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
 | id | `Number` | <p>team unique id</p> |
-> ### Success response 
+### Success response
 
+#### Success response - `Success 200`
 
-##### `Success 200`
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| Data | `Object` | <p>teams data</p> |
 
+### Success response example
 
-The expect response is in `JSON` format and may look like this :
-__example :__
+#### Success response example - `Success-Response:`
 
 ```json
 HTTP/1.1 200 OK
@@ -1413,27 +1300,25 @@ HTTP/1.1 200 OK
 }
 ```
 
-
-| Name     | Type       | Description                           |
-|----------|------------|---------------------------------------|
-| Data | `Object` | <p>teams data</p> |
-
-___
 ## <a name='Get-teams-data'></a> Get teams data
+[Back to top](#top)
 
 <p><strong>Access Level :</strong> visitor <br/> To fetch teams data send <code>GET</code> request to <code>/api/team</code> endpoint :</p>
 
-```http
+```
 GET /api/team
 ```
-> ### Success response 
+### Success response
 
+#### Success response - `Success 200`
 
-##### `Success 200`
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| Data | `Object` | <p>Array of teams data</p> |
 
+### Success response example
 
-The expect response is in `JSON` format and may look like this :
-__example :__
+#### Success response example - `Success-Response:`
 
 ```json
 HTTP/1.1 200 OK
@@ -1460,56 +1345,44 @@ HTTP/1.1 200 OK
 }
 ```
 
-
-| Name     | Type       | Description                           |
-|----------|------------|---------------------------------------|
-| Data | `Object` | <p>Array of teams data</p> |
-
-___
 ## <a name='Update-team'></a> Update team
+[Back to top](#top)
 
 <p><strong>Access Level :</strong> admin <br/> To update the team data send <code>PUT</code> request to <code>/api/team/:id</code> endpoint, where <code>:id</code> is the team unique id. Make sure to include the data you want to modify in the request body :</p>
 
-```http
+```
 PUT /api/team/:id
 ```
 
-> ### Headers
+### Headers - `Header`
 
 | Name    | Type      | Description                          |
 |---------|-----------|--------------------------------------|
 | Authorization | `String` | <p>Admin Authorization token.</p> |
 
-> ### Parameters
+### Parameters - `Parameter`
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
 | id | `Number` | <p>Team unique id</p> |
 
-> ### Request Body 
-
-The request body must be in `JSON` format
-__example :__ 
-```javascript
-{
-	"name" : "NAME",
-	"captainName" : "CAPTAINNAME",
-}
-```
+### Request Body
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
 | name | `String` | **optional** <p>team name</p> |
 | captainName | `String` | **optional** <p>captain name</p> |
+### Success response
 
-> ### Success response 
+#### Success response - `Success 200`
 
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| Data | `Object` | <p>The updated team data.</p> |
 
-##### `Success 200`
+### Success response example
 
-
-The expect response is in `JSON` format and may look like this :
-__example :__
+#### Success response example - `Success-Response:`
 
 ```json
 HTTP/1.1 200 OK
@@ -1527,48 +1400,43 @@ HTTP/1.1 200 OK
 }
 ```
 
-
-| Name     | Type       | Description                           |
-|----------|------------|---------------------------------------|
-| Data | `Object` | <p>The updated team data.</p> |
-
-___
 ## <a name='Upload-team-logo'></a> Upload team logo
+[Back to top](#top)
 
 <p><strong>Access Level :</strong> admin <br/> To upload a team logo send <code>POST</code> request to <code>/api/team/:id/upload/logo</code> endpoint where <code>:id</code> is the team unique id, Make sure to include the logo image in the request body as <code>FormData</code>:</p>
 
-```http
+```
 POST /api/team/:id/upload/logo
 ```
 
-> ### Headers
+### Headers - `Header`
 
 | Name    | Type      | Description                          |
 |---------|-----------|--------------------------------------|
 | Authorization | `String` | <p>Admin Authorization token.</p> |
 
-> ### Parameters
+### Parameters - `Parameter`
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
 | id | `Number` | <p>Team unique id</p> |
 
-> ### Request Body 
-
-The request body must be in `FormData` format
+### Request Body
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
 | Image | `Image` | <p>The logo image</p> |
+### Success response
 
-> ### Success response 
+#### Success response - `Success 200`
 
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| Data | `Object` | <p>The team data.</p> |
 
-##### `Success 200`
+### Success response example
 
-
-The expect response is in `JSON` format and may look like this :
-__example :__
+#### Success response example - `Success-Response:`
 
 ```json
 HTTP/1.1 200 OK
@@ -1586,52 +1454,40 @@ HTTP/1.1 200 OK
 }
 ```
 
-
-| Name     | Type       | Description                           |
-|----------|------------|---------------------------------------|
-| Data | `Object` | <p>The team data.</p> |
-
-___
 # <a name='Ticket'></a> Ticket
-___
+
 ## <a name='Buy-ticket'></a> Buy ticket
+[Back to top](#top)
 
 <p><strong>Access Level :</strong> valid-user <br/> To buy a ticket send <code>POST</code> request to <code>/api/ticket</code> endpoint, make sure to include the data needed in the request body :</p>
 
-```http
+```
 POST /api/ticket
 ```
 
-> ### Headers
+### Headers - `Header`
 
 | Name    | Type      | Description                          |
 |---------|-----------|--------------------------------------|
 | Authorization | `String` | <p>User Authorization token.</p> |
 
-> ### Request Body 
-
-The request body must be in `JSON` format
-__example :__ 
-```javascript
-{
-	"bleacherType" : "BLEACHERTYPE",
-	"gameId" : 740,
-}
-```
+### Request Body
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
 | bleacherType | `String` | <p>The bleacher type</p> |
 | gameId | `Number` | <p>The game Id</p> |
+### Success response
 
-> ### Success response 
+#### Success response - `Success 200`
 
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| Data | `Object` | <p>The new created ticket</p> |
 
-##### `Success 200`
+### Success response example
 
-
-The expect response is in `JSON` format and may look like this :
-__example :__
+#### Success response example - `Success-Response:`
 
 ```json
 HTTP/1.1 201 CREATED
@@ -1649,39 +1505,37 @@ HTTP/1.1 201 CREATED
 }
 ```
 
-
-| Name     | Type       | Description                           |
-|----------|------------|---------------------------------------|
-| Data | `Object` | <p>The new created ticket</p> |
-
-___
 ## <a name='Delete-ticket'></a> Delete ticket
+[Back to top](#top)
 
 <p><strong>Access Level :</strong> valid-user admin <br/> To delete a ticket send <code>DELETE</code> request to <code>/api/ticket/:id</code> endpoint, where <code>:id</code> is the ticket unique id :</p>
 
-```http
+```
 DELETE /api/ticket/:id
 ```
 
-> ### Headers
+### Headers - `Header`
 
 | Name    | Type      | Description                          |
 |---------|-----------|--------------------------------------|
 | Authorization | `String` | <p>Admin or Valid User Authorization token.</p> |
 
-> ### Parameters
+### Parameters - `Parameter`
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
 | id | `Number` | <p>Ticket unique id</p> |
-> ### Success response 
+### Success response
 
+#### Success response - `Success 200`
 
-##### `Success 200`
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| Data | `Object` | <p>The deleted ticket data.</p> |
 
+### Success response example
 
-The expect response is in `JSON` format and may look like this :
-__example :__
+#### Success response example - `Success-Response:`
 
 ```json
 HTTP/1.1 200 OK
@@ -1699,55 +1553,53 @@ HTTP/1.1 200 OK
 }
 ```
 
-
-| Name     | Type       | Description                           |
-|----------|------------|---------------------------------------|
-| Data | `Object` | <p>The deleted ticket data.</p> |
-
-___
 ## <a name='Download-ticket-PDF'></a> Download ticket PDF
+[Back to top](#top)
 
 <p><strong>Access Level :</strong> valid-user <br/> To get the ticket asset send <code>GET</code> request to <code>/api/ticket/:id/:type</code> endpoint, where <code>:id</code> is the ticket unique id and <code>:type</code> is one of the following : qrcode, base64, string, pdf</p>
 
-```http
+```
 GET /api/ticket/:id/:type
 ```
 
-> ### Headers
+### Headers - `Header`
 
 | Name    | Type      | Description                          |
 |---------|-----------|--------------------------------------|
 | Authorization | `String` | <p>User Authorization token.</p> |
 
-> ### Parameters
+### Parameters - `Parameter`
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
 | id | `Number` | <p>Ticket unique id</p> |
 | type | `String` | <p>One of the following : qrcode, base64, string, pdf</p> |
 
-___
 ## <a name='Get-tickets-data'></a> Get tickets data
+[Back to top](#top)
 
 <p><strong>Access Level :</strong> valid-user admin <br/> To fetch tickets data send <code>GET</code> request to <code>/api/ticket</code> endpoint :</p>
 
-```http
+```
 GET /api/ticket
 ```
 
-> ### Headers
+### Headers - `Header`
 
 | Name    | Type      | Description                          |
 |---------|-----------|--------------------------------------|
 | Authorization | `String` | <p>Admin or Valid user Authorization token.</p> |
-> ### Success response 
+### Success response
 
+#### Success response - `Success 200`
 
-##### `Success 200`
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| Data | `Object` | <p>Array of tickets data</p> |
 
+### Success response example
 
-The expect response is in `JSON` format and may look like this :
-__example :__
+#### Success response example - `Success-Response:`
 
 ```json
 HTTP/1.1 200 OK
@@ -1774,36 +1626,18 @@ HTTP/1.1 200 OK
 }
 ```
 
-
-| Name     | Type       | Description                           |
-|----------|------------|---------------------------------------|
-| Data | `Object` | <p>Array of tickets data</p> |
-
-___
 # <a name='User'></a> User
-___
+
 ## <a name='Create-User'></a> Create User
+[Back to top](#top)
 
 <p>This endpoint allows a user to be created by providing required user data. If successful, the new user data will be returned in the response.</p>
 
-```http
+```
 POST /api/user
 ```
 
-> ### Request Body 
-
-The request body must be in `JSON` format
-__example :__ 
-```javascript
-{
-	"firstname" : "FIRSTNAME",
-	"lastname" : "LASTNAME",
-	"email" : "EMAIL",
-	"password" : "PASSWORD",
-	"phone" : "PHONE",
-	"nationalId" : "NATIONALID",
-}
-```
+### Request Body
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
@@ -1813,15 +1647,28 @@ __example :__
 | password | `String` | <p>Password for the user account.</p> |
 | phone | `String` | <p>Phone number of the user.</p> |
 | nationalId | `String` | <p>National ID of the user.</p> |
+### Success response
 
-> ### Success response 
+#### Success response - `Success 200`
 
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| success | `Boolean` | <p>Whether or not the request was successful.</p> |
+| code | `Number` | <p>The HTTP status code returned by the server.</p> |
+| message | `String` | <p>A message explaining the status of the request.</p> |
+| data | `Object` | <p>The data returned by the endpoint.</p> |
+| data.id | `Number` | <p>The ID of the newly created user.</p> |
+| data.username | `String` | <p>The username of the newly created user.</p> |
+| data.firstname | `String` | <p>The first name of the newly created user.</p> |
+| data.lastname | `String` | <p>The last name of the newly created user.</p> |
+| data.email | `String` | <p>The email address of the newly created user.</p> |
+| data.isEmailConfirmed | `Boolean` | <p>Whether or not the user's email address has been confirmed.</p> |
+| data.phone | `String` | <p>The phone number of the newly created user.</p> |
+| data.nationalId | `String` | <p>The national ID of the newly created user.</p> |
 
-##### `Success 200`
+### Success response example
 
-
-The expect response is in `JSON` format and may look like this :
-__example :__
+#### Success response example - `Success-Response:`
 
 ```json
 HTTP/1.1 201 Created
@@ -1842,27 +1689,9 @@ HTTP/1.1 201 Created
 }
 ```
 
+### Error response
 
-| Name     | Type       | Description                           |
-|----------|------------|---------------------------------------|
-| success | `Boolean` | <p>Whether or not the request was successful.</p> |
-| code | `Number` | <p>The HTTP status code returned by the server.</p> |
-| message | `String` | <p>A message explaining the status of the request.</p> |
-| data | `Object` | <p>The data returned by the endpoint.</p> |
-| data.id | `Number` | <p>The ID of the newly created user.</p> |
-| data.username | `String` | <p>The username of the newly created user.</p> |
-| data.firstname | `String` | <p>The first name of the newly created user.</p> |
-| data.lastname | `String` | <p>The last name of the newly created user.</p> |
-| data.email | `String` | <p>The email address of the newly created user.</p> |
-| data.isEmailConfirmed | `Boolean` | <p>Whether or not the user's email address has been confirmed.</p> |
-| data.phone | `String` | <p>The phone number of the newly created user.</p> |
-| data.nationalId | `String` | <p>The national ID of the newly created user.</p> |
-
-
-> ### Error response 
-
-
-##### `Error 4xx`
+#### Error response - `Error 4xx`
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
@@ -1873,7 +1702,7 @@ HTTP/1.1 201 Created
 
 ### Error response example
 
-##### `Error-Response:`
+#### Error response example - `Error-Response:`
 
 ```json
 HTTP/1.1 400 Bad Request
@@ -1884,28 +1713,32 @@ HTTP/1.1 400 Bad Request
   "field": "email"
 }
 ```
-___
+
 ## <a name='Delete-user'></a> Delete user
+[Back to top](#top)
 
 <p><strong>Access Level :</strong> user <br/> To delete a user send <code>DELETE</code> request to <code>/api/user</code> endpoint :</p>
 
-```http
+```
 DELETE /api/user
 ```
 
-> ### Headers
+### Headers - `Header`
 
 | Name    | Type      | Description                          |
 |---------|-----------|--------------------------------------|
 | Authorization | `String` | <p>User Authorization token.</p> |
-> ### Success response 
+### Success response
 
+#### Success response - `Success 200`
 
-##### `Success 200`
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| Data | `Object` | <p>The deleted user data.</p> |
 
+### Success response example
 
-The expect response is in `JSON` format and may look like this :
-__example :__
+#### Success response example - `Success-Response:`
 
 ```json
 HTTP/1.1 200 OK
@@ -1926,39 +1759,37 @@ HTTP/1.1 200 OK
 }
 ```
 
-
-| Name     | Type       | Description                           |
-|----------|------------|---------------------------------------|
-| Data | `Object` | <p>The deleted user data.</p> |
-
-___
 ## <a name='Delete-user-by-id'></a> Delete user by id
+[Back to top](#top)
 
 <p><strong>Access Level :</strong> admin <br/> to Delete a user send <code>DELETE</code> request to <code>/api/user/:id</code> endpoint where <code>:id</code> is the user unique id :</p>
 
-```http
+```
 DELETE /api/user/:id
 ```
 
-> ### Headers
+### Headers - `Header`
 
 | Name    | Type      | Description                          |
 |---------|-----------|--------------------------------------|
 | Authorization | `String` | <p>Admin Authorization token.</p> |
 
-> ### Parameters
+### Parameters - `Parameter`
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
 | id | `Number` | <p>User unique id</p> |
-> ### Success response 
+### Success response
 
+#### Success response - `Success 200`
 
-##### `Success 200`
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| Data | `Object` | <p>The deleted user data.</p> |
 
+### Success response example
 
-The expect response is in `JSON` format and may look like this :
-__example :__
+#### Success response example - `Success-Response:`
 
 ```json
 HTTP/1.1 200 OK
@@ -1979,39 +1810,37 @@ HTTP/1.1 200 OK
 }
 ```
 
-
-| Name     | Type       | Description                           |
-|----------|------------|---------------------------------------|
-| Data | `Object` | <p>The deleted user data.</p> |
-
-___
 ## <a name='Get-user-data-by-id'></a> Get user data by id
+[Back to top](#top)
 
 <p><strong>Access Level :</strong> user admin <br/> To fetch user data send <code>GET</code> request to <code>/api/user/:id</code> endpoint where <code>:id</code> is the user id :</p>
 
-```http
+```
 GET /api/user/:id
 ```
 
-> ### Headers
+### Headers - `Header`
 
 | Name    | Type      | Description                          |
 |---------|-----------|--------------------------------------|
 | Authorization | `String` | <p>User or Admin Authorization token.</p> |
 
-> ### Parameters
+### Parameters - `Parameter`
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
 | id | `Number` | <p>User unique id</p> |
-> ### Success response 
+### Success response
 
+#### Success response - `Success 200`
 
-##### `Success 200`
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| Data | `Object` | <p>User Data</p> |
 
+### Success response example
 
-The expect response is in `JSON` format and may look like this :
-__example :__
+#### Success response example - `Success-Response:`
 
 ```json
 HTTP/1.1 200 OK
@@ -2032,27 +1861,22 @@ HTTP/1.1 200 OK
 }
 ```
 
-
-| Name     | Type       | Description                           |
-|----------|------------|---------------------------------------|
-| Data | `Object` | <p>User Data</p> |
-
-___
 ## <a name='Get-User(s)'></a> Get User(s)
+[Back to top](#top)
 
 <p>Returns information about a user or an array of users.</p>
 
-```http
+```
 GET /api/user
 ```
 
-> ### Headers
+### Headers - `Header`
 
 | Name    | Type      | Description                          |
 |---------|-----------|--------------------------------------|
 | Authorization | `String` | <p>User or Admin JWT token.</p> |
 
-> ### Parameters
+### Parameters - `Query`
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
@@ -2062,7 +1886,7 @@ GET /api/user
 | page | `Number` | **optional** <p>Page number for pagination. Only for admin.</p>_Default value: 1_<br> |
 | limit | `Number` | **optional** <p>Number of users per page for pagination. Only for admin.</p>_Default value: 20_<br> |
 
-__Examples :__
+### Examples
 
 Example usage:
 
@@ -2078,14 +1902,20 @@ axios.get('/api/users?id=1', { headers: { Authorization: `Bearer {user_token}` }
 axios.get('/api/users?isEmailConfirmed=1&email=test@test.com', { headers: { Authorization: `Bearer {admin_token}` } })
 ```
 
-> ### Success response 
+### Success response
 
+#### Success response - `Success 200`
 
-##### `Success 200`
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| success | `Boolean` | <p>Request status.</p> |
+| code | `Number` | <p>Request status code.</p> |
+| message | `String` | <p>Request status message.</p> |
+| data | `Object|Array` | <p>User or array of users.</p> |
 
+### Success response example
 
-The expect response is in `JSON` format and may look like this :
-__example :__
+#### Success response example - `Success-Response:`
 
 ```json
 HTTP/1.1 200 OK
@@ -2106,19 +1936,9 @@ HTTP/1.1 200 OK
 }
 ```
 
+### Error response
 
-| Name     | Type       | Description                           |
-|----------|------------|---------------------------------------|
-| success | `Boolean` | <p>Request status.</p> |
-| code | `Number` | <p>Request status code.</p> |
-| message | `String` | <p>Request status message.</p> |
-| data | `Object|Array` | <p>User or array of users.</p> |
-
-
-> ### Error response 
-
-
-##### `Error 4xx`
+#### Error response - `Error 4xx`
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
@@ -2129,7 +1949,7 @@ HTTP/1.1 200 OK
 
 ### Error response example
 
-##### `Error-Response:`
+#### Error response example - `Error-Response:`
 
 ```json
 HTTP/1.1 301 Unauthorized
@@ -2140,65 +1960,81 @@ HTTP/1.1 301 Unauthorized
   "field": "token"
 }
 ```
-___
+
 ## <a name='Receive-email-confirmation'></a> Receive email confirmation
+[Back to top](#top)
 
 <p><strong>Access Level :</strong> visitor <br/> You probably don't need to deal with this endpoint, and probably you will get an error if you don't have the exact same link sent to the user email</p>
 
-```http
+```
 GET /api/user/receive/confirmation/email/:token
 ```
 
-> ### Parameters
+### Parameters - `Parameter`
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
 | token | `String` | <p>Unique token</p> |
 
-___
+### Success response example
+
+#### Success response example - `Success-Response:`
+
+```json
+HTTP/1.1 200 OK
+{
+	"success" : true,
+	"code" : 202,
+	"message" : "email confirmed",
+	"data" : {}
+}
+```
+
 ## <a name='Send-a-confirmation-email'></a> Send a confirmation email
+[Back to top](#top)
 
 <p><strong>Access Level :</strong> user <br/> Send a unique url to the user email, when the user clicks the link his email will be confirmed</p>
 
-```http
+```
 GET /api/user/send/confirmation/email
 ```
 
-> ### Headers
+### Headers - `Header`
 
 | Name    | Type      | Description                          |
 |---------|-----------|--------------------------------------|
 | Authorization | `String` | <p>User Authorization token.</p> |
 
-___
+### Success response example
+
+#### Success response example - `Success-Response:`
+
+```json
+HTTP/1.1 200 OK
+{
+	"success" : true,
+	"code" : 200,
+	"message" : "email has been sent",
+	"data" : {}
+}
+```
+
 ## <a name='Update-user'></a> Update user
+[Back to top](#top)
 
 <p><strong>Access Level :</strong> user <br/> To update the user data send <code>PUT</code> request to <code>/api/user</code> endpoint, make sure to include the data you want to modify in the request body :</p>
 
-```http
+```
 PUT /api/user
 ```
 
-> ### Headers
+### Headers - `Header`
 
 | Name    | Type      | Description                          |
 |---------|-----------|--------------------------------------|
 | Authorization | `String` | <p>User Authorization token.</p> |
 
-> ### Request Body 
-
-The request body must be in `JSON` format
-__example :__ 
-```javascript
-{
-	"firstname" : "FIRSTNAME",
-	"lastname" : "LASTNAME",
-	"email" : "EMAIL",
-	"password" : "PASSWORD",
-	"phone" : "PHONE",
-	"nationalId" : "NATIONALID",
-}
-```
+### Request Body
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
@@ -2208,15 +2044,17 @@ __example :__
 | password | `String` | **optional** <p>password</p> |
 | phone | `String` | **optional** <p>phone number</p> |
 | nationalId | `String` | **optional** <p>national Id</p> |
+### Success response
 
-> ### Success response 
+#### Success response - `Success 200`
 
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| Data | `Object` | <p>The updated user data.</p> |
 
-##### `Success 200`
+### Success response example
 
-
-The expect response is in `JSON` format and may look like this :
-__example :__
+#### Success response example - `Success-Response:`
 
 ```json
 HTTP/1.1 200 OK
@@ -2236,10 +2074,4 @@ HTTP/1.1 200 OK
 	}
 }
 ```
-
-
-| Name     | Type       | Description                           |
-|----------|------------|---------------------------------------|
-| Data | `Object` | <p>The updated user data.</p> |
-
 
