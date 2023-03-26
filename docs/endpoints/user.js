@@ -2,7 +2,7 @@
  * @api {post} /api/user/login User login
  * @apiVersion 1.0.0
  * @apiName UserLogin
- * @apiGroup Authentication
+ * @apiGroup User
  *
  * @apiDescription This endpoint allows a user to log in by providing their email and password. If the provided credentials are correct, the server will return an access token which the user can use to authenticate future requests.
  *
