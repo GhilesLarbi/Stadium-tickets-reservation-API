@@ -38,78 +38,72 @@
 </ul>
 <hr />
 <h1>Installation</h1>
-<p>To run the API locally you need to install :</p>
+<p>In order to run the API locally, please follow the steps below:</p>
+<p>You need to install :</p>
 <ul>
 <li>Node.js +v18.13.0</li>
 <li>Mariadb +v10.6.11</li>
 </ul>
-<p>Clone this repository to your local machine</p>
+<p>Clone the repository to your local machine using the following command:</p>
 <pre><code class="language-bash">git clone https://github.com/GhilesLarbi/Stadium-tickets-reservation-API.git
 </code></pre>
-<p>Change directory to the repository folder</p>
+<p>Navigate to the cloned repository by using the following command:</p>
 <pre><code class="language-bash">cd Stadium-tickets-reservation-API
 </code></pre>
-<p>Install nodemon package for development</p>
+<p>Install the nodemon package for development using the following command:</p>
 <pre><code class="language-bash">npm install nodemon --save-dev
 </code></pre>
-<p>Install dependencies</p>
+<p>Install the required dependencies using the following command:</p>
 <pre><code class="language-bash">npm install
 </code></pre>
-<p>if you face any issues while installing dependencies
-especially on windows OS try :</p>
+<p>If you face any issues while installing dependencies, especially on the Windows operating system, try the following command instead:</p>
 <pre><code class="language-bash">npm install --no-bin-links
 </code></pre>
-<p>Start and configure your mariadb server and make sure the user have the <code>READ</code> and the <code>WRITE</code> privileges
-Then create an empty database
-for example <code>db_test</code> :</p>
+<p>Start and configure your MariaDB server and ensure that the user has the <code>READ</code> and <code>WRITE</code> privileges. Then, create an empty database, let's call it <code>db_test</code>.</p>
 <pre><code class="language-sql">CREATE DATABASE db_test;
 </code></pre>
-<p>Add your mariadb server credentials to the <code>.env</code> file located in the repository folder :</p>
+<p>Next, navigate to the repository folder in your local machine and open the <code>.env</code> file. Here, you will need to add your MariaDB server credentials. Specifically, you'll need to provide your database <code>host</code>, <code>port</code>, <code>username</code>, <code>password</code>, and <code>name</code>. For instance, you could set the following values:</p>
 <pre><code class="language-javascript">DB_HOST = 127.0.0.1
 DB_PORT = 3306
 DB_USER = root // mariadb username
 DB_PASSWORD = root // mariadb password
 DB_NAME = db_test // database name
 </code></pre>
-<p>Now seed the database :</p>
+<p>Once you have specified your credentials, save the changes to the <code>.env</code> file.</p>
+<p>In this step, you will seed the database with the necessary tables and dummy data. To do this, run the following command in your terminal:</p>
 <pre><code class="language-bash">npm run seed-database
 </code></pre>
-<p>This command will create the right tables and seed them with dummy data</p>
-<p>Finally, you can start the server and listen to requests by executing eather the dev command :</p>
+<p>Finally, you can start the server and listen to requests by executing either the dev command :</p>
 <pre><code class="language-bash">npm run dev
 </code></pre>
 <p>or the normal one :</p>
 <pre><code class="language-bash">npm start
 </code></pre>
-<p>By default the server will start on <code>PORT</code> 3000.
-You can change the default port by adding <code>PORT</code> variable to <code>.env</code> file :</p>
-<pre><code class="language-javascript">PORT = 8080
-</code></pre>
+<p>In this step, you will start the server by running either the npm run dev command or the npm start command in your terminal. This will listen to incoming requests from clients and respond to them accordingly.</p>
+<p>By default, the server will start on <code>PORT</code> <code>3000</code>. If you want to change this, you can add a PORT variable to the <code>.env</code> file and set it to the desired port number. For example, you might enter <code>PORT=8080</code>.</p>
 <hr />
 <h1>Authentication</h1>
-<p>Some endpoints may require authentication for example to fetch your tickets data, you need to <a href="#User##login">login</a> your API client as a user and obtain an access token.</p>
-<p>The endpoints that require authentication expect a bearer token sent in the <code>Authorizarion header</code></p>
-<p><strong>Example:</strong></p>
-<p>Fetch all your tickets</p>
-<pre><code class="language-http">GET /api/ticket
-Authorization: Bearer ACCESS_TOKEN
+<p>Authentication is needed to access certain endpoints in the API, such as fetching your ticket data. To do this, you need to log in as a user and get an <code>access token</code>.</p>
+<p>When accessing endpoints that require authentication, you should include your access token in the <code>Authorization header</code> as a <code>Bearer token</code>.</p>
+<p>For example, to fetch all of your tickets, you would send a <code>GET</code> request to <code>/api/ticket</code> with your access token included in the <code>Authorization header</code> as follows:</p>
+<pre><code>Authorization: Bearer ACCESS_TOKEN
 </code></pre>
-<p>If you don't include the <code>Authorization header</code> you will get a <code>401</code> status code with a response like this :</p>
-<pre><code class="language-json">{
+<p>Make sure to replace ACCESS_TOKEN with your actual access token.</p>
+<p>If the header is missing or invalid, the server will respond with a <code>401</code> status code and an error message indicating that you are not authorized to access the resource.</p>
+<p>For example, if you attempt to fetch your tickets without a valid access token, the server will return a response similar to the following:</p>
+<pre><code class="language-json">
+{
     "success" : false,
     "code" : 401,
-    "message" : "you are not leged in",
-    "field" : "token"
+    "message" : "Authentication failed. Please provide a valid token.",
+    "field" : "Authorization"
 }
 </code></pre>
-<p>To get an access token you have to login as a <a href="#User##Login">User</a> or as an <a href="#Admin##Login">Admin</a></p>
+<p>To obtain an <code>access token</code>, you must first log in as a user or an admin, depending on the authentication requirements of the API. Once you have a valid token, include it in the <code>Authorization header</code> of your requests to access protected resources.</p>
 <hr />
 <h1>Response Template</h1>
-<p>When you send a request, the server will respond with json data, all responses have a similar format
-For example when sendeing :</p>
-<pre><code class="language-http">GET /api/team/1
-</code></pre>
-<p>The response may look like this :</p>
+<p>To maintain consistency across all API responses, the server follows a specific format. Whenever you send a request, the server will respond with <code>JSON</code> data in this standardized format.</p>
+<p>For example, when you send a request to fetch data about a specific team, let's say <code>JSK</code>, the response may look like this:</p>
 <pre><code class="language-json">{
     "success" : true,
     "code" : 200,
@@ -124,12 +118,11 @@ For example when sendeing :</p>
     }
 }
 </code></pre>
+<p>In response to your requests, the server will reply with JSON data that follows a similar format. Each response includes the following fields:</p>
 <h3><strong><code>success</code> :</strong></h3>
-<p>represents the response state, if it is true then everything ran as expected, false if something went wrong
-For example if the <code>id</code> on the request is not found you may get :</p>
-<pre><code class="language-http">GET /api/team/1928
-</code></pre>
-<pre><code class="language-json">{
+<p>indicates the status of the response. A value of true means that everything went smoothly, while a value of false means that something went wrong. For example, if you request an invalid ID, the response may be:</p>
+<pre><code class="language-json">
+{
     "success" : false,
     "code" : 404,
     "message" : "team not found",
@@ -137,8 +130,7 @@ For example if the <code>id</code> on the request is not found you may get :</p>
 }
 </code></pre>
 <h3><strong><code>code</code> :</strong></h3>
-<p>is the response status code
-Here are some status codes that you might see a lot :</p>
+<p>is the HTTP status code of the response. Some commonly used codes include:</p>
 <p><code>200</code> : <code>everything ok</code> <br/>
 <code>201</code> : <code>created</code> <br/>
 <code>202</code> : <code>accepted</code> <br/>
@@ -153,11 +145,20 @@ Here are some status codes that you might see a lot :</p>
 <p><code>500</code> : <code>internal server error</code> <br/>
 <code>501</code> : <code>not implemented</code> <br/></p>
 <h3><strong><code>message</code> :</strong></h3>
-<p>sometimes the status code alone cannot explain what happened exactly on the server, you can read this message instead</p>
+<p>is a human-readable string that provides additional context about the response.</p>
 <h3><strong><code>data</code> :</strong></h3>
-<p>It's the actual data fetched from the server, this field is not always filled for example when error occurs or sending an email to confirm or uploading a logo you get an empty object, or when you try to fetch users with wrong pagination queries, you get an empty array</p>
+<p>is the payload of the response, which contains the requested data</p>
+<p>Note that the format of the response may vary depending on the specific endpoint being accessed.</p>
 <h3><strong><code>field</code> :</strong></h3>
-<p>When an error occurs this field will be included on the response object, from here you can exactly know where you missed up</p>
+<p>This field is included in the response object when an error occurs. It provides information about the specific field that caused the error, allowing you to easily identify and correct the mistake. For example, if you provide an invalid <code>teamId</code> in a request, the response might include the following:</p>
+<pre><code class="language-json">
+{
+    "success": false,
+    "code": 400,
+    "message": "Bad request",
+    "field": "teamId"
+}
+</code></pre>
 <hr />
 <h1>Authorization</h1>
 <p>Some endpoints have specific access level, meaning that if you try to access that endpoint with a non-authorized client you will get an error
@@ -199,20 +200,18 @@ There are 4 different clients :</p>
 <h1>Query</h1>
 <hr />
 <h1>Pagination</h1>
-<p>Some endpoints support pagination through query, you can preform pagination using two queries <code>limit</code> and <code>page</code>
-<strong>example :</strong>
-Fetching users using an <code>admin token</code> if you don't include any query you will get by default 20 users</p>
+<p>Pagination is a feature supported by some endpoints that allows you to limit the number of results returned and navigate through them using the page query. For example, if you want to fetch users using an admin token, by default, you will get the first 20 users:</p>
 <pre><code class="language-http">GET /api/user
 </code></pre>
-<p>You can change that by adding the <code>page</code> query  <code>?page=2</code> to the path</p>
+<p>If you want to fetch the next page of users, you can include the page query:</p>
 <pre><code class="language-http">GET /api/user/?page=2
 </code></pre>
-<p>This will fetch the next 20 users, from 20 to 40.</p>
-<p>By default you get 20 users each time. You can change that by including the <code>limit</code> query</p>
+<p>This will return the next 20 users, starting from 21 to 40.</p>
+<p>You can also include the limit query to change the number of results returned per page:</p>
 <pre><code class="language-http">GET /api/user/?limit=10&page=2
 </code></pre>
-<p>Now you will get an array of users from 10 to 20</p>
-<h3>endpoints that support pagination :</h3>
+<p>This will return an array of 10 users, starting from 11 to 20.</p>
+<h3>Pagination is supported by the following endpoints:</h3>
 <ul>
 <li><a href="##get-user-data">get user data</a></li>
 <li><a href="##get-leagues-data">get leagues data</a></li>

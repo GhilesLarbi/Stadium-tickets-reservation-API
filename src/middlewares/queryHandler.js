@@ -101,9 +101,11 @@ function queryHandler(model) {
 					option.where[query] = {[Op.substring]: req.query[query]}
 			}
 			else if (type == "bool") {
-				const value = (req.query[query] in ['0', '1'])? req.query[query] : null
-				if (value)
-					option.where[query] = (value == '1') ? true : false
+				const value = req.query[query]
+				if (['0', 'false', 'no'].includes(value)) 
+					option.where[query] = false
+				else if (['1', 'true', 'yes'].includes(value)) 
+					option.where[query] = true
 			}
 			else if (type == "compare") {
 				if (req.query[query]) {

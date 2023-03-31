@@ -34,45 +34,47 @@
 <hr />
 
 # Installation
-To run the API locally you need to install :
+
+In order to run the API locally, please follow the steps below:
+
+You need to install :
 - Node.js +v18.13.0
 - Mariadb +v10.6.11
 
-Clone this repository to your local machine 
+Clone the repository to your local machine using the following command:
 ```bash
 git clone https://github.com/GhilesLarbi/Stadium-tickets-reservation-API.git
 ```
 
-Change directory to the repository folder
+Navigate to the cloned repository by using the following command:
 ```bash
 cd Stadium-tickets-reservation-API
 ```
 
-Install nodemon package for development
+Install the nodemon package for development using the following command:
 ```bash
 npm install nodemon --save-dev
 ```
 
-Install dependencies
+Install the required dependencies using the following command:
 ```bash 
 npm install
 ```
 
-if you face any issues while installing dependencies
-especially on windows OS try :
+If you face any issues while installing dependencies, especially on the Windows operating system, try the following command instead:
 
 ```bash
 npm install --no-bin-links
 ```
 
-Start and configure your mariadb server and make sure the user have the `READ` and the `WRITE` privileges 
-Then create an empty database
-for example `db_test` :
+Start and configure your MariaDB server and ensure that the user has the `READ` and `WRITE` privileges. Then, create an empty database, let's call it `db_test`.
 ``` sql 
 CREATE DATABASE db_test;
 ```
 
-Add your mariadb server credentials to the `.env` file located in the repository folder :
+
+Next, navigate to the repository folder in your local machine and open the `.env` file. Here, you will need to add your MariaDB server credentials. Specifically, you'll need to provide your database `host`, `port`, `username`, `password`, and `name`. For instance, you could set the following values:
+
 ```javascript
 DB_HOST = 127.0.0.1
 DB_PORT = 3306
@@ -81,13 +83,16 @@ DB_PASSWORD = root // mariadb password
 DB_NAME = db_test // database name
 ```
 
-Now seed the database :
+Once you have specified your credentials, save the changes to the `.env` file.
+
+In this step, you will seed the database with the necessary tables and dummy data. To do this, run the following command in your terminal:
+
 ```bash
 npm run seed-database
 ```
-This command will create the right tables and seed them with dummy data
 
-Finally, you can start the server and listen to requests by executing eather the dev command :
+Finally, you can start the server and listen to requests by executing either the dev command :
+
 ```bash
 npm run dev
 ```
@@ -96,52 +101,53 @@ or the normal one :
 npm start
 ```
 
-By default the server will start on `PORT` 3000.
-You can change the default port by adding `PORT` variable to `.env` file :
-```javascript
-PORT = 8080
-```
+In this step, you will start the server by running either the npm run dev command or the npm start command in your terminal. This will listen to incoming requests from clients and respond to them accordingly.
+
+By default, the server will start on `PORT` `3000`. If you want to change this, you can add a PORT variable to the `.env` file and set it to the desired port number. For example, you might enter `PORT=8080`.
 
 <hr />
 
+
 # Authentication
-Some endpoints may require authentication for example to fetch your tickets data, you need to [login](#User##login) your API client as a user and obtain an access token.
+Authentication is needed to access certain endpoints in the API, such as fetching your ticket data. To do this, you need to log in as a user and get an `access token`.
 
-The endpoints that require authentication expect a bearer token sent in the `Authorizarion header`
+When accessing endpoints that require authentication, you should include your access token in the `Authorization header` as a `Bearer token`.
 
-__Example:__
+For example, to fetch all of your tickets, you would send a `GET` request to `/api/ticket` with your access token included in the `Authorization header` as follows:
 
-Fetch all your tickets 
-```http
-GET /api/ticket
+```
 Authorization: Bearer ACCESS_TOKEN
 ```
 
-If you don't include the `Authorization header` you will get a `401` status code with a response like this :
-```json 
+Make sure to replace ACCESS_TOKEN with your actual access token.
+
+
+
+If the header is missing or invalid, the server will respond with a `401` status code and an error message indicating that you are not authorized to access the resource.
+
+For example, if you attempt to fetch your tickets without a valid access token, the server will return a response similar to the following:
+
+```json
+
 {
     "success" : false,
     "code" : 401,
-    "message" : "you are not leged in",
-    "field" : "token"
+    "message" : "Authentication failed. Please provide a valid token.",
+    "field" : "Authorization"
 }
 ```
 
-
-To get an access token you have to login as a [User](#User##Login) or as an [Admin](#Admin##Login)
-
+To obtain an `access token`, you must first log in as a user or an admin, depending on the authentication requirements of the API. Once you have a valid token, include it in the `Authorization header` of your requests to access protected resources.
 
 
 <hr />
 
 # Response Template
-When you send a request, the server will respond with json data, all responses have a similar format 
-For example when sendeing :
-```http
-GET /api/team/1
-```
 
-The response may look like this :
+To maintain consistency across all API responses, the server follows a specific format. Whenever you send a request, the server will respond with `JSON` data in this standardized format.
+
+For example, when you send a request to fetch data about a specific team, let's say `JSK`, the response may look like this:
+
 ```json
 {
     "success" : true,
@@ -158,13 +164,16 @@ The response may look like this :
 }
 ```
 
+
+
+
+In response to your requests, the server will reply with JSON data that follows a similar format. Each response includes the following fields:
+
 ### __`success` :__
-represents the response state, if it is true then everything ran as expected, false if something went wrong 
-For example if the `id` on the request is not found you may get :
-```http 
-GET /api/team/1928
-```
+indicates the status of the response. A value of true means that everything went smoothly, while a value of false means that something went wrong. For example, if you request an invalid ID, the response may be:
+
 ```json
+
 {
     "success" : false,
     "code" : 404,
@@ -174,10 +183,8 @@ GET /api/team/1928
 ```
 
 
-
 ### __`code` :__ 
-is the response status code 
-Here are some status codes that you might see a lot : 
+is the HTTP status code of the response. Some commonly used codes include:
 
 `200` : `everything ok` <br/>
 `201` : `created` <br/>
@@ -198,16 +205,27 @@ Here are some status codes that you might see a lot :
 
 
 ### __`message` :__ 
-sometimes the status code alone cannot explain what happened exactly on the server, you can read this message instead
+is a human-readable string that provides additional context about the response.
 
 
 ### __`data` :__
-It's the actual data fetched from the server, this field is not always filled for example when error occurs or sending an email to confirm or uploading a logo you get an empty object, or when you try to fetch users with wrong pagination queries, you get an empty array
+is the payload of the response, which contains the requested data
+
+Note that the format of the response may vary depending on the specific endpoint being accessed.
 
 
 ### __`field` :__
-When an error occurs this field will be included on the response object, from here you can exactly know where you missed up
+This field is included in the response object when an error occurs. It provides information about the specific field that caused the error, allowing you to easily identify and correct the mistake. For example, if you provide an invalid `teamId` in a request, the response might include the following:
 
+```json
+
+{
+    "success": false,
+    "code": 400,
+    "message": "Bad request",
+    "field": "teamId"
+}
+```
 
 <hr />
 
@@ -246,28 +264,31 @@ is a client with an `admin token`
 <hr />
 
 # Pagination
-Some endpoints support pagination through query, you can preform pagination using two queries `limit` and `page`
-__example :__
-Fetching users using an `admin token` if you don't include any query you will get by default 20 users
-```http 
+
+
+Pagination is a feature supported by some endpoints that allows you to limit the number of results returned and navigate through them using the page query. For example, if you want to fetch users using an admin token, by default, you will get the first 20 users:
+
+```http
 GET /api/user
 ```
 
-You can change that by adding the `page` query  `?page=2` to the path
+If you want to fetch the next page of users, you can include the page query:
+
 ```http
 GET /api/user/?page=2
 ```
 
-This will fetch the next 20 users, from 20 to 40.
+This will return the next 20 users, starting from 21 to 40.
 
-By default you get 20 users each time. You can change that by including the `limit` query 
-```http 
+You can also include the limit query to change the number of results returned per page:
+
+```http
 GET /api/user/?limit=10&page=2
 ```
 
-Now you will get an array of users from 10 to 20
+This will return an array of 10 users, starting from 11 to 20.
 
-### endpoints that support pagination :
+### Pagination is supported by the following endpoints:
 - [get user data](##get-user-data)
 - [get leagues data](##get-leagues-data)
 - [get teams data](##get-teams-data)
