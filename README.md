@@ -258,13 +258,13 @@ There are 4 different clients :</p>
   - [Get tickets data](#Get-tickets-data)
 - [User](#User)
   - [Create User](#Create-User)
-  - [Delete user](#Delete-user)
-  - [Delete user by id](#Delete-user-by-id)
-  - [Get user data by id](#Get-user-data-by-id)
+  - [Delete User](#Delete-User)
+  - [Delete user by ID](#Delete-user-by-ID)
+  - [Get User By ID](#Get-User-By-ID)
   - [Get User Information](#Get-User-Information)
   - [Receive email confirmation](#Receive-email-confirmation)
-  - [Send a confirmation email](#Send-a-confirmation-email)
-  - [Update user](#Update-user)
+  - [Send Confirmation Email](#Send-Confirmation-Email)
+  - [Update User](#Update-User)
   - [User login](#User-login)
 
 ___
@@ -1642,10 +1642,10 @@ HTTP/1.1 400 Bad Request
 }
 ```
 
-## <a name='Delete-user'></a> Delete user
+## <a name='Delete-User'></a> Delete User
 [Back to top](#top)
 
-<p><strong>Access Level :</strong> user <br/> To delete a user send <code>DELETE</code> request to <code>/api/user</code> endpoint :</p>
+<p>This endpoint allows a user to delete their own account. To delete a user account, send a <code>DELETE</code> request to <code>/api/user</code> with the user's authorization token in the header.</p>
 
 ```
 DELETE /api/user
@@ -1655,42 +1655,48 @@ DELETE /api/user
 
 | Name    | Type      | Description                          |
 |---------|-----------|--------------------------------------|
-| Authorization | `String` | <p>User Authorization token.</p> |
-### Success response
-
-#### Success response - `Success 200`
-
-| Name     | Type       | Description                           |
-|----------|------------|---------------------------------------|
-| Data | `Object` | <p>The deleted user data.</p> |
+| Authorization | `String` | <p>User's authorization token.</p> |
 
 ### Success response example
 
-#### Success response example - `Success-Response:`
+#### Success response example - `Success Response:`
 
 ```json
 HTTP/1.1 200 OK
 {
-	"success" : true,
-	"code" : 200,
-	"message" : "user deleted",
-	"data" : {
-		"id" : 1,
-		"username" : "test_1",
-		"firstname" : "test",
-		"lastname" : "test",
-		"email" : "example@example.com",
-		"isEmailConfirmed" : false,
-		"phone" : "+213667667067",
-		"nationalId" : "123456789"
-	}
+    "success": true,
+    "code": 200,
+    "message": "User deleted",
+    "data": {
+        "id": 1,
+        "username": "test_1",
+        "firstname": "test",
+        "lastname": "test",
+        "email": "example@example.com",
+        "isEmailConfirmed": false,
+        "phone": "+213667667067",
+        "nationalId": "123456789"
+    }
 }
 ```
 
-## <a name='Delete-user-by-id'></a> Delete user by id
+### Error response example
+
+#### Error response example - `Error Response:`
+
+```json
+HTTP/1.1 401 Unauthorized
+{
+    "success": false,
+    "code": 401,
+    "message": "Unauthorized"
+}
+```
+
+## <a name='Delete-user-by-ID'></a> Delete user by ID
 [Back to top](#top)
 
-<p><strong>Access Level :</strong> admin <br/> to Delete a user send <code>DELETE</code> request to <code>/api/user/:id</code> endpoint where <code>:id</code> is the user unique id :</p>
+<p><strong>Access Level:</strong> Admin <br/> Allows an admin user to delete any user by providing the user's unique ID in the URL parameters. <br/><br/> <strong>Access Level:</strong> User <br/> A regular user can delete their own account by providing their own ID in the URL parameters. <br/><br/> If the user ID provided by a regular user does not match their own ID, an &quot;unauthorized&quot; error will occur.</p>
 
 ```
 DELETE /api/user/:id
@@ -1700,48 +1706,95 @@ DELETE /api/user/:id
 
 | Name    | Type      | Description                          |
 |---------|-----------|--------------------------------------|
-| Authorization | `String` | <p>Admin Authorization token.</p> |
+| Authorization | `String` | <p>Admin or user Authorization token.</p> |
 
 ### Parameters - `Parameter`
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
-| id | `Number` | <p>User unique id</p> |
+| id | `Number` | <p>User unique ID.</p> |
 ### Success response
 
 #### Success response - `Success 200`
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
-| Data | `Object` | <p>The deleted user data.</p> |
+| data | `Object` | <p>The deleted user's data.</p> |
 
 ### Success response example
 
-#### Success response example - `Success-Response:`
+#### Success response example - `Success-Response (Admin):`
 
 ```json
 HTTP/1.1 200 OK
 {
-	"success" : true,
-	"code" : 200,
-	"message" : "user deleted",
-	"data" : {
-		"id" : 1,
-		"username" : "test_1",
-		"firstname" : "test",
-		"lastname" : "test",
-		"email" : "example@example.com",
-		"isEmailConfirmed" : false,
-		"phone" : "+213667667067",
-		"nationalId" : "123456789"
-	}
+    "success": true,
+    "code": 200,
+    "message": "User deleted",
+    "data": {
+        "id": 1,
+        "username": "test_1",
+        "firstname": "test",
+        "lastname": "test",
+        "email": "example@example.com",
+        "isEmailConfirmed": false,
+        "phone": "+213667667067",
+        "nationalId": "123456789"
+    }
 }
 ```
 
-## <a name='Get-user-data-by-id'></a> Get user data by id
+#### Success response example - `Success-Response (User):`
+
+```json
+HTTP/1.1 200 OK
+{
+    "success": true,
+    "code": 200,
+    "message": "Your account has been deleted",
+    "data": {
+        "id": 1,
+        "username": "test_1",
+        "firstname": "test",
+        "lastname": "test",
+        "email": "example@example.com",
+        "isEmailConfirmed": false,
+        "phone": "+213667667067",
+        "nationalId": "123456789"
+    }
+}
+```
+
+### Error response example
+
+#### Error response example - `Unauthorized:`
+
+```json
+HTTP/1.1 401 Unauthorized
+{
+    "success": false,
+    "code": 401,
+    "message": "You are not authorized to perform this action",
+    "field": "token"
+}
+```
+
+#### Error response example - `Not Found:`
+
+```json
+HTTP/1.1 404 Not Found
+{
+    "success": false,
+    "code": 404,
+    "message": "User not found",
+    "field": "userId"
+}
+```
+
+## <a name='Get-User-By-ID'></a> Get User By ID
 [Back to top](#top)
 
-<p><strong>Access Level :</strong> user admin <br/> To fetch user data send <code>GET</code> request to <code>/api/user/:id</code> endpoint where <code>:id</code> is the user id :</p>
+<p>Get user information by ID. Only admins and the user themselves have access.</p>
 
 ```
 GET /api/user/:id
@@ -1751,43 +1804,93 @@ GET /api/user/:id
 
 | Name    | Type      | Description                          |
 |---------|-----------|--------------------------------------|
-| Authorization | `String` | <p>User or Admin Authorization token.</p> |
+| Authorization | `String` | <p>User access token with the format <code>Bearer [token]</code>.</p> |
 
 ### Parameters - `Parameter`
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
-| id | `Number` | <p>User unique id</p> |
+| id | `Number` | <p>User ID.</p> |
+
+### Parameters - `Query`
+
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| include | `String` | **optional** <p>Include additional information. Possible values: <code>ticket</code>.</p> |
+
+### Examples
+
+Example response (with include=ticket):
+
+```json
+{
+    "code": 200,
+    "success": true,
+    "message": "User data retrieved successfully",
+    "data": {
+        "id": 12345,
+        "username": "john.doe",
+        "firstname": "John",
+        "lastname": "Doe",
+        "email": "john.doe@example.com",
+        "isEmailConfirmed": true,
+        "phone": "555-1234",
+        "nationalId": "1234567890",
+        "tickets": [
+            {
+                "id": 1,
+                "createdAt": "2023-03-26T15:00:00.000Z",
+                "gameId": 100,
+                "bleacherType": "VIP",
+                "userId": 12345
+            },
+            {
+                "id": 2,
+                "createdAt": "2023-03-28T10:30:00.000Z",
+                "gameId": 101,
+                "bleacherType": "EB",
+                "userId": 12345
+            }
+        ]
+    }
+}
+```
+
 ### Success response
 
 #### Success response - `Success 200`
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
-| Data | `Object` | <p>User Data</p> |
+| data | `Object` | <p>User data.</p> |
+| data.id | `Number` | <p>User ID.</p> |
+| data.username | `String` | <p>Username.</p> |
+| data.firstname | `String` | <p>First name.</p> |
+| data.lastname | `String` | <p>Last name.</p> |
+| data.email | `String` | <p>Email address.</p> |
+| data.isEmailConfirmed | `Boolean` | <p>Whether the email is confirmed or not.</p> |
+| data.phone | `String` | <p>Phone number.</p> |
+| data.nationalId | `String` | <p>National ID.</p> |
+| data.tickets | `Array` | **optional**<p>Array of user's tickets (only included if <code>include=ticket</code>).</p> |
+| data.tickets.id | `Number` | <p>Ticket ID.</p> |
+| data.tickets.createdAt | `String` | <p>Creation date and time (ISO format).</p> |
+| data.tickets.gameId | `Number` | <p>ID of the game the ticket is for.</p> |
+| data.tickets.bleacherType | `String` | <p>Type of bleacher for the ticket (VIP, EB, WT, etc.).</p> |
+| data.tickets.userId | `Number` | <p>ID of the user the ticket belongs to.</p> |
 
-### Success response example
+### Error response
 
-#### Success response example - `Success-Response:`
+#### Error response - `Error 401`
 
-```json
-HTTP/1.1 200 OK
-{
-	"success" : true,
-	"code" : 200,
-	"message" : "data fetched",
-	"data" : {
-		"id" : 1,
-		"username" : "test_1",
-		"firstname" : "test",
-		"lastname" : "test",
-		"email" : "example@example.com",
-		"isEmailConfirmed" : true,
-		"phone" : "+213667667067",
-		"nationalId" : "123456789"
-	}
-}
-```
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| Unauthorized |  | <p>User is not authorized to access this resource.</p> |
+
+#### Error response - `Error 404`
+
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| NotFound |  | <p>User with the specified ID not found.</p> |
 
 ## <a name='Get-User-Information'></a> Get User Information
 [Back to top](#top)
@@ -1924,10 +2027,10 @@ HTTP/1.1 200 OK
 }
 ```
 
-## <a name='Send-a-confirmation-email'></a> Send a confirmation email
+## <a name='Send-Confirmation-Email'></a> Send Confirmation Email
 [Back to top](#top)
 
-<p><strong>Access Level :</strong> user <br/> Send a unique url to the user email, when the user clicks the link his email will be confirmed</p>
+<p>Send a confirmation email to the user's email address to confirm their account.</p> <p>This endpoint can be accessed by a user with the access level of &quot;user&quot;.</p> <p>When the confirmation email is sent, a unique URL is included in the email. When the user clicks on this URL, their email address will be confirmed and they will be able to access their account.</p>
 
 ```
 GET /api/user/send/confirmation/email
@@ -1937,7 +2040,14 @@ GET /api/user/send/confirmation/email
 
 | Name    | Type      | Description                          |
 |---------|-----------|--------------------------------------|
-| Authorization | `String` | <p>User Authorization token.</p> |
+| Authorization | `String` | <p>User authorization token.</p> |
+### Success response
+
+#### Success response - `Success 200`
+
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| Data | `Object` | <p>An empty object.</p> |
 
 ### Success response example
 
@@ -1946,17 +2056,17 @@ GET /api/user/send/confirmation/email
 ```json
 HTTP/1.1 200 OK
 {
-	"success" : true,
-	"code" : 200,
-	"message" : "email has been sent",
-	"data" : {}
+  "success": true,
+  "code": 200,
+  "message": "Email has been sent",
+  "data": {}
 }
 ```
 
-## <a name='Update-user'></a> Update user
+## <a name='Update-User'></a> Update User
 [Back to top](#top)
 
-<p><strong>Access Level :</strong> user <br/> To update the user data send <code>PUT</code> request to <code>/api/user</code> endpoint, make sure to include the data you want to modify in the request body :</p>
+<p>This endpoint allows a user to update their profile information. To update any information, a <code>PUT</code> request should be sent to <code>/api/user</code> with the relevant information included in the request body. Users must be authenticated to access this endpoint, which requires an authorization token to be included in the request headers.</p>
 
 ```
 PUT /api/user
@@ -1966,25 +2076,25 @@ PUT /api/user
 
 | Name    | Type      | Description                          |
 |---------|-----------|--------------------------------------|
-| Authorization | `String` | <p>User Authorization token.</p> |
+| Authorization | `String` | <p>User authorization token.</p> |
 
 ### Request Body
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
-| firstname | `String` | **optional** <p>first name</p> |
-| lastname | `String` | **optional** <p>last name</p> |
-| email | `String` | **optional** <p>email</p> |
-| password | `String` | **optional** <p>password</p> |
-| phone | `String` | **optional** <p>phone number</p> |
-| nationalId | `String` | **optional** <p>national Id</p> |
+| firstname | `String` | **optional** <p>User's first name.</p> |
+| lastname | `String` | **optional** <p>User's last name.</p> |
+| email | `String` | **optional** <p>User's email address.</p> |
+| password | `String` | **optional** <p>User's password.</p> |
+| phone | `String` | **optional** <p>User's phone number.</p> |
+| nationalId | `String` | **optional** <p>User's national ID number.</p> |
 ### Success response
 
 #### Success response - `Success 200`
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
-| Data | `Object` | <p>The updated user data.</p> |
+| data | `Object` | <p>The updated user data.</p> |
 
 ### Success response example
 
@@ -1993,19 +2103,19 @@ PUT /api/user
 ```json
 HTTP/1.1 200 OK
 {
-	"success" : true,
-	"code" : 200,
-	"message" : "user updated",
-	"data" : {
-		"id" : 1,
-		"username" : "test_1",
-		"firstname" : "test",
-		"lastname" : "test",
-		"email" : "example@example.com",
-		"isEmailConfirmed" : false,
-		"phone" : "+213667667067",
-		"nationalId" : "123456789"
-	}
+  "success": true,
+  "code": 200,
+  "message": "User updated successfully.",
+  "data": {
+      "id": 1,
+      "username": "johndoe123",
+      "firstname": "John",
+      "lastname": "Doe",
+      "email": "johndoe@gmail.com",
+      "isEmailConfirmed": true,
+      "phone": "+1 234 567 8901",
+      "nationalId": "123456789"
+  }
 }
 ```
 

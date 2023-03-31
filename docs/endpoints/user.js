@@ -207,141 +207,257 @@
 
 
 
+
+
+
 /**
-* @api {get} /api/user/:id Get user data by id
-* @apiName getUserById
+ * @api {get} /api/user/:id Get User By ID
+ * @apiDescription Get user information by ID. Only admins and the user themselves have access.
+ * @apiName GetUserById
+ * @apiGroup User
+ *
+ * @apiParam {Number} id User ID.
+ *
+ * @apiHeader {String} Authorization User access token with the format `Bearer [token]`.
+ *
+ * @apiParam (Query) {String} [include] Include additional information. Possible values: `ticket`.
+ *
+ * @apiSuccess {Object} data User data.
+ * @apiSuccess {Number} data.id User ID.
+ * @apiSuccess {String} data.username Username.
+ * @apiSuccess {String} data.firstname First name.
+ * @apiSuccess {String} data.lastname Last name.
+ * @apiSuccess {String} data.email Email address.
+ * @apiSuccess {Boolean} data.isEmailConfirmed Whether the email is confirmed or not.
+ * @apiSuccess {String} data.phone Phone number.
+ * @apiSuccess {String} data.nationalId National ID.
+ * @apiSuccess {Array} [data.tickets] Array of user's tickets (only included if `include=ticket`).
+ * @apiSuccess {Number} data.tickets.id Ticket ID.
+ * @apiSuccess {String} data.tickets.createdAt Creation date and time (ISO format).
+ * @apiSuccess {Number} data.tickets.gameId ID of the game the ticket is for.
+ * @apiSuccess {String} data.tickets.bleacherType Type of bleacher for the ticket (VIP, EB, WT, etc.).
+ * @apiSuccess {Number} data.tickets.userId ID of the user the ticket belongs to.
+ *
+ * @apiError (Error 401) Unauthorized User is not authorized to access this resource.
+ * @apiError (Error 404) NotFound User with the specified ID not found.
+ *
+ * @apiExample Example response (with include=ticket):
+ * {
+ *     "code": 200,
+ *     "success": true,
+ *     "message": "User data retrieved successfully",
+ *     "data": {
+ *         "id": 12345,
+ *         "username": "john.doe",
+ *         "firstname": "John",
+ *         "lastname": "Doe",
+ *         "email": "john.doe@example.com",
+ *         "isEmailConfirmed": true,
+ *         "phone": "555-1234",
+ *         "nationalId": "1234567890",
+ *         "tickets": [
+ *             {
+ *                 "id": 1,
+ *                 "createdAt": "2023-03-26T15:00:00.000Z",
+ *                 "gameId": 100,
+ *                 "bleacherType": "VIP",
+ *                 "userId": 12345
+ *             },
+ *             {
+ *                 "id": 2,
+ *                 "createdAt": "2023-03-28T10:30:00.000Z",
+ *                 "gameId": 101,
+ *                 "bleacherType": "EB",
+ *                 "userId": 12345
+ *             }
+ *         ]
+ *     }
+ * }
+ */
+
+
+
+/**
+* @api {put} /api/user Update User
+* @apiName UpdateUser
 * @apiGroup User
-* @apiDescription __Access Level :__ user admin <br/>
-* To fetch user data send `GET` request to 
-* `/api/user/:id` endpoint where `:id` is the user id :
-* @apiHeader {String} Authorization User or Admin Authorization token.
-* @apiParam {Number} id User unique id
-* @apiSuccess {Object} Data User Data
+*
+* @apiDescription This endpoint allows a user to update their profile information.
+To update any information, a `PUT` request should be sent to `/api/user` with the relevant information included in the request body. 
+Users must be authenticated to access this endpoint, which requires an authorization token to be included in the request headers.
+*
+* @apiHeader {String} Authorization User authorization token.
+*
+* @apiBody {String} [firstname] User's first name.
+* @apiBody {String} [lastname] User's last name.
+* @apiBody {String} [email] User's email address.
+* @apiBody {String} [password] User's password.
+* @apiBody {String} [phone] User's phone number.
+* @apiBody {String} [nationalId] User's national ID number.
+*
+* @apiSuccess {Object} data The updated user data.
 * @apiSuccessExample Success-Response:
-* HTTP/1.1 200 OK
-* {
-* 	"success" : true,
-*	"code" : 200,
-*	"message" : "data fetched",
-*	"data" : {
-*		"id" : 1,
-*		"username" : "test_1",
-*		"firstname" : "test",
-*		"lastname" : "test",
-*		"email" : "example@example.com",
-*		"isEmailConfirmed" : true,
-*		"phone" : "+213667667067",
-*		"nationalId" : "123456789"
-*	}
-* }
+*     HTTP/1.1 200 OK
+*     {
+*       "success": true,
+*       "code": 200,
+*       "message": "User updated successfully.",
+*       "data": {
+*           "id": 1,
+*           "username": "johndoe123",
+*           "firstname": "John",
+*           "lastname": "Doe",
+*           "email": "johndoe@gmail.com",
+*           "isEmailConfirmed": true,
+*           "phone": "+1 234 567 8901",
+*           "nationalId": "123456789"
+*       }
+*     }
+*
 */
 
-/**
-* @api {put} /api/user Update user
-* @apiName updateUser
-* @apiGroup User
-* @apiDescription __Access Level :__ user <br/>
-* To update the user data send `PUT` request to 
-* `/api/user` endpoint, make sure to include the data you want to 
-* modify in the request body :
-* @apiHeader {String} Authorization User Authorization token.
-* @apiBody {String} [firstname] first name
-* @apiBody {String} [lastname] last name
-* @apiBody {String} [email] email 
-* @apiBody {String} [password] password
-* @apiBody {String} [phone] phone number
-* @apiBody {String} [nationalId] national Id
-* 
-* @apiSuccess {Object} Data The updated user data.
-* @apiSuccessExample Success-Response:
-* HTTP/1.1 200 OK
-* {
-* 	"success" : true,
-*	"code" : 200,
-*	"message" : "user updated",
-*	"data" : {
-*		"id" : 1,
-*		"username" : "test_1",
-*		"firstname" : "test",
-*		"lastname" : "test",
-*		"email" : "example@example.com",
-*		"isEmailConfirmed" : false,
-*		"phone" : "+213667667067",
-*		"nationalId" : "123456789"
-*	}
-* }
-*/
 
-/**
-* @api {delete} /api/user Delete user
-* @apiName deleteUser
-* @apiGroup User
-* @apiDescription __Access Level :__ user <br/>
-* To delete a user send `DELETE` request to `/api/user` endpoint :
-* @apiHeader {String} Authorization User Authorization token.
-* @apiSuccess {Object} Data The deleted user data.
-* @apiSuccessExample Success-Response:
-* HTTP/1.1 200 OK
-* {
-* 	"success" : true,
-*	"code" : 200,
-*	"message" : "user deleted",
-*	"data" : {
-*		"id" : 1,
-*		"username" : "test_1",
-*		"firstname" : "test",
-*		"lastname" : "test",
-*		"email" : "example@example.com",
-*		"isEmailConfirmed" : false,
-*		"phone" : "+213667667067",
-*		"nationalId" : "123456789"
-*	}
-* }
-*/
 
 
 /**
-* @api {get} /api/user/send/confirmation/email Send a confirmation email
+ * @api {delete} /api/user Delete User
+ * @apiName deleteUser
+ * @apiGroup User
+ * 
+ * @apiDescription This endpoint allows a user to delete their own account. To delete a user account, send a `DELETE` request to `/api/user` with the user's authorization token in the header.
+ * 
+ * @apiHeader {String} Authorization User's authorization token.
+ * 
+ * @apiSuccessExample Success Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *         "success": true,
+ *         "code": 200,
+ *         "message": "User deleted",
+ *         "data": {
+ *             "id": 1,
+ *             "username": "test_1",
+ *             "firstname": "test",
+ *             "lastname": "test",
+ *             "email": "example@example.com",
+ *             "isEmailConfirmed": false,
+ *             "phone": "+213667667067",
+ *             "nationalId": "123456789"
+ *         }
+ *     }
+ *
+ * @apiErrorExample Error Response:
+ *     HTTP/1.1 401 Unauthorized
+ *     {
+ *         "success": false,
+ *         "code": 401,
+ *         "message": "Unauthorized"
+ *     }
+ */
+
+
+
+
+/**
+* @api {get} /api/user/send/confirmation/email Send Confirmation Email
 * @apiName sendConfirmationEmail
 * @apiGroup User
-* @apiDescription __Access Level :__ user <br/>
-* Send a unique url to the user email, when the user clicks the link his email will be confirmed
-* @apiHeader {String} Authorization User Authorization token.
+* @apiDescription Send a confirmation email to the user's email address to confirm their account.
+*
+* This endpoint can be accessed by a user with the access level of "user".
+*
+* When the confirmation email is sent, a unique URL is included in the email. When the user clicks on this URL,
+* their email address will be confirmed and they will be able to access their account.
+*
+* @apiHeader {String} Authorization User authorization token.
+*
+* @apiSuccess {Object} Data An empty object.
+*
 * @apiSuccessExample Success-Response:
-* HTTP/1.1 200 OK
-* {
-*	"success" : true,
-*	"code" : 200,
-*	"message" : "email has been sent",
-*	"data" : {}
-* }
+*     HTTP/1.1 200 OK
+*     {
+*       "success": true,
+*       "code": 200,
+*       "message": "Email has been sent",
+*       "data": {}
+*     }
 */
 
+
+
+
+
+
 /**
-* @api {delete} /api/user/:id Delete user by id
-* @apiName deleteUserById
-* @apiGroup User
-* @apiDescription __Access Level :__ admin <br/>
-* to Delete a user send `DELETE` request to `/api/user/:id`
-* endpoint where `:id` is the user unique id :
-* @apiHeader {String} Authorization Admin Authorization token.
-* @apiParam {Number} id User unique id
-* @apiSuccess {Object} Data The deleted user data.
-* @apiSuccessExample Success-Response:
-* HTTP/1.1 200 OK
-* {
-* 	"success" : true,
-*	"code" : 200,
-*	"message" : "user deleted",
-*	"data" : {
-*		"id" : 1,
-*		"username" : "test_1",
-*		"firstname" : "test",
-*		"lastname" : "test",
-*		"email" : "example@example.com",
-*		"isEmailConfirmed" : false,
-*		"phone" : "+213667667067",
-*		"nationalId" : "123456789"
-*	}
-* }
-*/
+ * @api {delete} /api/user/:id Delete user by ID
+ * @apiName deleteUserById
+ * @apiGroup User
+ * @apiDescription __Access Level:__ Admin <br/>
+ * Allows an admin user to delete any user by providing the user's unique ID in the URL parameters.
+ * <br/><br/>
+ * __Access Level:__ User <br/>
+ * A regular user can delete their own account by providing their own ID in the URL parameters.
+ * <br/><br/>
+ * If the user ID provided by a regular user does not match their own ID, an "unauthorized" error will occur.
+ * 
+ * @apiHeader {String} Authorization Admin or user Authorization token.
+ * 
+ * @apiParam {Number} id User unique ID.
+ * 
+ * @apiSuccess {Object} data The deleted user's data.
+ * 
+ * @apiSuccessExample {json} Success-Response (Admin):
+ * HTTP/1.1 200 OK
+ * {
+ *     "success": true,
+ *     "code": 200,
+ *     "message": "User deleted",
+ *     "data": {
+ *         "id": 1,
+ *         "username": "test_1",
+ *         "firstname": "test",
+ *         "lastname": "test",
+ *         "email": "example@example.com",
+ *         "isEmailConfirmed": false,
+ *         "phone": "+213667667067",
+ *         "nationalId": "123456789"
+ *     }
+ * }
+ * 
+ * @apiSuccessExample {json} Success-Response (User):
+ * HTTP/1.1 200 OK
+ * {
+ *     "success": true,
+ *     "code": 200,
+ *     "message": "Your account has been deleted",
+ *     "data": {
+ *         "id": 1,
+ *         "username": "test_1",
+ *         "firstname": "test",
+ *         "lastname": "test",
+ *         "email": "example@example.com",
+ *         "isEmailConfirmed": false,
+ *         "phone": "+213667667067",
+ *         "nationalId": "123456789"
+ *     }
+ * }
+ * 
+ * @apiErrorExample {json} Unauthorized:
+ * HTTP/1.1 401 Unauthorized
+ * {
+ *     "success": false,
+ *     "code": 401,
+ *     "message": "You are not authorized to perform this action",
+ *     "field": "token"
+ * }
+ * 
+ * @apiErrorExample {json} Not Found:
+ * HTTP/1.1 404 Not Found
+ * {
+ *     "success": false,
+ *     "code": 404,
+ *     "message": "User not found",
+ *     "field": "userId"
+ * }
+ * 
+ */
