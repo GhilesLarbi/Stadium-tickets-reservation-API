@@ -28,6 +28,7 @@ const findBy = {
 	},
 	
 	ticket : {
+		id : "integer",
 		gameId : "integer",
 		userId : "integer" ,
 	},

@@ -14,6 +14,9 @@ const getTickets = asyncHandler(async (req, res) => {
 	let result
 	let option = req.option
 	
+	if (!req.isAdmin) 
+		option.where.userId = req.id
+
 	// if count query is present
 	if (req.count) {
 		result = await db.ticket.findOne(option)
@@ -66,6 +69,10 @@ const createTicket = asyncHandler(async (req, res) => {
 const generate = asyncHandler(async (req, res) => {
 	const type = (['qrcode','pdf','string', 'base64'].includes(req.params.type))? req.params.type : 'qrcode'
 	
+	const where = {id : req.params.id}
+	if (!req.isAdmin)
+		where.userId = req.id
+
 	// get ticket
 	const ticket = await db.ticket.findOne({
 		include : [
@@ -78,7 +85,7 @@ const generate = asyncHandler(async (req, res) => {
 				],
 			},
 		],
-		where : { id : req.params.id, userId : req.id,},
+		where : where, 
 	})
 	
 	// if no ticket found exit
