@@ -24,6 +24,7 @@ const findBy = {
 	user : {
 		isEmailConfirmed : "bool",
 		email : "string",
+		username : "string",
 		id : "integer",
 	},
 	
@@ -121,7 +122,14 @@ function queryHandler(model) {
 			if (!req.isAdmin) option.where = {id : req.id}
 		} else if (model == 'ticket') {
 			if (!req.isAdmin) option.where.userId = req.id 
-		}
+		} else if (model == 'game' && req.query['filter']) {
+      const filt = req.query['filter']
+      if (filt == "new"){
+        option.where.date = {[Op.gt] : new Date()}
+      } else if (filt == "old"){
+        option.where.date = {[Op.lt] : new Date()}
+      }
+    }
 	
 	
 		// split include query

@@ -53,6 +53,7 @@ const getUsers = asyncHandler(async (req, res) => {
 			return res.status(409).send(AppRes(409, 'Somthing went wrong', 'userId'))
 	}
 	
+
 	res.send(AppRes(200, 'data fetched', result))
 })
 
@@ -69,6 +70,7 @@ const getUser = asyncHandler(async (req, res) => {
 	
 	if (!result) throw new AppErr(404, `No user with id of ${req.params.id}`, "userId")
 		
+	
 	res.send(AppRes(200, "data fetched", result))
 })
 
@@ -80,7 +82,6 @@ const createUser = asyncHandler(async (req, res) => {
 	// if someone try to inject them
 	delete user.id
 	delete user.isEmailConfirmed
-	delete user.username
 	
 	// create the user
 	let result = await db.user.create(user)
@@ -154,17 +155,24 @@ const deleteUserById = asyncHandler(async (req, res) => {
 //@route GET /user/send/confirmation/email 
 //@middlewares authenticate => role(user)
 const sendConfirmationEmail = asyncHandler(async (req, res) => {
+	const returnUrl = req.query.url
+	
+	if (!returnUrl) throw new AppErr(406, "No return url provided", "url")
+
 	// check if email is confirmed
 	const user = await db.user.findOne({
 		where : {id : req.id},
 		raw : true,
 	})
 	
-	if (user.isEmailConfirmed) throw new AppErr(405, 'Email is already confirmed', 'email')
+	// if (user.isEmailConfirmed) throw new AppErr(405, 'Email is already confirmed', 'email')
 	
 	// generate token
 	const token = jwt.sign(
-		{id : user.id},
+		{
+			id : user.id,
+			returnUrl : returnUrl,
+		},
 		process.env.TOKEN_ENCRYPTION_KEY,
 		{ expiresIn : '1d'}
 	)
@@ -183,12 +191,10 @@ const sendConfirmationEmail = asyncHandler(async (req, res) => {
 const receiveConfirmationEmail = asyncHandler(async (req, res) => {
 	await jwt.verify(req.params.token, process.env.TOKEN_ENCRYPTION_KEY, async (err, data) => {
 		if (err) throw new AppErr(401, 'Invalid token', 'token')
-		
 		const user = await db.user.findByPk(data.id)
 		user.isEmailConfirmed = true
 		user.save()
-		
-		res.send(AppRes(202, 'email confirmed'))
+		res.status(308).redirect(data.returnUrl)
 	})
 })
 

@@ -31,6 +31,8 @@ const authenticate = asyncHandler(async (req, res, next) => {
 		if (!user) throw new AppErr(404, 'The user you loged in with is no longer valid', 'token')
 		
 		req.isEmailConfirmed = user.isEmailConfirmed
+		req.nationalNumber = user.nationalNumber
+		req.phone = user.phone
 		
 		return next()
 	})

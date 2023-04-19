@@ -147,7 +147,7 @@ const uploadLogo = asyncHandler(async (req, res) => {
 	
 	let teamImage = team.name.toLowerCase() + '_' + team.id + extension
 	
-	logo.mv(path.join(__dirname + '/../images/team/' + teamImage))
+	logo.mv(path.join(__dirname + '../../../images/team/' + teamImage))
 	
 	// save the image path in database
 	team.logo = teamImage

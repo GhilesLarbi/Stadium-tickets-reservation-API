@@ -12,38 +12,17 @@ module.exports = (sequelize) => {
 		},
 
 		username: {
-			type: DataTypes.VIRTUAL,
-			get() {
-				return this.getDataValue('firstname') + '_' + this.getDataValue('id')
-			}
-		},
-
-		firstname: {
 			type: DataTypes.STRING,
 			allowNull: false,
 			validate: {
 				notEmpty: {
-					msg: 'First name cannot be empty',
+					msg: 'User name cannot be empty',
 				},
 
 				notNull: {
-					msg: 'First name cannot be null',
+					msg: 'User name cannot be null',
 				},
 			},
-		},
-
-		lastname: {
-			type: DataTypes.STRING,
-			allowNull: false,
-			validate: {
-				notEmpty: {
-					msg: 'Last name cannot be empty',
-				},
-
-				notNull: {
-					msg: 'Last name cannot be null',
-				},
-			}
 		},
 
 		password: {
@@ -95,37 +74,18 @@ module.exports = (sequelize) => {
 
 		phone: {
 			type: DataTypes.STRING,
-			allowNull: false,
-			unique: true,
 			validate: {
 				isNumeric: {
 					msg: "Doesn't look like a phone number",
-				},
-
-				notEmpty: {
-					msg: 'Phone number cannot be empty',
-				},
-
-				notNull: {
-					msg: 'Phone number cannot be null',
 				},
 			},
 		},
 
 		nationalNumber: {
 			type: DataTypes.STRING,
-			allowNull: false,
-			unique: true,
 			validate: {
 				isNumeric: {
 					msg: "Doesn't look like a national number",
-				},
-				notEmpty: {
-					msg: 'National number cannot be empty',
-				},
-
-				notNull: {
-					msg: 'National number cannot be null',
 				},
 			},
 		},

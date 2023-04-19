@@ -52,8 +52,7 @@ const bleachers = [
 
 const users = [
 	{
-		firstname: 'ghiles',
-		lastname: 'larbi',
+		username: 'ghiles larbi',
 		password: '123',
 		email: 'hinrobalas@gmail.com',
 		isEmailConfirmed: true,
@@ -62,8 +61,7 @@ const users = [
 	},
 
 	{
-		firstname: 'nacer',
-		lastname: 'laribi',
+		username: 'nacer laribi',
 		password: '1234',
 		email: 'nacer@gmail.com',
 		isEmailConfirmed: false,
@@ -72,8 +70,7 @@ const users = [
 	},
 
 	{
-		firstname: 'ania',
-		lastname: 'larbi',
+		username: 'ania larbi',
 		password: '12345',
 		email: 'ania@gmail.com',
 		isEmailConfirmed: false,
@@ -82,8 +79,7 @@ const users = [
 	},
 
 	{
-		firstname: 'karim',
-		lastname: 'khelfaoui',
+		username: 'karim khelfaoui',
 		password: '123456',
 		email: 'karim@gmail.com',
 		isEmailConfirmed: true,
@@ -132,7 +128,7 @@ const games = [
 const teams = [
 	{
 		name: 'jsk',
-		logo: 'jsk_1.png',
+		logo: 'jsk_1.svg',
 	},
 
 	{

@@ -19,7 +19,7 @@ router.delete('/:id', authenticate, role('admin'), ctrl.deleteTeam)
 router.post('/:id/upload/logo', authenticate, role('admin'), fileUpload({
 	createParentPath : true,
 	limits: {
-		fileSize: 1000000, // Around 1MB
+		fileSize: 10000000, // Around 1MB
 	},
 	abortOnLimit: true,
 }), ctrl.uploadLogo)
