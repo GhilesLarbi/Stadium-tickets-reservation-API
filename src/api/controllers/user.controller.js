@@ -165,7 +165,7 @@ const sendConfirmationEmail = asyncHandler(async (req, res) => {
 		raw : true,
 	})
 	
-	// if (user.isEmailConfirmed) throw new AppErr(405, 'Email is already confirmed', 'email')
+	if (user.isEmailConfirmed) throw new AppErr(405, 'Email is already confirmed', 'email')
 	
 	// generate token
 	const token = jwt.sign(

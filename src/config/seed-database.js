@@ -90,6 +90,14 @@ const users = [
 
 const games = [
 	{
+		date: new Date('2023-4-25'),
+		description: 'demi-final',
+		leagueId: 1,
+		team1Id: 1,
+		team2Id: 4,
+		score: null,
+	},
+	{
 		date: new Date('2023-11-9'),
 		description: 'semi-final',
 		leagueId: 1,
