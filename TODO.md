@@ -39,11 +39,11 @@
 ```
 (!) There is no use case for scopes at the moment
 ```
-- Add documentation
-- Do some code refactoring
+- Integrate [Stripe](https://www.stripe.com) API `done`
+- Add documentation `done`
 
+- Do some code refactoring
 - Integrate [Chargily](https://github.com/Chargily/chargily-epay-js) services
-- Integrate [Stripe](https://www.stripe.com) API
 
 
 # optional
