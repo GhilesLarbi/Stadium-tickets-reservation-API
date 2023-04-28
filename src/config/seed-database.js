@@ -8,43 +8,43 @@ const db = sequelize.models
 
 const bleachers = [
 	{
-		type: 'vip',
+		type: 'VIP',
 		price: 2000,
 		quantity: 300,
 	},
 
 	{
-		type: 'ET',
+		type: 'LB',
 		price: 300,
 		quantity: 5000,
 	},
 
 	{
-		type: 'EB',
+		type: 'LT',
 		price: 500,
 		quantity: 3000,
 	},
 
 	{
-		type: 'NT',
+		type: 'BB',
 		price: 400,
 		quantity: 12000,
 	},
 
 	{
-		type: 'NB',
+		type: 'BT',
 		price: 600,
 		quantity: 9000,
 	},
 
 	{
-		type: 'WT',
+		type: 'RB',
 		price: 300,
 		quantity: 5000,
 	},
 
 	{
-		type: 'WB',
+		type: 'RT',
 		price: 500,
 		quantity: 3000,
 	},
@@ -90,7 +90,7 @@ const users = [
 
 const games = [
 	{
-		date: new Date('2023-4-25'),
+		date: new Date('2023-5-25'),
 		description: 'demi-final',
 		leagueId: 1,
 		team1Id: 1,
@@ -136,7 +136,7 @@ const games = [
 const teams = [
 	{
 		name: 'jsk',
-		logo: 'jsk_1.svg',
+		logo: 'jsk_1.png',
 	},
 
 	{

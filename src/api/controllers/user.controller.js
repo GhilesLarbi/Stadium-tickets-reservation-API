@@ -179,7 +179,8 @@ const sendConfirmationEmail = asyncHandler(async (req, res) => {
 	
 	// FIXME
 	// set a dynamic url instead
-	const url = 'http://' + req.hostname + '/api/user/receive/confirmation/email/' + token
+  const url = `${req.protocol}://${req.get('host')}${process.env.API_URL}/user/receive/confirmation/email/${token}`
+	// const url = 'http://' + req.hostname + '/api/user/receive/confirmation/email/' + token
 	
 	// FIXME
 	// send the email here
