@@ -1,5 +1,5 @@
 {
-	"name": "Stadium tickets reservation API",
+	"name": "stadium-tickets-reservation-api",
 	"version": "1.0.0",
 	"description": " ",
 	"main": "server.js",
