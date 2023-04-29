@@ -43,7 +43,6 @@
 - Add documentation `done`
 
 - Do some code refactoring
-- Integrate [Chargily](https://github.com/Chargily/chargily-epay-js) services
 
 
 # optional
@@ -52,3 +51,4 @@
 - Confirm emails using random digits
 - Add cron to delete inactive users after a period of time
 - Add cron to delete tickets of finished games
+- Integrate [Chargily](https://github.com/Chargily/chargily-epay-js) services
