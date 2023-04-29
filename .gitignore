@@ -1,3 +1,4 @@
 node_modules
 githubToken.txt
 .env
+.env~old
