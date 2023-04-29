@@ -8,12 +8,12 @@ const sequelize = new Sequelize(
 	{
 		host : process.env.DB_HOST,
 		port : process.env.DB_PORT,
-		dialect : "mariadb",
+		dialect : process.env.DB_TYPE,
 		define : {
 			freezeTableName : true,
 			timestamps : false,
 		},
-		logging : false,
+		logging : true,
 	}
 )
 
