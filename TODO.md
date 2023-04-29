@@ -51,4 +51,5 @@
 - Confirm emails using random digits
 - Add cron to delete inactive users after a period of time
 - Add cron to delete tickets of finished games
+- Add places for physically handicapped users
 - Integrate [Chargily](https://github.com/Chargily/chargily-epay-js) services
