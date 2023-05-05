@@ -168,11 +168,11 @@ function buildPDF(dataCallback, endCallback, option) {
             <g id="Group 13">
                 <text id="date" fill="#EEEEEE" xml:space="preserve" style="white-space: pre" font-family="Poppins"
                     font-size="16" letter-spacing="0.05em">
-                    <tspan x="347" y="310.6">June, Sunday 8 2022</tspan>
+                    <tspan x="347" y="310.6">${new Date(option.ticket.game.date).toLocaleString("en-us", {month: "short",day: "numeric", year : "numeric", weekday : "short"})}</tspan>
                 </text>
                 <text id="time" fill="#EEEEEE" xml:space="preserve" style="white-space: pre" font-family="Poppins"
                     font-size="20" font-weight="bold" letter-spacing="0.05em">
-                    <tspan x="347" y="293">17:00 PM</tspan>
+                    <tspan x="347" y="293">${new Date(option.ticket.game.date).toLocaleString("en-us", {hour: "2-digit", minute: "2-digit"})}</tspan>
                 </text>
             </g>
         </g>
