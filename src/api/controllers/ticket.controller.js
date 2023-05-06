@@ -16,15 +16,10 @@ const getTickets = asyncHandler(async (req, res) => {
 	let result
 	let option = req.option
 
-	if (!req.isAdmin)
-		option.where.userId = req.id
+	if (!req.isAdmin) option.where.userId = req.id
 
 	// if count query is present
-	if (req.count) {
-		result = await db.ticket.findOne(option)
-	} else {
-		result = await db.ticket.findAll(option)
-	}
+	result = await db.ticket.findAll(option)
 
 	res.send(AppRes(200, 'data fetched', result))
 })
@@ -71,21 +66,8 @@ const buyTicket = asyncHandler(async (req, res) => {
 
 
 	// check if the quantity is less then 5
-	const allTickets = await db.ticket.findAll({
-		include: [sequelize.models.game],
-		where: {
-			userId: req.id,
-		},
-		raw: true,
-	})
-
-	let count = 0
-
-	allTickets.forEach(ticket => {
-		if (new Date(ticket["game.date"]).getTime() > new Date().getTime()) count = count + 1
-	});
-
-	if (count + quantity > 5) throw new AppErr(403, 'You can\'t buy more than 5 tickets', "quantity")
+	const allTickets = await db.ticket.findAll({ where: { userId: req.id }, raw: true })
+	if (allTickets.length + quantity > 5) throw new AppErr(403, 'You can\'t buy more than 5 tickets', "quantity")
 
 
 	// generate url token
@@ -122,6 +104,7 @@ const buyTicket = asyncHandler(async (req, res) => {
 			success_url: `${req.protocol}://${req.get('host')}${process.env.API_URL}/ticket/create/${token}`,
 			cancel_url: req.body.cancelUrl
 		})
+
 	} catch (err) {
 		throw new AppErr(500, "cannot connect to stripe", "stripe")
 	}
@@ -137,19 +120,16 @@ const createTicket = asyncHandler(async (req, res) => {
 	await jwt.verify(req.params.token, process.env.TOKEN_ENCRYPTION_KEY, async (err, data) => {
 		if (err) throw new AppErr(401, 'Invalid token', 'token')
 
-		// create Ticket
-		let result = []
-
+		// create Tickets
 		for (let i = 0; i < data.quantity; i++) {
+			// console.log(data)
 			const ticket = await db.ticket.create({
 				userId: data.userId,
 				gameId: data.gameId,
 				bleacherType: data.bleacherType,
 			})
-
-			result.push(ticket)
 		}
-		// res.status(201).send(AppRes(201, 'ticket created', result))
+
 		res.status(308).redirect(data.successUrl)
 	})
 })

@@ -83,6 +83,11 @@ const createUser = asyncHandler(async (req, res) => {
 	// if someone try to inject them
 	delete user.id
 	delete user.isEmailConfirmed
+	
+
+	if (user.password)
+		if (user.password.length < 7)
+			throw new AppErr(400, "please choose a strong password that has more than 7 characters", "password")
 
 	// create the user
 	let result = await db.user.create(user)
@@ -107,6 +112,11 @@ const updateUser = asyncHandler(async (req, res) => {
 	let result = await db.user.findOne({
 		where: { id: req.id }
 	})
+
+	if (user.password)
+		if (user.password.length < 7)
+			throw new AppErr(400, "please choose a strong password that has more than 7 characters", "password")
+
 
 	// check if the email is different 
 	if (user.email && result.email.toLowerCase() != user.email.toLowerCase())

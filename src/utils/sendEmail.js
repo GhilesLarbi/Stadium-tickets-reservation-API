@@ -37,8 +37,10 @@ async function sendEmail(userData, confirmationLink) {
     
     try {
         const mail = await transport.sendMail(mailOptions)
+        console.log(mail)
         return true
     } catch (err) {
+        console.log(err)
         return false
     }
 }

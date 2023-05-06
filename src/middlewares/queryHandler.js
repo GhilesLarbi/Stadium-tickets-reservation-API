@@ -4,7 +4,7 @@ const db = sequelize.models
 
 const associations = {
 	user : ['ticket'],
-	ticket : ['user', 'game', 'bleacher'],
+	ticket : ['user', 'bleacher'],
 	bleacher : [],
 	game : ['league', 'ticket', {'team' : 'team1'}, {'team' : 'team2'}],
 	league : ['game'],
@@ -168,10 +168,10 @@ function queryHandler(model) {
 		// if count present then no need for pagination
 		if (req.query.count) {
 			req.count = true 
-			delete option.include 
+			if (model != "ticket") delete option.include 
 			delete option.limit
 			delete option.offset
-			option.attributes = [[sequelize.fn('COUNT', sequelize.col(primaryKeys[model])), 'count']]
+			if (model != "ticket") option.attributes = [[sequelize.fn('COUNT', sequelize.col(primaryKeys[model])), 'count']]
 		}
 		
 		req.option = option

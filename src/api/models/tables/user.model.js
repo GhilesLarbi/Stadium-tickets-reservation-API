@@ -15,6 +15,10 @@ module.exports = (sequelize) => {
 			type: DataTypes.STRING,
 			allowNull: false,
 			validate: {
+				len: {
+					args : [5,1000],
+					msg : "Please choose a name that has more than 5 characters"
+				} ,
 				notEmpty: {
 					msg: 'User name cannot be empty',
 				},
@@ -33,6 +37,11 @@ module.exports = (sequelize) => {
 			},
 
 			validate: {
+				len: {
+					args : [7,1000],
+					msg : "Please choose a strnog password that has more than 7 characters",
+				},
+
 				notEmpty: {
 					msg: 'Password cannot be empty',
 				},
@@ -77,6 +86,10 @@ module.exports = (sequelize) => {
 			unique : true,
 			allowNull : true,
 			validate: {
+				is : {
+					args : /^(00213|\+213|0)(5|6|7)[0-9]{8}$/,
+					msg : "Doesn't look like an algerian phone number",
+				},
 				isNumeric: {
 					msg: "Doesn't look like a phone number",
 				},
@@ -88,8 +101,12 @@ module.exports = (sequelize) => {
 			unique : true,
 			allowNull : true,
 			validate: {
+				len: {
+					args : [10,18],
+					msg : "Doesn't looke like a valid national number"
+				} ,
 				isNumeric: {
-					msg: "Doesn't look like a national number",
+					msg: "Doesn't look like a valid national number",
 				},
 			},
 		},

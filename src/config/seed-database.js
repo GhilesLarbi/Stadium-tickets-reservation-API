@@ -55,9 +55,38 @@ const users = [
 		username: 'ghiles larbi',
 		password: '123',
 		email: 'hinrobalas@gmail.com',
-		isEmailConfirmed: false,
+		isEmailConfirmed: true,
 		phone: '0667667067',
 		nationalNumber: '663882997629',
+	},
+]
+
+
+const tickets = [
+	{
+		userId : 1,
+		gameId : 1,
+		bleacherType : "VIP",
+	},
+	{
+		userId : 1,
+		gameId : 2,
+		bleacherType : "VIP",
+	},
+	{
+		userId : 1,
+		gameId : 3,
+		bleacherType : "VIP",
+	},
+	{
+		userId : 1,
+		gameId : 4,
+		bleacherType : "VIP",
+	},
+	{
+		userId : 1,
+		gameId : 5,
+		bleacherType : "VIP",
 	},
 ]
 
@@ -192,6 +221,11 @@ async function createTables(config) {
 		})
 		console.log('(+) Done seeding Game table')
 
+		await db.ticket.bulkCreate(tickets, {
+			// validate: true, individualHooks: true
+		})
+		console.log('(+) Done seeding Ticket table')
+		
 		process.exit(0)
 
 	} catch (err) {

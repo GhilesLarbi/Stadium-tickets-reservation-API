@@ -1,4 +1,5 @@
 const { DataTypes } = require('sequelize')
+const { Op } = require('sequelize')
 const AppErr = require('../../../utils/AppErr')
 
 // ticket modele
@@ -23,21 +24,8 @@ module.exports = (sequelize) => {
 
 			validate: {
 				async noMoreFiveTicketsPerUser() {
-					const allTickets = await sequelize.models.ticket.findAll({
-						include: [sequelize.models.game],
-						where: {
-							userId: this.userId,
-						},
-
-						raw: true,
-					})
-
-					let count = 0
-					allTickets.forEach(ticket => {
-						if (new Date(ticket["game.date"]).getTime() > new Date().getTime()) count = count + 1
-					});
-
-					if (count >= 5) throw new Error('You reached the tickets per user limit')
+					const allTickets = await sequelize.models.ticket.findAll({ where: { userId: this.userId}})
+					if (allTickets.length >= 5) throw new Error('You reached the tickets per user limit')
 				}
 			},
 		},
@@ -84,18 +72,20 @@ module.exports = (sequelize) => {
 		},
 
 	}, {
+		defaultScope: {
+			where: {
+				'$game.date$': {
+					[Op.gt] : new Date(),
+				}
+			},
+			include : ["game"]
+		},
 		// add validator here
 		validate: {
 			async noMorePlaces() {
 
-				const countTickets = await sequelize.models.ticket.findOne({
-					attributes: [[sequelize.fn('COUNT', sequelize.col('id')), 'count']],
-					where: {
-						bleacherType: this.bleacherType,
-						gameId: this.gameId,
-					},
-					raw: true,
-				})
+				let countTickets = await sequelize.models.ticket.findAll({where: {bleacherType: this.bleacherType, gameId: this.gameId }})
+				countTickets = countTickets.length
 
 				const bleacher = await sequelize.models.bleacher.findOne({
 					where: {
@@ -106,7 +96,7 @@ module.exports = (sequelize) => {
 
 				if (!bleacher) throw new AppErr(404, 'no bleacher of type ' + this.bleacherType + ' found', 'bleacherType')
 
-				if (countTickets.count >= bleacher.quantity)
+				if (countTickets >= bleacher.quantity)
 					throw new AppErr(401, 'all places of bleacher ' + this.bleacherType + ' are taken', 'bleacherType')
 			}
 		},
