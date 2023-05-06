@@ -14,10 +14,7 @@
 
 
 # authentication
-- Confirm emails before submitting users
-```
-(!) using "nodemailer" i guess .. will see
-```
+- Confirm emails before submitting users `done`
 - Fix the admin login process
 ```
 (!) SKETCHY-CODE
