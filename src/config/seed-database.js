@@ -55,36 +55,9 @@ const users = [
 		username: 'ghiles larbi',
 		password: '123',
 		email: 'hinrobalas@gmail.com',
-		isEmailConfirmed: true,
+		isEmailConfirmed: false,
 		phone: '0667667067',
 		nationalNumber: '663882997629',
-	},
-
-	{
-		username: 'nacer laribi',
-		password: '1234',
-		email: 'nacer@gmail.com',
-		isEmailConfirmed: false,
-		phone: '0736382693',
-		nationalNumber: '663882997674',
-	},
-
-	{
-		username: 'ania larbi',
-		password: '12345',
-		email: 'ania@gmail.com',
-		isEmailConfirmed: false,
-		phone: '0538297442',
-		nationalNumber: '663882988379',
-	},
-
-	{
-		username: 'karim khelfaoui',
-		password: '123456',
-		email: 'karim@gmail.com',
-		isEmailConfirmed: true,
-		phone: '0732720761',
-		nationalNumber: '663882937382',
 	},
 ]
 

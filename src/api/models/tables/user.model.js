@@ -74,6 +74,8 @@ module.exports = (sequelize) => {
 
 		phone: {
 			type: DataTypes.STRING,
+			unique : true,
+			allowNull : true,
 			validate: {
 				isNumeric: {
 					msg: "Doesn't look like a phone number",
@@ -83,6 +85,8 @@ module.exports = (sequelize) => {
 
 		nationalNumber: {
 			type: DataTypes.STRING,
+			unique : true,
+			allowNull : true,
 			validate: {
 				isNumeric: {
 					msg: "Doesn't look like a national number",
