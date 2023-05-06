@@ -147,23 +147,15 @@ const generate = asyncHandler(async (req, res) => {
 		where.userId = req.id
 
 	// get ticket
-	const ticket = await db.ticket.findOne({
-		include: [
-			db.user, db.bleacher,
-			{
-				model: db.game,
-				include: [
-					db.league,
-					{ model: db.team, as: 'team1', },
-					{ model: db.team, as: 'team2', },
-				],
-			},
-		],
-		where: where,
-	})
-
+	let ticket = await db.ticket.findOne({ include: [db.user, db.bleacher], where: where })
 	// if no ticket found exit
 	if (!ticket) throw new AppErr(404, 'No ticket with id of ' + req.params.id, 'ticketId')
+	ticket = ticket.toJSON()
+	
+	let game = await db.game.findOne({where : {id : ticket.gameId}, include : [db.league, { model: db.team, as: 'team1', }, { model: db.team, as: 'team2', }]})
+	ticket.game = game
+	
+
 
 
 	// encrypt  "userId ticketId" : "1 5"
@@ -217,7 +209,6 @@ const generate = asyncHandler(async (req, res) => {
 			qrcodestr,
 			qrcodeImage,
 			ticket,
-			// ticket : ticket.toJSON(),
 		},
 	)
 })

@@ -9,6 +9,7 @@ function buildPDF(dataCallback, endCallback, option) {
 	
 	doc.on('data', dataCallback)
 	doc.on('end', endCallback)
+    
 	
 	const svg = `
 	<svg width="794" height="322.121" viewBox="0 0 843 342" fill="none" xmlns="http://www.w3.org/2000/svg"
