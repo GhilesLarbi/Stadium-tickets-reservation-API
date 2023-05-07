@@ -31,15 +31,13 @@ const getBleachers = asyncHandler(async (req, res) => {
 			result[i].tickets = []
 			
 			for (let j = 0; j < games.length; j++) {
-				const count =  (await db.ticket.findOne({
-					attributes : [[sequelize.fn('COUNT', sequelize.col('id')), 'count']],
+				const count =  (await db.ticket.findAll({
 					where : {
 						bleacherType : result[i].type,
 						gameId : games[j],
 					},
-					
 					raw : true,
-				})).count
+				})).length
 				
 				if (count != 0)
 					result[i].tickets.push({
