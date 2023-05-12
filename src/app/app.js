@@ -14,12 +14,12 @@ const globalErrorHandler = require('../middlewares/globalErrorHandler')
 
 // ---- development purposes ----
 // logging requests
-const morgan = require('morgan')
-app.use(morgan('dev'))
+// const morgan = require('morgan')
+// app.use(morgan('dev'))
 
 // alow external access
 app.use(cors( {
-	origin: '*',
+	origin: ["https://ghileslarbi.github.io", '*'],
 	credentials: true,
 }))
 
