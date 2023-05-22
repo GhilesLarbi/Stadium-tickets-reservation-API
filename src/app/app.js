@@ -19,7 +19,7 @@ const globalErrorHandler = require('../middlewares/globalErrorHandler')
 
 // alow external access
 app.use(cors( {
-	origin: ["https://ghileslarbi.github.io", '*'],
+	origin: ["https://ghileslarbi.github.io", 'http://127.0.0.1:5500', /[\s\S]/],
 	credentials: true,
 }))
 
