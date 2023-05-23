@@ -7,7 +7,6 @@
 * `/api/bleacher` endpoint :
 * @apiSuccess {Array} Data Array of bleachers data
 * @apiSuccessExample Success-Response:
-* HTTP/1.1 200 OK
 * {
 * 	"success" : true,
 *	"code" : 200,
@@ -42,7 +41,6 @@
 * @apiParam {String} type bleacher type
 * @apiSuccess {Object} Data bleacher data
 * @apiSuccessExample Success-Response:
-* HTTP/1.1 200 OK
 * {
 * 	"success" : true,
 *	"code" : 200,
@@ -68,7 +66,6 @@
 * @apiHeader {String} Authorization Admin Authorization token.
 * @apiSuccess {Object} Data The new created bleacher
 * @apiSuccessExample Success-Response:
-* HTTP/1.1 201 CREATED
 * {
 * 	"success" : true,
 *	"code" : 201,
@@ -96,7 +93,6 @@
 * @apiBody {number} [quantity] number of places
 * @apiSuccess {Object} Data The updated bleacher data.
 * @apiSuccessExample Success-Response:
-* HTTP/1.1 200 OK
 * {
 * 	"success" : true,
 *	"code" : 200,
@@ -120,7 +116,6 @@
 * @apiParam {String} type Bleacher type
 * @apiSuccess {Object} Data The deleted bleacher data.
 * @apiSuccessExample Success-Response:
-* HTTP/1.1 200 OK
 * {
 * 	"success" : true,
 *	"code" : 200,

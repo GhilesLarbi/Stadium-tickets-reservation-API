@@ -16,7 +16,6 @@
  * @apiSuccess {String} data.token Access token for the authenticated user.
  *
  * @apiSuccessExample Success-Response:
- *     HTTP/1.1 200 OK
  *     {
  *       "success": true,
  *       "code": 200,
@@ -32,7 +31,6 @@
  * @apiError {String} field The field in which the error occurred.
  *
  * @apiErrorExample Error-Response:
- *     HTTP/1.1 401 Unauthorized
  *     {
  *       "success": false,
  *       "code": 401,
@@ -73,7 +71,6 @@
  * @apiSuccess {String} data.nationalId The national ID of the newly created user.
  *
  * @apiSuccessExample Success-Response:
- *     HTTP/1.1 201 Created
  *     {
  *       "success": true,
  *       "code": 201,
@@ -96,7 +93,6 @@
  * @apiError {String} field The field in which the error occurred.
  *
  * @apiErrorExample Error-Response:
- *     HTTP/1.1 400 Bad Request
  *     {
  *       "success": false,
  *       "code": 400,
@@ -116,7 +112,6 @@
 * @apiParam {String} token Unique token
 * 
 * @apiSuccessExample Success-Response:
-* HTTP/1.1 200 OK
 * {
 *	"success" : true,
 *	"code" : 202,
@@ -148,7 +143,6 @@
  * @apiSuccess {Object|Array} data The user information or array of users.
  *
  * @apiSuccessExample {json} Successful Response (Admin):
- *     HTTP/1.1 200 OK
  *     {
  *         "success": true,
  *         "code": 200,
@@ -178,7 +172,6 @@
  *     }
  *
  * @apiSuccessExample {json} Successful Response (User):
- *     HTTP/1.1 200 OK
  *     {
  *         "success": true,
  *         "code": 200,
@@ -196,7 +189,6 @@
  *     }
  *
  * @apiErrorExample {json} Error Response:
- *     HTTP/1.1 401 Unauthorized
  *     {
  *         "success": false,
  *         "code": 401,
@@ -297,7 +289,6 @@ Users must be authenticated to access this endpoint, which requires an authoriza
 *
 * @apiSuccess {Object} data The updated user data.
 * @apiSuccessExample Success-Response:
-*     HTTP/1.1 200 OK
 *     {
 *       "success": true,
 *       "code": 200,
@@ -329,7 +320,6 @@ Users must be authenticated to access this endpoint, which requires an authoriza
  * @apiHeader {String} Authorization User's authorization token.
  * 
  * @apiSuccessExample Success Response:
- *     HTTP/1.1 200 OK
  *     {
  *         "success": true,
  *         "code": 200,
@@ -347,7 +337,6 @@ Users must be authenticated to access this endpoint, which requires an authoriza
  *     }
  *
  * @apiErrorExample Error Response:
- *     HTTP/1.1 401 Unauthorized
  *     {
  *         "success": false,
  *         "code": 401,
@@ -374,7 +363,6 @@ Users must be authenticated to access this endpoint, which requires an authoriza
 * @apiSuccess {Object} Data An empty object.
 *
 * @apiSuccessExample Success-Response:
-*     HTTP/1.1 200 OK
 *     {
 *       "success": true,
 *       "code": 200,
@@ -407,7 +395,6 @@ Users must be authenticated to access this endpoint, which requires an authoriza
  * @apiSuccess {Object} data The deleted user's data.
  * 
  * @apiSuccessExample {json} Success-Response (Admin):
- * HTTP/1.1 200 OK
  * {
  *     "success": true,
  *     "code": 200,
@@ -425,7 +412,6 @@ Users must be authenticated to access this endpoint, which requires an authoriza
  * }
  * 
  * @apiSuccessExample {json} Success-Response (User):
- * HTTP/1.1 200 OK
  * {
  *     "success": true,
  *     "code": 200,
@@ -443,7 +429,6 @@ Users must be authenticated to access this endpoint, which requires an authoriza
  * }
  * 
  * @apiErrorExample {json} Unauthorized:
- * HTTP/1.1 401 Unauthorized
  * {
  *     "success": false,
  *     "code": 401,
@@ -452,7 +437,6 @@ Users must be authenticated to access this endpoint, which requires an authoriza
  * }
  * 
  * @apiErrorExample {json} Not Found:
- * HTTP/1.1 404 Not Found
  * {
  *     "success": false,
  *     "code": 404,

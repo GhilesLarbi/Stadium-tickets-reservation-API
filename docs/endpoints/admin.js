@@ -10,7 +10,6 @@
 * @apiBody {String} password Admin Password
 * @apiSuccess {String} token Admin access token.
 * @apiSuccessExample Success-Response:
-* HTTP/1.1 200 OK
 * {
 *	"success" : true,
 *	"code" : 200,

@@ -1,4 +1,5 @@
-# <%= project.name %> <%= //  "V" + project.version %>
+<a name="top"></a>
+# <%= project.name %> v<%= project.version %>
 
 <%= project.description %>
 <% if (header) { -%>
@@ -6,32 +7,35 @@
 <%- header %>
 <% } -%>
 
-# Endpoints
+# Table of contents
 
 <% data.forEach(group => { -%>
 - [<%= group.name %>](#<%= toLink(group.name) -%>)
 <% group.subs.forEach(sub => { -%>
-  - [<%= sub.title %>](#<%= toLink(group.name) -%>##<%= toLink(sub.title) %>)
+  - [<%= sub.title %>](##<%= toLink(sub.title) %>)
 <% })}) -%>
+
+___
 
 <% if (prepend) { -%>
 <%- prepend %>
 <% } -%>
 <% data.forEach(group => { -%>
-___
+
 # <a name='<%= toLink(group.name) %>'></a> <%= group.name %>
 <% group.subs.forEach(sub => { -%>
-___
+
 ## <a name='<%= toLink(sub.title) %>'></a> <%= sub.title %>
+[Back to top](#top)
 
 <%- sub.description ? `${sub.description}\n\n` : '' -%>
-```http
+```
 <%- sub.type.toUpperCase() %> <%= sub.url %>
 ```
 <% if (sub.header && sub.header.fields) { -%>
 <% Object.entries(sub.header.fields).forEach(([headersGroup, headersGroupContent]) => { -%>
 
-> ### Headers
+### Headers - `<%= headersGroup %>`
 
 | Name    | Type      | Description                          |
 |---------|-----------|--------------------------------------|
@@ -42,7 +46,7 @@ ___
 <% } // if parameters -%>
 <% if (sub.header && sub.header.examples && sub.header.examples.length) { -%>
 
-__examples :__
+### Header examples
 
 <% sub.header.examples.forEach(example => { -%>
 <%= example.title %>
@@ -55,7 +59,7 @@ __examples :__
 <% if (sub.parameter && sub.parameter.fields) { -%>
 <% Object.entries(sub.parameter.fields).forEach(([parametersGroup, parametersGroupContent]) => { -%>
 
-> ### Parameters
+### Parameters - `<%= parametersGroup -%>`
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
@@ -72,7 +76,7 @@ _Allowed values: <%- param.allowedValues %>_<% } -%> |
 <% } // if parameters -%>
 <% if (sub.query) { -%>
 
-> ### Queries
+### Query Parameters
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
@@ -88,21 +92,7 @@ _Allowed values: <%- query.allowedValues %>_<% } -%> |
 <% } // if query -%>
 <% if (sub.body) { -%>
 
-> ### Request Body 
-
-<% if (['string','number','boolean'].includes(sub.body[0].type.toLowerCase())) { -%>
-The request body must be in `JSON` format
-__example :__ 
-```javascript
-{
-<% sub.body.forEach(body => { -%>
-	"<%- body.field -%>" : <%- (body.type.toLowerCase() == 'number')? Math.floor(Math.random()*1000) : '"'+body.field.toUpperCase()+'"' -%>,
-<% }) // foreach body-%>
-}
-```
-<% } else { -%>
-The request body must be in `FormData` format
-<% } -%>
+### Request Body
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
@@ -115,11 +105,10 @@ _Size range: <%- body.size %>_<br><% } -%>
 <% if (body.allowedValues) { -%>
 _Allowed values: <%- body.allowedValues %>_<% } -%> |
 <% }) // foreach body -%>
-
 <% } // if body -%>
 <% if (sub.examples && sub.examples.length) { -%>
 
-__Examples :__
+### Examples
 
 <% sub.examples.forEach(example => { -%>
 <%= example.title %>
@@ -132,7 +121,7 @@ __Examples :__
 <% } // if example -%>
 <% if (sub.parameter && sub.parameter.examples && sub.parameter.examples.length) { -%>
 
-__examples :__
+### Parameters examples
 
 <% sub.parameter.examples.forEach(exampleParam => { -%>
 `<%= exampleParam.type %>` - <%= exampleParam.title %>
@@ -143,24 +132,10 @@ __examples :__
 <% }) // foreach exampleParam -%>
 <% } // if exampleParam -%>
 <% if (sub.success && sub.success.fields) { -%>
-> ### Success response 
-
+### Success response
 <% Object.entries(sub.success.fields).forEach(([responsesGroup, responsesGroupContent]) => { -%>
 
-##### `<%= responsesGroup %>`
-
-
-<% if (sub.success && sub.success.examples && sub.success.examples.length) { -%>
-The expect response is in `JSON` format and may look like this :
-__example :__
-<% sub.success.examples.forEach(example => { -%>
-
-```<%= example.type %>
-<%- example.content %>
-```
-<% }) // foreach success example -%>
-<% } // if success.examples -%>
-
+#### Success response - `<%= responsesGroup %>`
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
@@ -175,14 +150,24 @@ _Allowed values: <%- param.allowedValues %>_<% } -%> |
 <% }) // foreach reponses -%>
 <% }) // foreach field -%>
 <% } // if success.fields -%>
+<% if (sub.success && sub.success.examples && sub.success.examples.length) { -%>
 
+### Success response example
+<% sub.success.examples.forEach(example => { -%>
+
+#### Success response example - `<%= example.title %>`
+
+```<%= example.type %>
+<%- example.content %>
+```
+<% }) // foreach success example -%>
+<% } // if success.examples -%>
 <% if (sub.error && sub.error.fields) { -%>
 
-> ### Error response 
-
+### Error response
 <% Object.entries(sub.error.fields).forEach(([errorsGroup, errorsGroupContent]) => { -%>
 
-##### `<%= errorsGroup %>`
+#### Error response - `<%= errorsGroup %>`
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
@@ -202,7 +187,7 @@ _Allowed values: <%- param.allowedValues %>_<% } -%> |
 ### Error response example
 <% sub.error.examples.forEach(example => { -%>
 
-##### `<%= example.title %>`
+#### Error response example - `<%= example.title %>`
 
 ```<%= example.type %>
 <%- example.content %>

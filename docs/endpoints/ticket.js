@@ -8,7 +8,6 @@
 * @apiHeader {String} Authorization Admin or Valid user Authorization token.
 * @apiSuccess {Object} Data Array of tickets data
 * @apiSuccessExample Success-Response:
-* HTTP/1.1 200 OK
 * {
 * 	"success" : true,
 *	"code" : 200,
@@ -44,7 +43,6 @@
 * @apiHeader {String} Authorization User Authorization token.
 * @apiSuccess {Object} Data The new created ticket
 * @apiSuccessExample Success-Response:
-* HTTP/1.1 201 CREATED
 * {
 * 	"success" : true,
 *	"code" : 201,
@@ -84,7 +82,6 @@
 * @apiParam {Number} id Ticket unique id
 * @apiSuccess {Object} Data The deleted ticket data.
 * @apiSuccessExample Success-Response:
-* HTTP/1.1 200 OK
 * {
 * 	"success" : true,
 *	"code" : 200,

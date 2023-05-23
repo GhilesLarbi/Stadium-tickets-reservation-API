@@ -7,7 +7,6 @@
 * `/api/team` endpoint :
 * @apiSuccess {Object} Data Array of teams data
 * @apiSuccessExample Success-Response:
-* HTTP/1.1 200 OK
 * {
 * 	"success" : true,
 *	"code" : 200,
@@ -41,7 +40,6 @@
 * @apiParam {Number} id team unique id
 * @apiSuccess {Object} Data teams data
 * @apiSuccessExample Success-Response:
-* HTTP/1.1 200 OK
 * {
 * 	"success" : true,
 *	"code" : 200,
@@ -68,7 +66,6 @@
 * @apiHeader {String} Authorization Admin Authorization token.
 * @apiSuccess {Object} Data The new created team
 * @apiSuccessExample Success-Response:
-* HTTP/1.1 201 CREATED
 * {
 * 	"success" : true,
 *	"code" : 201,
@@ -98,7 +95,6 @@
 * @apiBody {String} [captainName] captain name
 * @apiSuccess {Object} Data The updated team data.
 * @apiSuccessExample Success-Response:
-* HTTP/1.1 200 OK
 * {
 * 	"success" : true,
 *	"code" : 200,
@@ -124,7 +120,6 @@
 * @apiParam {Number} id Team unique id
 * @apiSuccess {Object} Data The deleted team data.
 * @apiSuccessExample Success-Response:
-* HTTP/1.1 200 OK
 * {
 * 	"success" : true,
 *	"code" : 200,
@@ -152,7 +147,6 @@
 * @apiBody {Image} Image The logo image
 * @apiSuccess {Object} Data The team data.
 * @apiSuccessExample Success-Response:
-* HTTP/1.1 200 OK
 * {
 * 	"success" : true,
 *	"code" : 200,

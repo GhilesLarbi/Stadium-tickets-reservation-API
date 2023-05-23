@@ -7,7 +7,6 @@
 * `/api/league` endpoint :
 * @apiSuccess {Object} Data Array of leagues data
 * @apiSuccessExample Success-Response:
-* HTTP/1.1 200 OK
 * {
 * 	"success" : true,
 *	"code" : 200,
@@ -37,7 +36,6 @@
 * @apiParam {Number} id league unique id
 * @apiSuccess {Object} Data league data
 * @apiSuccessExample Success-Response:
-* HTTP/1.1 200 OK
 * {
 * 	"success" : true,
 *	"code" : 200,
@@ -61,7 +59,6 @@
 * @apiParam {Number} id League unique id
 * @apiSuccess {Object} Data The deleted league data.
 * @apiSuccessExample Success-Response:
-* HTTP/1.1 200 OK
 * {
 * 	"success" : true,
 *	"code" : 200,
@@ -85,7 +82,6 @@
 * @apiHeader {String} Authorization Admin Authorization token.
 * @apiSuccess {Object} Data The new created league
 * @apiSuccessExample Success-Response:
-* HTTP/1.1 201 CREATED
 * {
 * 	"success" : true,
 *	"code" : 201,
@@ -111,7 +107,6 @@
 * @apiBody {String} [name] league name
 * @apiSuccess {Object} Data The updated league data.
 * @apiSuccessExample Success-Response:
-* HTTP/1.1 200 OK
 * {
 * 	"success" : true,
 *	"code" : 200,
@@ -137,7 +132,6 @@
 * @apiBody {Image} Image The logo image
 * @apiSuccess {Object} Data The league data.
 * @apiSuccessExample Success-Response:
-* HTTP/1.1 200 OK
 * {
 * 	"success" : true,
 *	"code" : 200,

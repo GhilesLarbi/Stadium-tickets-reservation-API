@@ -7,7 +7,6 @@
 * `/api/game` endpoint :
 * @apiSuccess {Object[]} Data Array of games data
 * @apiSuccessExample Success-Response:
-* HTTP/1.1 200 OK
 * {
 * 	"success" : true,
 *	"code" : 200,
@@ -46,7 +45,6 @@
 * @apiParam {Number} id Game unique id 
 * @apiSuccess {Object} Data game data
 * @apiSuccessExample Success-Response:
-* HTTP/1.1 200 OK
 * {
 * 	"success" : true,
 *	"code" : 200,
@@ -75,7 +73,6 @@
 * @apiParam {Number} id Game unique id
 * @apiSuccess {Object} Data The deleted game data.
 * @apiSuccessExample Success-Response:
-* HTTP/1.1 200 OK
 * {
 * 	"success" : true,
 *	"code" : 200,
@@ -108,7 +105,6 @@
 * @apiHeader {String} Authorization Admin Authorization token.
 * @apiSuccess {Object} Data The new created league
 * @apiSuccessExample Success-Response:
-* HTTP/1.1 201 CREATED
 * {
 * 	"success" : true,
 *	"code" : 201,
@@ -143,7 +139,6 @@
 * @apiBody {Number} [team2Id] Team 2 unique id
 * @apiSuccess {Object} Data The updated game data.
 * @apiSuccessExample Success-Response:
-* HTTP/1.1 200 OK
 * {
 * 	"success" : true,
 *	"code" : 200,

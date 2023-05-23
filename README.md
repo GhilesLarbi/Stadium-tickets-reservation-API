@@ -1,5 +1,5 @@
 <a name="top"></a>
-# Stadium tickets reservation API v1.0.0
+# stadium-tickets-reservation-api v1.0.0
 
  
 
@@ -38,49 +38,112 @@
 </ul>
 <hr />
 <h1>Installation</h1>
-<p>In order to run the API locally, please follow the steps below:</p>
-<p>You need to install :</p>
+<p>To successfully install and run the API locally, please follow the steps outlined below:</p>
+<p>Step 1: Install Dependencies</p>
+<p>Before proceeding, ensure that you have the following software installed on your machine:</p>
 <ul>
 <li>Node.js +v18.13.0</li>
-<li>Mariadb +v10.6.11</li>
+<li>Choose either MariaDB or MySQL based on your preference.</li>
 </ul>
-<p>Clone the repository to your local machine using the following command:</p>
+<p>If you choose MariaDB:</p>
+<ol>
+<li>
+<p>Install MariaDB on your machine. You can download it from the official MariaDB website and follow the installation instructions for your operating system.</p>
+</li>
+<li>
+<p>Install the MariaDB module by running the following command:</p>
+</li>
+</ol>
+<pre><code class="language-bash">npm install mariadb
+</code></pre>
+<p>If you choose MySQL:</p>
+<ol>
+<li>
+<p>Install MySQL on your machine. You can download it from the official MySQL website and follow the installation instructions for your operating system.</p>
+</li>
+<li>
+<p>Install the MySQL module by running the following command:</p>
+</li>
+</ol>
+<pre><code class="language-bash">npm install mysql
+</code></pre>
+<p>Step 2: Clone the Repository</p>
+<p>Open your terminal and clone the repository to your local machine by executing the following command:</p>
 <pre><code class="language-bash">git clone https://github.com/GhilesLarbi/Stadium-tickets-reservation-API.git
 </code></pre>
-<p>Navigate to the cloned repository by using the following command:</p>
+<p>Navigate to the cloned repository by running the command:</p>
 <pre><code class="language-bash">cd Stadium-tickets-reservation-API
 </code></pre>
-<p>Install the nodemon package for development using the following command:</p>
+<p>Step 3: Install Nodemon</p>
+<p>To enable a development environment, install the nodemon package by executing the following command:</p>
 <pre><code class="language-bash">npm install nodemon --save-dev
 </code></pre>
-<p>Install the required dependencies using the following command:</p>
+<p>Step 4: Install Dependencies</p>
+<p>Install the required dependencies by running the following command:</p>
 <pre><code class="language-bash">npm install
 </code></pre>
-<p>If you face any issues while installing dependencies, especially on the Windows operating system, try the following command instead:</p>
-<pre><code class="language-bash">npm install --no-bin-links
-</code></pre>
-<p>Start and configure your MariaDB server and ensure that the user has the <code>READ</code> and <code>WRITE</code> privileges. Then, create an empty database, let's call it <code>db_test</code>.</p>
-<pre><code class="language-sql">CREATE DATABASE db_test;
-</code></pre>
-<p>Next, navigate to the repository folder in your local machine and open the <code>.env</code> file. Here, you will need to add your MariaDB server credentials. Specifically, you'll need to provide your database <code>host</code>, <code>port</code>, <code>username</code>, <code>password</code>, and <code>name</code>. For instance, you could set the following values:</p>
-<pre><code class="language-javascript">DB_HOST = 127.0.0.1
-DB_PORT = 3306
-DB_USER = root // mariadb username
-DB_PASSWORD = root // mariadb password
-DB_NAME = db_test // database name
-</code></pre>
-<p>Once you have specified your credentials, save the changes to the <code>.env</code> file.</p>
-<p>In this step, you will seed the database with the necessary tables and dummy data. To do this, run the following command in your terminal:</p>
+<p>If you encounter any issues during the installation process, make sure to resolve them before proceeding.</p>
+<p>Step 5: Set up Environment Variables</p>
+<p>Open the <code>.env</code> file located in the repository folder on your local machine. Update the file to include the following variables:</p>
+<ul>
+<li>
+<p>Database configuration:</p>
+<ul>
+<li><code>DB_TYPE</code>: Set this variable to either &quot;mariadb&quot; or &quot;mysql&quot; based on your chosen database system.</li>
+<li><code>DB_HOST</code>: The host address of your database server.</li>
+<li><code>DB_PORT</code>: The port number on which your database server is running.</li>
+<li><code>DB_USER</code>: The username to access your database server.</li>
+<li><code>DB_PASSWORD</code>: The password to access your database server.</li>
+<li><code>DB_NAME</code>: The name of the database you want to use.</li>
+</ul>
+</li>
+<li>
+<p>Stripe credentials:</p>
+<ul>
+<li><code>STRIPE_TOKEN</code>: The token generated from your Stripe account.</li>
+</ul>
+</li>
+<li>
+<p>Email configuration:</p>
+<ul>
+<li><code>EMAIL</code>: Your email address to send emails from.</li>
+<li><code>EMAIL_PASSWORD</code>: The password for your email address.</li>
+</ul>
+</li>
+<li>
+<p>API configuration:</p>
+<ul>
+<li><code>API_URL</code>: The preferred URL path for accessing the API, usually set as &quot;/api&quot;.</li>
+</ul>
+</li>
+<li>
+<p>Token and password encryption:</p>
+<ul>
+<li><code>TOKEN_ENCRYPTION_KEY</code>: The encryption key used to encrypt JWT tokens and passwords using bcrypt.</li>
+</ul>
+</li>
+<li>
+<p>Ticket QR code encryption:</p>
+<ul>
+<li><code>ENCRYPTION_KEY</code>: The encryption key used to encrypt the ticket QR code string.</li>
+<li><code>ENCRYPTION_INIT_VECTOR</code>: The initialization vector used for encryption of the ticket QR code string.</li>
+</ul>
+</li>
+</ul>
+<p>Make sure to save the changes made to the <code>.env</code> file.</p>
+<p>Step 6: Seed the Database</p>
+<p>To populate the database with the necessary tables and dummy data, execute the following command in your terminal:</p>
 <pre><code class="language-bash">npm run seed-database
 </code></pre>
-<p>Finally, you can start the server and listen to requests by executing either the dev command :</p>
+<p>Step 7: Start the Server</p>
+<p>You are now ready to start the server and listen to incoming requests. In your terminal, execute either of the following commands:</p>
 <pre><code class="language-bash">npm run dev
 </code></pre>
-<p>or the normal one :</p>
+<p>or</p>
 <pre><code class="language-bash">npm start
 </code></pre>
-<p>In this step, you will start the server by running either the npm run dev command or the npm start command in your terminal. This will listen to incoming requests from clients and respond to them accordingly.</p>
-<p>By default, the server will start on <code>PORT</code> <code>3000</code>. If you want to change this, you can add a PORT variable to the <code>.env</code> file and set it to the desired port number. For example, you might enter <code>PORT=8080</code>.</p>
+<p>This will initiate the server and allow it to respond to client requests accordingly.</p>
+<p>By default, the server will start on PORT 3000. If you wish to change the port, you can add a <code>PORT</code> variable to the <code>.env</code> file.</p>
 <hr />
 <h1>Authentication</h1>
 <p>Authentication is needed to access certain endpoints in the API, such as fetching your ticket data. To do this, you need to log in as a user and get an <code>access token</code>.</p>
@@ -224,48 +287,48 @@ There are 4 different clients :</p>
 # Table of contents
 
 - [Admin](#Admin)
-  - [Admin login](#Admin-login)
+  - [Admin login](##Admin-login)
 - [Bleacher](#Bleacher)
-  - [Create a bleacher](#Create-a-bleacher)
-  - [Delete bleacher by type](#Delete-bleacher-by-type)
-  - [Get bleacher data by type](#Get-bleacher-data-by-type)
-  - [Get bleachers data](#Get-bleachers-data)
-  - [Update bleacher](#Update-bleacher)
+  - [Create a bleacher](##Create-a-bleacher)
+  - [Delete bleacher by type](##Delete-bleacher-by-type)
+  - [Get bleacher data by type](##Get-bleacher-data-by-type)
+  - [Get bleachers data](##Get-bleachers-data)
+  - [Update bleacher](##Update-bleacher)
 - [Game](#Game)
-  - [Create a game](#Create-a-game)
-  - [Delete game by id](#Delete-game-by-id)
-  - [Get game data](#Get-game-data)
-  - [Get games data](#Get-games-data)
-  - [Update game](#Update-game)
+  - [Create a game](##Create-a-game)
+  - [Delete game by id](##Delete-game-by-id)
+  - [Get game data](##Get-game-data)
+  - [Get games data](##Get-games-data)
+  - [Update game](##Update-game)
 - [League](#League)
-  - [Create a league](#Create-a-league)
-  - [Delete league by id](#Delete-league-by-id)
-  - [Get league data by id](#Get-league-data-by-id)
-  - [Get leagues data](#Get-leagues-data)
-  - [Update league](#Update-league)
-  - [Upload league logo](#Upload-league-logo)
+  - [Create a league](##Create-a-league)
+  - [Delete league by id](##Delete-league-by-id)
+  - [Get league data by id](##Get-league-data-by-id)
+  - [Get leagues data](##Get-leagues-data)
+  - [Update league](##Update-league)
+  - [Upload league logo](##Upload-league-logo)
 - [Team](#Team)
-  - [Create a team](#Create-a-team)
-  - [Delete team by id](#Delete-team-by-id)
-  - [Get team data by id](#Get-team-data-by-id)
-  - [Get teams data](#Get-teams-data)
-  - [Update team](#Update-team)
-  - [Upload team logo](#Upload-team-logo)
+  - [Create a team](##Create-a-team)
+  - [Delete team by id](##Delete-team-by-id)
+  - [Get team data by id](##Get-team-data-by-id)
+  - [Get teams data](##Get-teams-data)
+  - [Update team](##Update-team)
+  - [Upload team logo](##Upload-team-logo)
 - [Ticket](#Ticket)
-  - [Buy ticket](#Buy-ticket)
-  - [Delete ticket](#Delete-ticket)
-  - [Download ticket PDF](#Download-ticket-PDF)
-  - [Get tickets data](#Get-tickets-data)
+  - [Buy ticket](##Buy-ticket)
+  - [Delete ticket](##Delete-ticket)
+  - [Download ticket PDF](##Download-ticket-PDF)
+  - [Get tickets data](##Get-tickets-data)
 - [User](#User)
-  - [Create User](#Create-User)
-  - [Delete User](#Delete-User)
-  - [Delete user by ID](#Delete-user-by-ID)
-  - [Get User By ID](#Get-User-By-ID)
-  - [Get User Information](#Get-User-Information)
-  - [Receive email confirmation](#Receive-email-confirmation)
-  - [Send Confirmation Email](#Send-Confirmation-Email)
-  - [Update User](#Update-User)
-  - [User login](#User-login)
+  - [Create User](##Create-User)
+  - [Delete User](##Delete-User)
+  - [Delete user by ID](##Delete-user-by-ID)
+  - [Get User By ID](##Get-User-By-ID)
+  - [Get User Information](##Get-User-Information)
+  - [Receive email confirmation](##Receive-email-confirmation)
+  - [Send Confirmation Email](##Send-Confirmation-Email)
+  - [Update User](##Update-User)
+  - [User login](##User-login)
 
 ___
 
@@ -300,7 +363,6 @@ POST /api/admin/login
 #### Success response example - `Success-Response:`
 
 ```json
-HTTP/1.1 200 OK
 {
 	"success" : true,
 	"code" : 200,
@@ -348,7 +410,6 @@ POST /api/bleacher
 #### Success response example - `Success-Response:`
 
 ```json
-HTTP/1.1 201 CREATED
 {
 	"success" : true,
 	"code" : 201,
@@ -394,7 +455,6 @@ DELETE /api/bleacher/:type
 #### Success response example - `Success-Response:`
 
 ```json
-HTTP/1.1 200 OK
 {
 	"success" : true,
 	"code" : 200,
@@ -434,7 +494,6 @@ GET /api/bleacher/:type
 #### Success response example - `Success-Response:`
 
 ```json
-HTTP/1.1 200 OK
 {
 	"success" : true,
 	"code" : 200,
@@ -468,7 +527,6 @@ GET /api/bleacher
 #### Success response example - `Success-Response:`
 
 ```json
-HTTP/1.1 200 OK
 {
 	"success" : true,
 	"code" : 200,
@@ -534,7 +592,6 @@ PUT /api/bleacher/:type
 #### Success response example - `Success-Response:`
 
 ```json
-HTTP/1.1 200 OK
 {
 	"success" : true,
 	"code" : 200,
@@ -587,7 +644,6 @@ POST /api/game
 #### Success response example - `Success-Response:`
 
 ```json
-HTTP/1.1 201 CREATED
 {
 	"success" : true,
 	"code" : 201,
@@ -637,7 +693,6 @@ DELETE /api/game/:id
 #### Success response example - `Success-Response:`
 
 ```json
-HTTP/1.1 200 OK
 {
 	"success" : true,
 	"code" : 200,
@@ -681,7 +736,6 @@ GET /api/game/:id
 #### Success response example - `Success-Response:`
 
 ```json
-HTTP/1.1 200 OK
 {
 	"success" : true,
 	"code" : 200,
@@ -719,7 +773,6 @@ GET /api/game
 #### Success response example - `Success-Response:`
 
 ```json
-HTTP/1.1 200 OK
 {
 	"success" : true,
 	"code" : 200,
@@ -791,7 +844,6 @@ PUT /api/game/:id
 #### Success response example - `Success-Response:`
 
 ```json
-HTTP/1.1 200 OK
 {
 	"success" : true,
 	"code" : 200,
@@ -843,7 +895,6 @@ POST /api/league
 #### Success response example - `Success-Response:`
 
 ```json
-HTTP/1.1 201 CREATED
 {
 	"success" : true,
 	"code" : 201,
@@ -889,7 +940,6 @@ DELETE /api/league/:id
 #### Success response example - `Success-Response:`
 
 ```json
-HTTP/1.1 200 OK
 {
 	"success" : true,
 	"code" : 200,
@@ -929,7 +979,6 @@ GET /api/league/:id
 #### Success response example - `Success-Response:`
 
 ```json
-HTTP/1.1 200 OK
 {
 	"success" : true,
 	"code" : 200,
@@ -963,7 +1012,6 @@ GET /api/league
 #### Success response example - `Success-Response:`
 
 ```json
-HTTP/1.1 200 OK
 {
 	"success" : true,
 	"code" : 200,
@@ -1022,7 +1070,6 @@ PUT /api/league/:id
 #### Success response example - `Success-Response:`
 
 ```json
-HTTP/1.1 200 OK
 {
 	"success" : true,
 	"code" : 200,
@@ -1074,7 +1121,6 @@ POST /api/league/:id/upload/logo
 #### Success response example - `Success-Response:`
 
 ```json
-HTTP/1.1 200 OK
 {
 	"success" : true,
 	"code" : 200,
@@ -1123,7 +1169,6 @@ POST /api/team
 #### Success response example - `Success-Response:`
 
 ```json
-HTTP/1.1 201 CREATED
 {
 	"success" : true,
 	"code" : 201,
@@ -1171,7 +1216,6 @@ DELETE /api/team/:id
 #### Success response example - `Success-Response:`
 
 ```json
-HTTP/1.1 200 OK
 {
 	"success" : true,
 	"code" : 200,
@@ -1213,7 +1257,6 @@ GET /api/team/:id
 #### Success response example - `Success-Response:`
 
 ```json
-HTTP/1.1 200 OK
 {
 	"success" : true,
 	"code" : 200,
@@ -1249,7 +1292,6 @@ GET /api/team
 #### Success response example - `Success-Response:`
 
 ```json
-HTTP/1.1 200 OK
 {
 	"success" : true,
 	"code" : 200,
@@ -1313,7 +1355,6 @@ PUT /api/team/:id
 #### Success response example - `Success-Response:`
 
 ```json
-HTTP/1.1 200 OK
 {
 	"success" : true,
 	"code" : 200,
@@ -1367,7 +1408,6 @@ POST /api/team/:id/upload/logo
 #### Success response example - `Success-Response:`
 
 ```json
-HTTP/1.1 200 OK
 {
 	"success" : true,
 	"code" : 200,
@@ -1418,7 +1458,6 @@ POST /api/ticket
 #### Success response example - `Success-Response:`
 
 ```json
-HTTP/1.1 201 CREATED
 {
 	"success" : true,
 	"code" : 201,
@@ -1466,7 +1505,6 @@ DELETE /api/ticket/:id
 #### Success response example - `Success-Response:`
 
 ```json
-HTTP/1.1 200 OK
 {
 	"success" : true,
 	"code" : 200,
@@ -1530,7 +1568,6 @@ GET /api/ticket
 #### Success response example - `Success-Response:`
 
 ```json
-HTTP/1.1 200 OK
 {
 	"success" : true,
 	"code" : 200,
@@ -1599,7 +1636,6 @@ POST /api/user
 #### Success response example - `Success-Response:`
 
 ```json
-HTTP/1.1 201 Created
 {
   "success": true,
   "code": 201,
@@ -1633,7 +1669,6 @@ HTTP/1.1 201 Created
 #### Error response example - `Error-Response:`
 
 ```json
-HTTP/1.1 400 Bad Request
 {
   "success": false,
   "code": 400,
@@ -1662,7 +1697,6 @@ DELETE /api/user
 #### Success response example - `Success Response:`
 
 ```json
-HTTP/1.1 200 OK
 {
     "success": true,
     "code": 200,
@@ -1685,7 +1719,6 @@ HTTP/1.1 200 OK
 #### Error response example - `Error Response:`
 
 ```json
-HTTP/1.1 401 Unauthorized
 {
     "success": false,
     "code": 401,
@@ -1726,7 +1759,6 @@ DELETE /api/user/:id
 #### Success response example - `Success-Response (Admin):`
 
 ```json
-HTTP/1.1 200 OK
 {
     "success": true,
     "code": 200,
@@ -1747,7 +1779,6 @@ HTTP/1.1 200 OK
 #### Success response example - `Success-Response (User):`
 
 ```json
-HTTP/1.1 200 OK
 {
     "success": true,
     "code": 200,
@@ -1770,7 +1801,6 @@ HTTP/1.1 200 OK
 #### Error response example - `Unauthorized:`
 
 ```json
-HTTP/1.1 401 Unauthorized
 {
     "success": false,
     "code": 401,
@@ -1782,7 +1812,6 @@ HTTP/1.1 401 Unauthorized
 #### Error response example - `Not Found:`
 
 ```json
-HTTP/1.1 404 Not Found
 {
     "success": false,
     "code": 404,
@@ -1933,7 +1962,6 @@ GET /api/user
 #### Success response example - `Successful Response (Admin):`
 
 ```json
-HTTP/1.1 200 OK
 {
     "success": true,
     "code": 200,
@@ -1966,7 +1994,6 @@ HTTP/1.1 200 OK
 #### Success response example - `Successful Response (User):`
 
 ```json
-HTTP/1.1 200 OK
 {
     "success": true,
     "code": 200,
@@ -1989,7 +2016,6 @@ HTTP/1.1 200 OK
 #### Error response example - `Error Response:`
 
 ```json
-HTTP/1.1 401 Unauthorized
 {
     "success": false,
     "code": 401,
@@ -2018,7 +2044,6 @@ GET /api/user/receive/confirmation/email/:token
 #### Success response example - `Success-Response:`
 
 ```json
-HTTP/1.1 200 OK
 {
 	"success" : true,
 	"code" : 202,
@@ -2054,7 +2079,6 @@ GET /api/user/send/confirmation/email
 #### Success response example - `Success-Response:`
 
 ```json
-HTTP/1.1 200 OK
 {
   "success": true,
   "code": 200,
@@ -2101,7 +2125,6 @@ PUT /api/user
 #### Success response example - `Success-Response:`
 
 ```json
-HTTP/1.1 200 OK
 {
   "success": true,
   "code": 200,
@@ -2151,7 +2174,6 @@ POST /api/user/login
 #### Success response example - `Success-Response:`
 
 ```json
-HTTP/1.1 200 OK
 {
   "success": true,
   "code": 200,
@@ -2178,7 +2200,6 @@ HTTP/1.1 200 OK
 #### Error response example - `Error-Response:`
 
 ```json
-HTTP/1.1 401 Unauthorized
 {
   "success": false,
   "code": 401,

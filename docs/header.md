@@ -35,75 +35,125 @@
 
 # Installation
 
-In order to run the API locally, please follow the steps below:
 
-You need to install :
+To successfully install and run the API locally, please follow the steps outlined below:
+
+Step 1: Install Dependencies
+
+Before proceeding, ensure that you have the following software installed on your machine:
+
 - Node.js +v18.13.0
-- Mariadb +v10.6.11
+- Choose either MariaDB or MySQL based on your preference.
 
-Clone the repository to your local machine using the following command:
+If you choose MariaDB:
+
+1. Install MariaDB on your machine. You can download it from the official MariaDB website and follow the installation instructions for your operating system.
+
+2. Install the MariaDB module by running the following command:
+
+```bash
+npm install mariadb
+```
+
+If you choose MySQL:
+
+1. Install MySQL on your machine. You can download it from the official MySQL website and follow the installation instructions for your operating system.
+
+2. Install the MySQL module by running the following command:
+
+```bash
+npm install mysql
+```
+
+Step 2: Clone the Repository
+
+Open your terminal and clone the repository to your local machine by executing the following command:
+
 ```bash
 git clone https://github.com/GhilesLarbi/Stadium-tickets-reservation-API.git
 ```
 
-Navigate to the cloned repository by using the following command:
+Navigate to the cloned repository by running the command:
+
 ```bash
 cd Stadium-tickets-reservation-API
 ```
 
-Install the nodemon package for development using the following command:
+Step 3: Install Nodemon
+
+To enable a development environment, install the nodemon package by executing the following command:
+
 ```bash
 npm install nodemon --save-dev
 ```
 
-Install the required dependencies using the following command:
-```bash 
+Step 4: Install Dependencies
+
+Install the required dependencies by running the following command:
+
+```bash
 npm install
 ```
 
-If you face any issues while installing dependencies, especially on the Windows operating system, try the following command instead:
+If you encounter any issues during the installation process, make sure to resolve them before proceeding.
 
-```bash
-npm install --no-bin-links
-```
+Step 5: Set up Environment Variables
 
-Start and configure your MariaDB server and ensure that the user has the `READ` and `WRITE` privileges. Then, create an empty database, let's call it `db_test`.
-``` sql 
-CREATE DATABASE db_test;
-```
+Open the `.env` file located in the repository folder on your local machine. Update the file to include the following variables:
 
+- Database configuration:
+  - `DB_TYPE`: Set this variable to either "mariadb" or "mysql" based on your chosen database system.
+  - `DB_HOST`: The host address of your database server.
+  - `DB_PORT`: The port number on which your database server is running.
+  - `DB_USER`: The username to access your database server.
+  - `DB_PASSWORD`: The password to access your database server.
+  - `DB_NAME`: The name of the database you want to use.
 
-Next, navigate to the repository folder in your local machine and open the `.env` file. Here, you will need to add your MariaDB server credentials. Specifically, you'll need to provide your database `host`, `port`, `username`, `password`, and `name`. For instance, you could set the following values:
+- Stripe credentials:
+  - `STRIPE_TOKEN`: The token generated from your Stripe account.
 
-```javascript
-DB_HOST = 127.0.0.1
-DB_PORT = 3306
-DB_USER = root // mariadb username
-DB_PASSWORD = root // mariadb password
-DB_NAME = db_test // database name
-```
+- Email configuration:
+  - `EMAIL`: Your email address to send emails from.
+  - `EMAIL_PASSWORD`: The password for your email address.
 
-Once you have specified your credentials, save the changes to the `.env` file.
+- API configuration:
+  - `API_URL`: The preferred URL path for accessing the API, usually set as "/api".
 
-In this step, you will seed the database with the necessary tables and dummy data. To do this, run the following command in your terminal:
+- Token and password encryption:
+  - `TOKEN_ENCRYPTION_KEY`: The encryption key used to encrypt JWT tokens and passwords using bcrypt.
+
+- Ticket QR code encryption:
+  - `ENCRYPTION_KEY`: The encryption key used to encrypt the ticket QR code string.
+  - `ENCRYPTION_INIT_VECTOR`: The initialization vector used for encryption of the ticket QR code string.
+
+Make sure to save the changes made to the `.env` file.
+
+Step 6: Seed the Database
+
+To populate the database with the necessary tables and dummy data, execute the following command in your terminal:
 
 ```bash
 npm run seed-database
 ```
 
-Finally, you can start the server and listen to requests by executing either the dev command :
+Step 7: Start the Server
+
+You are now ready to start the server and listen to incoming requests. In your terminal, execute either of the following commands:
 
 ```bash
 npm run dev
 ```
-or the normal one :
+
+or
+
 ```bash
 npm start
 ```
 
-In this step, you will start the server by running either the npm run dev command or the npm start command in your terminal. This will listen to incoming requests from clients and respond to them accordingly.
+This will initiate the server and allow it to respond to client requests accordingly.
 
-By default, the server will start on `PORT` `3000`. If you want to change this, you can add a PORT variable to the `.env` file and set it to the desired port number. For example, you might enter `PORT=8080`.
+By default, the server will start on PORT 3000. If you wish to change the port, you can add a `PORT` variable to the `.env` file.
+
 
 <hr />
 
