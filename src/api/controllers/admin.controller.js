@@ -6,16 +6,16 @@ const jwt = require('jsonwebtoken')
 
 
 const loginAdmin = asyncHandler(async (req, res) => {
-	const {user, password} = req.body
+	const {email, password} = req.body
 	
 	// if no email or password then throw error
-	if (!user) throw new AppErr(400, 'user is expected', 'user')
+	if (!email) throw new AppErr(400, 'email is expected', 'email')
 	if (!password) throw new AppErr(400, 'password is expected', 'password')
 	
 	// check if email and password are correct
-	if (user != "admin")
-		throw new AppErr(401, 'user is incorrect', 'user')
-	if ( password != "admin")
+	if (email != process.env.EMAIL)
+		throw new AppErr(401, 'email is incorrect', 'user')
+	if ( password != process.env.EMAIL_PASSWORD)
 		throw new AppErr(401, 'password is incorrect', 'password')
 	
 	// generate token

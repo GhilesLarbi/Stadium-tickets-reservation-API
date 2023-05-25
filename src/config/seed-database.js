@@ -92,7 +92,7 @@ const tickets = [
 
 const games = [
 	{
-		date: new Date('2023-5-25'),
+		date: new Date('2023-7-25'),
 		description: 'demi-final',
 		leagueId: 1,
 		team1Id: 1,

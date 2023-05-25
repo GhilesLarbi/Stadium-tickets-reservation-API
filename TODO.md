@@ -3,7 +3,7 @@
 - encrypt the ticket QR code string `done`
 - Add cors to allow external access `done`
 - check images meme-type
-- Add restrictions to cors
+- Add restrictions to cors `done`
 
 
 # routes
@@ -15,10 +15,7 @@
 
 # authentication
 - Confirm emails before submitting users `done`
-- Fix the admin login process
-```
-(!) SKETCHY-CODE
-```
+- Fix the admin login process `done`
 
 # general
 - Improve MVC architecture `done`
