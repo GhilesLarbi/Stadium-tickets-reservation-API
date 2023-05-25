@@ -14,7 +14,7 @@ const loginAdmin = asyncHandler(async (req, res) => {
 	
 	// check if email and password are correct
 	if (email != process.env.EMAIL)
-		throw new AppErr(401, 'email is incorrect', 'user')
+		throw new AppErr(401, 'email is incorrect', 'email')
 	if ( password != process.env.EMAIL_PASSWORD)
 		throw new AppErr(401, 'password is incorrect', 'password')
 	
