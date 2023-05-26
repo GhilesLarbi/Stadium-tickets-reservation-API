@@ -2,7 +2,7 @@
 - Add ORM Hooks to encrypt passwords `done`
 - encrypt the ticket QR code string `done`
 - Add cors to allow external access `done`
-- check images meme-type
+- check images meme-type `done`
 - Add restrictions to cors `done`
 
 

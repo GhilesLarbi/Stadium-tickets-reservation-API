@@ -131,9 +131,8 @@ const uploadLogo = asyncHandler(async (req, res) => {
 	
 	// FIXME
 	// If does not have image mime type prevent from uploading
-	//if (/^logo/.test(logo.mimetype)) throw new Error('Doesn\'t look like an image')
-	// if (logo.mimetype.match(/^image/)) console.log('it\'s an image')
-	// else console.log('it\'s not an image')
+	// if (/^logo/.test(logo.mimetype)) throw new Error('Doesn\'t look like an image')
+	if (! logo.mimetype.match(/^image/)) throw new AppErr(300, "Doesn't look like an image", "logo")
 
 	// get team
 	const team = await db.team.findByPk(req.params.id)
