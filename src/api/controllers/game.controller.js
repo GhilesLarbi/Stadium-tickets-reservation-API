@@ -52,10 +52,10 @@ const createGame = asyncHandler(async (req, res) => {
   }
 
 	const team1 = await db.team.findByPk(game.team1Id)
-	if (!team1) throw new AppErr(404, 'No team with id of ' + game.team1Id, 'team1Id')
+	if (!team1) throw new AppErr(404, 'Please add team 1', 'team1Id')
 	
 	const team2 = await db.team.findByPk(game.team2Id)
-	if (!team2) throw new AppErr(404, 'No team with id of ' + game.team2Id, 'team2Id')
+	if (!team2) throw new AppErr(404, 'Please add team 2', 'team2Id')
 	
 	
 	const result = await db.game.create(game)
