@@ -94,7 +94,7 @@ const games = [
 	{
 		date: new Date('2023-7-25'),
 		description: 'demi-final',
-		leagueId: 1,
+		leagueId: null,
 		team1Id: 1,
 		team2Id: 4,
 		score: null,

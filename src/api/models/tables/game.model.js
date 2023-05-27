@@ -44,6 +44,12 @@ module.exports = (sequelize) => {
 
 		score: {
 			type: DataTypes.STRING,
+      validate : {
+        is: {
+          args : /[0-9]+-([0-9])+/g,
+          msg : "The score format is incorrect"
+        },
+      },
 		},
 
 	}, {

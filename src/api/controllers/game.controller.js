@@ -46,9 +46,11 @@ const deleteGame = asyncHandler(async (req, res) => {
 const createGame = asyncHandler(async (req, res) => {
 	const game = req.body
 	
-	const league = await db.league.findByPk(game.leagueId)
-	if (!league) throw new AppErr(404, 'No league with id of ' + game.leagueId, 'leagueId')
-	
+  if (game.leagueId) {
+	  const league = await db.league.findByPk(game.leagueId)
+	  if (!league) throw new AppErr(404, 'No league with id of ' + game.leagueId, 'leagueId')
+  }
+
 	const team1 = await db.team.findByPk(game.team1Id)
 	if (!team1) throw new AppErr(404, 'No team with id of ' + game.team1Id, 'team1Id')
 	
@@ -65,9 +67,10 @@ const createGame = asyncHandler(async (req, res) => {
 const updateGame = asyncHandler(async (req, res) => {
 	const game = req.body
 	
-	const league = await db.league.findByPk(game.leagueId)
-	if (!league) throw new AppErr(404, 'No league with id of ' + game.leagueId, 'leagueId')
-	
+  if (game.leagueId) {
+	  const league = await db.league.findByPk(game.leagueId)
+	  if (!league) throw new AppErr(404, 'No league with id of ' + game.leagueId, 'leagueId')
+  }
 	
 	const team1 = await db.team.findByPk(game.team1Id)
 	if (!team1) throw new AppErr(404, 'No team with id of ' + game.team1Id, 'team1Id')
