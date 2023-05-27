@@ -138,39 +138,39 @@ const games = [
 const teams = [
 	{
 		name: 'jsk',
-		logo: 'jsk_1.png',
+		logo: 'jsk.png',
 	},
 
 	{
 		name: 'usma',
-		logo: 'usma_2.png',
+		logo: 'usma.png',
 	},
 
 	{
 		name: 'crb',
-		logo: 'crb_3.png',
+		logo: 'crb.png',
 	},
 
 	{
 		name: 'mca',
-		logo: 'mca_4.png',
+		logo: 'mca.png',
 	},
 ]
 
 const leagues = [
 	{
 		name: 'can',
-		logo: 'can_1.png',
+		logo: 'can.png',
 	},
 
 	{
 		name: 'caf',
-		logo: 'caf_2.jpg',
+		logo: 'caf.jpg',
 	},
 
 	{
 		name: 'cla',
-		logo: 'cla_3.png',
+		logo: 'cla.png',
 	},
 ]
 
