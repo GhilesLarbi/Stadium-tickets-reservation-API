@@ -5,7 +5,7 @@ const asyncHandler = require('../../utils/asyncErrorHandler')
 const AppRes = require('../../utils/AppRes')
 const AppErr = require('../../utils/AppErr')
 const path = require('path')
-
+const fs = require('fs')
 
 
 //@route GET /team
@@ -109,9 +109,12 @@ const deleteTeam = asyncHandler(async (req, res) => {
 	})
 	
 	if (!result) throw new AppErr(404, 'No team with id of '+req.params.id, 'teamId')
-	
+  
+  // delete logo if any
+  if (path.basename(result.logo) != "default.svg")
+    fs.unlinkSync(path.join(__dirname + '../../../images/team/' + path.basename(result.logo)))
+
 	result.destroy()
-	
 	res.send(AppRes(200, 'team deleted', result))
 })
 
