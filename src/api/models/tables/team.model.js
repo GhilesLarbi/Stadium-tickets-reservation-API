@@ -38,7 +38,7 @@ module.exports = (sequelize) => {
 		logo: {
 			type: DataTypes.STRING,
 			allowNull: false,
-			defaultValue: 'default.png',
+			defaultValue: 'default.svg',
 			get() {
 				return process.env.API_URL + '/images/team/' + this.getDataValue('logo')
 			}

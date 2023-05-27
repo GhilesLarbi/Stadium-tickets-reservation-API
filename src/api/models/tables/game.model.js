@@ -17,6 +17,17 @@ module.exports = (sequelize) => {
 			defaultValue: DataTypes.NOW,
 		},
 
+    isFinished : {
+      type: DataTypes.VIRTUAL,
+      get() {
+        if (new Date() < new Date(this.date)) return false
+        else return true
+      },
+      set(value) {
+        throw new Error('Do not try to set the `isFinished` value!');
+      }
+    },
+
 		description: {
 			type: DataTypes.STRING,
 		},
