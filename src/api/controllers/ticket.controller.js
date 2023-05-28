@@ -6,7 +6,7 @@ const asyncHandler = require('../../utils/asyncErrorHandler')
 const AppRes = require('../../utils/AppRes')
 const AppErr = require('../../utils/AppErr')
 const crypto = require('../../utils/crypto')
-const buildPDF = require('../../utils/generateTicket')
+const {buildPDF,buildSVG} = require('../../utils/generateTicket')
 const jwt = require('jsonwebtoken')
 const stripe = require("stripe")(process.env.STRIPE_TOKEN)
 
@@ -140,7 +140,7 @@ const createTicket = asyncHandler(async (req, res) => {
 //@route GET /ticket/:id/:type 
 //@middlewares authenticate => role(admin/valid-user)
 const generate = asyncHandler(async (req, res) => {
-	const type = (['qrcode', 'pdf', 'string', 'base64'].includes(req.params.type)) ? req.params.type : 'qrcode'
+	const type = (['qrcode', 'pdf', 'string', 'base64', 'svg'].includes(req.params.type)) ? req.params.type : 'qrcode'
 
 	const where = { id: req.params.id }
 	if (!req.isAdmin)
@@ -194,6 +194,7 @@ const generate = asyncHandler(async (req, res) => {
 
 	if (type == "base64") return res.send(AppRes(200, 'qrcode string generated', { string: qrcodeImage }))
 
+	if (type == "svg") return res.send(AppRes(200, "svg generated", {svg : buildSVG({qrcodestr,qrcodeImage,ticket})}))
 
 	// stream the PDF
 	const stream = res.writeHead(200, {

@@ -2,16 +2,10 @@ const PDFDocument = require('pdfkit')
 const SVGtoPDF = require('svg-to-pdfkit')
 const path = require('path')
 
-function buildPDF(dataCallback, endCallback, option) {
-	const doc = new PDFDocument( {
-		size: 'A4'
-	})
-	
-	doc.on('data', dataCallback)
-	doc.on('end', endCallback)
-    
-	
-	const svg = `
+
+
+function buildSVG(option) {
+    return `
 	<svg width="794" height="322.121" viewBox="0 0 843 342" fill="none" xmlns="http://www.w3.org/2000/svg"
     xmlns:xlink="http://www.w3.org/1999/xlink">
     <g id="Group 17">
@@ -208,7 +202,18 @@ function buildPDF(dataCallback, endCallback, option) {
 	</defs>
 	</svg>
 	`
+}
 
+function buildPDF(dataCallback, endCallback, option) {
+	const doc = new PDFDocument( {
+		size: 'A4'
+	})
+	
+	doc.on('data', dataCallback)
+	doc.on('end', endCallback)
+    
+	
+	const svg = buildSVG(option)
 	// background color
 	doc
 	.save()
@@ -227,4 +232,7 @@ function buildPDF(dataCallback, endCallback, option) {
 }
 
 
-module.exports = buildPDF
+module.exports = {
+    buildPDF,
+    buildSVG
+}
