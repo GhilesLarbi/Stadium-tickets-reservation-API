@@ -123,8 +123,8 @@ const updateBleacher = asyncHandler(async (req, res) => {
 	result.update(bleacher)
 	
 	// for some reason the type is not changing
-	result.dataValues.type = bleacher.type
-	result.save()
+	// result.dataValues.type = bleacher.type
+	// result.save()
 	
 	res.send(AppRes(200, 'bleacher updated', result))
 })
