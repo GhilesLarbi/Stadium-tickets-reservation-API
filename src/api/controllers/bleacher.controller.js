@@ -120,7 +120,7 @@ const updateBleacher = asyncHandler(async (req, res) => {
 	
 	if (!result) throw new AppErr(404, 'No bleacher with type of '+req.params.type, 'bleacherType')
 	
-	result.update(bleacher)
+	await result.update(bleacher)
 	
 	// for some reason the type is not changing
 	// result.dataValues.type = bleacher.type
