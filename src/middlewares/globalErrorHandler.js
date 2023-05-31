@@ -6,7 +6,7 @@ function globalErrorHandler(err, req, res, next) {
 	let field
 	let code
 	
-	console.log(err)
+	// console.log(err)
 	
 	// FIXME
 	// check if the error is comming from sequelize
@@ -27,7 +27,7 @@ function globalErrorHandler(err, req, res, next) {
 		message,
 		field,
 		// development only
-		data : { stack : err.stack },
+		// data : { stack : err.stack },
 	})
 }
 

@@ -159,17 +159,17 @@ const teams = [
 
 const leagues = [
 	{
-		name: 'can',
+		name: 'CAC',
 		logo: 'can.png',
 	},
 
 	{
-		name: 'caf',
+		name: 'CAF',
 		logo: 'caf.jpg',
 	},
 
 	{
-		name: 'cla',
+		name: 'LFP',
 		logo: 'cla.png',
 	},
 ]
